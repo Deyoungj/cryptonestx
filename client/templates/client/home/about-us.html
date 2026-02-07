@@ -1,0 +1,507 @@
+{% extends 'client/home/base.html' %}
+{% load i18n %}
+{% load static %}
+
+
+{% block title %} <title>CryptoNextx - About Us</title> {% endblock title %}
+
+
+
+{% block menu %}
+
+      <!-- Start Header Area -->
+      <header class="header navbar-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="nav-inner">
+                        <!-- Start Navbar -->
+                        <nav class="navbar navbar-expand-lg">
+                            <a class="navbar-brand" href=" {% url 'home' %} ">
+                                <img src="{% static 'client/images/logo/cryptonextx2.png' %}" alt="Logo">
+                            </a>
+                            <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                                <ul id="nav" class="navbar-nav ms-auto">
+                                    <li class="nav-item">
+                                        <a href="{% url 'home' %}"  aria-label="Toggle navigation">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'about' %}" class="active" aria-label="Toggle navigation">About</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="{% url 'affiliate' %}" aria-label="Toggle navigation">Affiliate</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a href="{% url 'faq' %}" aria-label="Toggle navigation">Faq</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'contact' %}" aria-label="Toggle navigation">Contact</a>
+                                    </li>
+                                </ul>
+
+                                {% comment %} <form action="{% url 'set_language' %}" method="post" class="d-flex align-items-center gap-2">
+                                  {% csrf_token %}
+                                  <label for="lang-switch" class="form-label mb-0 text-muted fw-semibold">🌐 Language</label>
+                                  <select name="language" id="lang-switch" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>🇺🇸 English</option>
+                                    <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>🇫🇷 Français</option>
+                                    <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>🇪🇸 Español</option>
+                                    <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>🇸🇦 العربية</option>
+                                    <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>🇮🇳 हिन्दी</option>
+                                    <option value="pt" {% if LANGUAGE_CODE == 'pt' %}selected{% endif %}>🇵🇹 Português</option>
+                                    <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>🇷🇺 Русский</option>
+                                    <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>🇩🇪 Deutsch</option>
+                                  </select>
+                                </form> {% endcomment %}
+                            </div> <!-- navbar collapse -->
+                            <div class="button">
+                                {% if request.user.is_authenticated %}
+                                 <a class="btn" href="{% url 'overview' %}">Dashboard</a>
+                        
+                                {% else %}
+                                <a href=" {% url 'login' %} " class="btn">Sign in</a>
+                                {% endif %}
+                                
+                            </div>
+                        </nav>
+                        <!-- End Navbar -->
+                    </div>
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+    </header>
+    <!-- End Header Area -->
+
+{% endblock menu %}
+
+
+
+{% block content %}
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 offset-lg-3 col-md-12 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">About Us</h1>
+                        <ul class="breadcrumb-nav">
+                            <li><a href=" {% url 'home' %} ">Home</a></li>
+                            <li>About Us</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Start About Area -->
+    <section class="about section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-12">
+                    <div class="image wow fadeInUp" data-wow-delay=".4s">
+                        <img src=" {% static 'client/images/about/about-image.png' %} " alt="#">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="content wow fadeInUp" data-wow-delay=".7s">
+                        <h4>Innovative Investment Ecosystem</h4>
+                        <h2>TetherSurge: Navigating the Investment Landscape</h2>
+                        <p> TetherSurge is your gateway to a world of investment opportunities.
+                             We provide a user-friendly platform that connects you with a diverse range of investment options,
+                             from traditional stocks and bonds to innovative cryptocurrencies and emerging markets.</p>
+                        <div class="list">
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Our Mission:</h4>
+                                <p>To empower individuals to achieve their financial goals through informed and confident investment decisions.</p>
+                            </div>
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Our Vision:</h4>
+                                <p>To be the leading platform for accessible and transparent investment solutions, fostering a community of empowered investors.</p>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+            <div class="row align-items-center mt-5">
+                
+                <div class="col-lg-6 col-12">
+                    <div class="content wow fadeInUp" data-wow-delay=".7s">
+                        
+                        <h2>Key Features:</h2>
+                       
+                        <div class="list">
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>User-friendly interface: </h4>
+                                <p>Easy to navigate and understand, even for beginners.</p>
+                            </div>
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Diversified investment options:</h4>
+                                <p>Explore a wide range of asset classes and investment strategies.</p>
+                            </div>
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Real-time market data:</h4>
+                                <p>Stay informed with up-to-date market news and insights.</p>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="content wow fadeInUp" data-wow-delay=".7s">
+                        
+                        <h2></h2>
+                       
+                        <div class="list">
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Personalized investment recommendations: </h4>
+                                <p>Receive tailored advice based on your risk tolerance and financial goals.</p>
+                            </div>
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Secure and reliable platform:</h4>
+                                <p>Your investments are protected by robust security measures.
+                                    Join the TetherSurge community today and start your journey towards financial success.</p>
+                            </div>
+                            <div class="single-list">
+                                <div class="list-icon">
+                                    <i class="lni lni-checkmark"></i>
+                                </div>
+                                <h4>Investment plan:</h4>
+                                <p>Minimum of $5 up 
+                                    7% of your investment as return everyday for 30 days and 10% commission for each referral</p>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+            </div>
+
+
+
+
+
+        </div>
+    </section>
+    <!-- End About Area -->
+
+    <!-- Start Get Start Process Area -->
+    <section class="start-process dark section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Ready to get started?</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">3 Steps To Start</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">There are many variations of passages of Lorem
+                            Ipsum available, but the majority have suffered alteration in some form.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="single-process">
+                        <span class="serial">01</span>
+                        <h3>Easy Sign Up</h3>
+                        <p>Quick and hassle-free signup to get you started on your investment journey in no time.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="single-process">
+                        <span class="serial">02</span>
+                        <h3>Safe & Secure</h3>
+                        <p>Advanced security measures ensure your data and investments are always protected.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="single-process">
+                        <span class="serial">03</span>
+                        <h3>Seamless Transactions</h3>
+                        <p>Easily fund your account or withdraw your earnings with minimal processing times.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Get Start Process Area -->
+
+    <!-- Start Testimonials Area -->
+<section class="testimonials style2 section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h3 class="wow zoomIn" data-wow-delay=".2s">Customer Reviews</h3>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Our Testimonials</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">Don't just take our word for it—our users' success stories speak for themselves. 
+                        Here’s what some of our valued investors have to say about their experience with TetherSurge.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row testimonial-slider">
+            <div class="col-lg-6 col-12 ">
+                <!-- Start Single Testimonial -->
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon">
+                            <i class="lni lni-quotation"></i>
+                        </div>
+                        <div class="text">
+                            <p>“TetherSurge has completely transformed how I approach investing. 
+                                The platform is easy to use, and the real-time 
+                                insights have helped me make more informed decisions.”</p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-1.png' %}" alt="#">
+                            <h4 class="name">John R Silva
+                                <span class="deg">Investor</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single Testimonial -->
+            </div>
+            <div class="col-lg-6 col-12 ">
+                <!-- Start Single Testimonial -->
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon">
+                            <i class="lni lni-quotation"></i>
+                        </div>
+                        <div class="text">
+                            <p>“As a beginner, I was intimidated by investing. 
+                                TetherSurge made the process simple and secure. Now, I feel confident in my investment choices!”</p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-2.png' %}" alt="#">
+                            <h4 class="name">David Warner
+                                <span class="deg">First-Time Investor</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single Testimonial -->
+            </div>
+            <div class="col-lg-6 col-12 ">
+                <!-- Start Single Testimonial -->
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon">
+                            <i class="lni lni-quotation"></i>
+                        </div>
+                        <div class="text">
+                            <p>“I’ve recommended TetherSurge to several clients. 
+                                Their commitment to security and transparency gives 
+                                me peace of mind when helping others invest.”</p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-3.png' %}" alt="#">
+                            <h4 class="name">Jems Gilario
+                                <span class="deg">Graphics Designer</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single Testimonial -->
+            </div>
+            <div class="col-lg-6 col-12 ">
+                <!-- Start Single Testimonial -->
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon">
+                            <i class="lni lni-quotation"></i>
+                        </div>
+                        <div class="text">
+                            <p>“I’ve been in the investment game for years, but TetherSurge’s platform offers 
+                                unparalleled ease of use and advanced features. 
+                                It’s now my go-to tool for making smarter investment choices.”</p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-3.png' %}" alt="#">
+                            <h4 class="name">David Warner
+                                <span class="deg">Experienced Investor</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single Testimonial -->
+            </div>
+            
+        </div>
+    </div>
+</section>
+    <!-- End Testimonial Area -->
+
+    <section class="team section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Expert Team</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Meet Our Team</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Our team of seasoned experts is dedicated to guiding you on your investment journey. 
+                            With years of experience in finance, technology, and strategy, we’re here to help you succeed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".3s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team4.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>Deco Milan
+                                <span>Founder</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".5s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team1.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>Liza Marko
+                                <span>Developer</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".7s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team2.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>John Smith
+                                <span>Designer</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".9s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team3.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>Amion Doe
+                                <span>Co-Founder</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--/ End Team Area -->
+
+
+    <!-- Start Clients Logo Area -->
+    <div class="client-logo">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-3 col-12 text-center">
+                    <div class="single-logo">
+                        <img src="{% static 'client/images/client-logo/graygrids-logo.svg'%}" alt="#">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-12 text-center">
+                    <div class="single-logo">
+                        <img src="{% static 'client/images/client-logo/lineicons-logo.svg'%}" alt="#">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-12 text-center">
+                    <div class="single-logo">
+                        <img src="{% static 'client/images/client-logo/ayro-logo.svg'%}" alt="#">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-12 text-center">
+                    <div class="single-logo">
+                        <img src="{% static 'client/images/client-logo/uideck-logo.svg'%}" alt="#">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Clients Logo Area -->
+
+   
+        {% endblock content %}

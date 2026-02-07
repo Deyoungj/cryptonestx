@@ -1,0 +1,249 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    {% block title %}{% endblock title %}
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'client/images/logo/favicon.png' %}" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" href="{% static 'client/css/bootstrap.min.css'%}" />
+    <link rel="stylesheet" href="{% static 'client/css/LineIcons.3.0.css'%}" />
+    <link rel="stylesheet" href="{% static 'client/css/animate.css' %}"/>
+    <link rel="stylesheet" href="{% static 'client/css/tiny-slider.css'%}" />
+    <link rel="stylesheet" href="{% static 'client/css/glightbox.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'client/css/main.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'client/css/font-awesome-5.10.2.min.css' %}">
+    <!--=== Owl-Carousel ===-->
+    <link rel="stylesheet" href="{% static 'client/css/plugin/owl.carousel.min.css' %}">
+    <!--=== Magnific Popup===-->
+    <link rel="stylesheet" href="{% static 'client/css/plugin/magnific-popup.css' %}">
+    <!--=== Nice select Popup===-->
+    <link rel="stylesheet" href="{% static 'client/css/plugin/nice-select.css' %}">
+    <!--=== Animation Css ===-->
+    <link rel="stylesheet" href="{% static 'client/css/plugin/animate.css' %}">
+  
+    <!--=== Responsive Css ===-->
+    <link rel="stylesheet" href="{% static 'client/css/responsive.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+</head>
+
+<body>
+
+       <!--[if lte IE 9]>
+      <p class="browserupgrade">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="https://browsehappy.com/">upgrade your browser</a> to improve
+        your experience and security.
+      </p>
+    <![endif]-->
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- /End Preloader -->
+
+  
+
+    {% block menu %}{% endblock menu %}
+
+    
+        
+
+    {% block content %}{% endblock content %}
+
+
+
+
+    <!-- Start Footer Area -->
+<footer class="footer section">
+    <!-- Start Footer Top -->
+    <div class="footer-top">
+        <div class="container">
+            <div class="inner-content">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <!-- Single Widget -->
+                        <div class="single-footer f-about">
+                            <div class="logo">
+                                <a href="index.html">
+                                    <img src="{% static 'client/images/logo/cryptonextx2.png' %}" alt="#">
+                                </a>
+                            </div>
+                            <p>{% trans "Explore a world of investment opportunities with CryptoNextx." %}</p>
+                            <h4 class="social-title">{% trans "Follow Us On:" %}</h4>
+                            <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-phone-filled"></i></a></li>
+                                <li><a href="https://www.instagram.com/tethersurge?igsh=bXBrc3pmNHYxOGc3"><i class="lni lni-instagram"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- End Single Widget -->
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-12">
+                        <!-- Single Widget -->
+                        <div class="single-footer f-link">
+                            <h3>{% trans "Company" %}</h3>
+                            <ul>
+                                <li><a href="{% url 'about' %}">{% trans "About" %}</a></li>
+                                <li><a href="{% url 'affiliate' %}">{% trans "Affiliate" %}</a></li>
+                            </ul>
+                        </div>
+                        <!-- End Single Widget -->
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-12">
+                        <!-- Single Widget -->
+                        <div class="single-footer f-link">
+                            <h3>{% trans "Support" %}</h3>
+                            <ul>
+                                <li><a href="{% url 'faq' %}">{% trans "FAQ" %}</a></li>
+                                <li><a href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
+                            </ul>
+                        </div>
+                        <!-- End Single Widget -->
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <!-- Single Widget -->
+                        <div class="single-footer newsletter">
+                            <h3>{% trans "Contact" %}</h3>
+                            <p>support@cryptonestx.org</p>
+                            {% comment %} <p>+44 7874 354380</p>
+                            <a class="color-white" href="https://wa.me/447874354380">Whatsapp</a> {% endcomment %}
+                        </div>
+                        <!-- End Single Widget -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Footer Top -->
+
+    <!-- Start Copyright -->
+    <div class="copyright-area">
+        <div class="container">
+            <div class="inner-content">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <p class="copyright-text">© 2025 cryptonestx - {% trans "All Rights Reserved" %}</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-12">
+                        {# Optional: Add developer credit here with {% trans %} if needed #}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Copyright -->
+</footer>
+
+    <!--/ End Footer Area -->
+
+    <!-- ========================= scroll-top ========================= -->
+    <a href="#" class="scroll-top">
+        <i class="lni lni-chevron-up"></i>
+    </a>
+
+    <!-- ========================= JS here ========================= -->
+    <script src="{% static 'client/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'client/js/wow.min.js' %}"></script>
+    <script src="{% static 'client/js/tiny-slider.js' %}"></script>
+    <script src="{% static 'client/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'client/js/count-up.min.js' %}"></script>
+    <script src="{% static 'client/js/main.js' %}"></script>
+    <script>
+        //========= Road Map 
+        tns({
+            container: '.road-map-slider',
+            items: 1,
+            slideBy: 'page',
+            autoplay: false,
+            mouseDrag: true,
+            gutter: 0,
+            nav: true,
+            controls: false,
+            responsive: {
+                0: {
+                    items: 2,
+                },
+                540: {
+                    items: 3,
+                },
+                768: {
+                    items: 4,
+                },
+                992: {
+                    items: 4,
+                },
+                1170: {
+                    items: 6,
+                }
+            }
+        });
+
+        //========= testimonial 
+        tns({
+            container: '.testimonial-slider',
+            items: 3,
+            slideBy: 'page',
+            autoplay: false,
+            mouseDrag: true,
+            gutter: 0,
+            nav: true,
+            controls: false,
+            responsive: {
+                0: {
+                    items: 1,
+                },
+                540: {
+                    items: 1,
+                },
+                768: {
+                    items: 2,
+                },
+                992: {
+                    items: 2,
+                },
+                1170: {
+                    items: 3,
+                }
+            }
+        });
+
+        //====== counter up 
+        var cu = new counterUp({
+            start: 0,
+            duration: 2000,
+            intvalues: true,
+            interval: 100,
+            append: " ",
+        });
+        cu.start();
+
+        //========= glightbox
+        GLightbox({
+            'href': 'https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM',
+            'type': 'video',
+            'source': 'youtube', //vimeo, youtube or local
+            'width': 900,
+            'autoplayVideos': true,
+        });
+
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9012afa12f4b7737',t:'MTczNjc0Mjk5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='../../cdn-cgi/challenge-platform/h/b/scripts/jsd/e0c90b6a3ed1/maind41d.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"9012afa12f4b7737","version":"2024.10.5","r":1,"serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"token":"9a6015d415bb4773a0bff22543062d3b","b":1}' crossorigin="anonymous"></script>
+</body>
+
+
+<!-- Mirrored from preview.uideck.com/items/cryptoland/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 13 Jan 2025 04:37:18 GMT -->
+</html>

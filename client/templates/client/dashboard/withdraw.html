@@ -1,0 +1,222 @@
+{% extends 'client/dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Cardone Capital | Withdraw {% endblock title %}
+
+
+{% block withdraw_active %} active {% endblock withdraw_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+{% block content %}
+
+
+
+
+<div class="row">
+              <div class="col-sm-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+
+                    <h2>Withdraw</h2>
+
+                    {% if message != "" %}
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <div>
+                            {{message}}
+                            </div>
+                        </div> 
+                    {% endif %}
+
+                    <form class="mt-5" action="" method="post">
+                         {% csrf_token %}
+
+                        <div class="form-group">
+                            <label>Enter Amount</label>
+                            <input type="number" class="form-control form-control-lg" required name="amount" placeholder="Amount" aria-label="amount">
+                            <h6 class="text-muted font-weight-normal mt-2">Note: Balance $ {{account_balance}} </h6>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Choose Payment Method</label>
+                            <select class="form-select form-select-lg"  id="payment_g" name="payment_method"> 
+                                {% for payment_gate in c_paymentgates %}
+                                        <option selected>{{payment_gate.name}} </option>
+                                        
+                                       
+                                        
+                                    {% endfor %} 
+                            </select>
+                            
+                        </div>  
+
+
+                        <div class="form-group">
+                            <label>Enter Payment Address</label>
+                            <input type="text" class="form-control form-control-lg" required  name="address" placeholder="Enter crypto address" aria-label="address">
+                            
+                        </div>
+
+
+
+                        <button type="submit" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
+                            Withdraw</button>
+                    </form>
+
+
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+
+
+
+
+
+             <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Withdrawal History</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              #
+                            </th>
+                            
+                            <th> Reference </th>
+                            <th> Amount </th>
+                            <th> Withdrawal Method </th>
+                            <th> withdrawal_type" </th>
+                            <th> Date </th>
+                            <th> Status </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+
+                        {% for withdrawal in withdrawals %}
+
+                             <tr>
+
+                            </td> 
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ withdrawal.reference }}</td>
+                            <td>${{ withdrawal.amount }}</td>
+                            <td>{{ withdrawal.Withdrawal_method }}</td>
+                            <td>{{ withdrawal.withdrawal_type }}</td>
+
+                            <td>{{ withdrawal.timestamp|date:"M d, Y H:i A" }}</td>
+                            
+
+                                <td>
+                                <span class="badge {% if withdrawal.status == 'successful' %}badge-outline-success{% elif withdrawal.status == 'pending' %}badge-outline-warning{% else %}badge-outline-danger{% endif %}">
+                                    {{ withdrawal.status|title }}
+                                </span>
+                            </td>
+
+                              
+                          </tr>
+                          <tr>
+                          {% empty %}
+                          <tr>
+                              <td colspan="7" class="text-center text-muted">No Withdrawal Yet.</td>
+                          </tr>
+                        {% endfor %}
+                         
+                       
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+ <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get the input field and the output text element
+    // var inputField = document.getElementById("inputField");
+    // var outputText = document.getElementById("outputText");
+
+
+    var custom_amount = document.getElementById("custom-amount");
+    var invest_amount = document.getElementById("invest_amount");
+
+
+    var payment_g = document.getElementById("payment_g");
+    var payment_m = document.getElementById("payment_m");
+
+
+    var m = document.getElementById("m");
+    var w = document.getElementById("w");
+    
+
+    var tr = document.getElementById("tr");
+
+    var refUrl = document.getElementById("refUrl");
+
+
+    payment_g.addEventListener("change", function() {
+        // Update the text content of the output text element
+        payment_m.textContent = payment_g.options[payment_g.selectedIndex].text.split('|')[0];
+
+        w.textContent = payment_g.options[payment_g.selectedIndex].text;
+
+        g = payment_g.options[payment_g.selectedIndex].text
+        refUrl.value = g.split('|')[1]
+       
+        
+        
+    });
+
+    // Add an event listener to the input field for "input" event
+    // inputField.addEventListener("input", function() {
+        // Update the text content of the output text element
+        // outputText.textContent = "You typed: " + inputField.value;
+    // });
+
+
+    custom_amount.addEventListener("input", function() {
+        // Update the text content of the output text element
+        invest_amount.textContent = "$" + custom_amount.value;
+        m.textContent = "$" + custom_amount.value;
+        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
+    });
+
+
+
+    custom_amount.addEventListener("input", function() {
+        // Update the text content of the output text element
+        invest_amount.textContent = "$" + custom_amount.value;
+        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
+    });
+
+    
+});
+
+
+</script> 
+
+
+{% endblock content %}
+
+
+
+

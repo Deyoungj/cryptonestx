@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cardoneminingcapital</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f6f8; font-family: Arial, Helvetica, sans-serif;">
+
+<!-- Wrapper -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:20px;">
+    <tr>
+        <td align="center">
+
+            <!-- Email Container -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; background-color:#ffffff; border-radius:6px; overflow:hidden;">
+
+                <!-- Header -->
+                <tr>
+                    <td style="background-color:#eee; padding:20px; text-align:center;">
+                        <img
+                          src="https://www.cardoneminingcapital.com/static/client/images/logo1.png"
+                          alt="Cardone Mining Capital"
+                          border="0"
+                            width="380" 
+                            style="
+                                    display:block;
+                                    margin:0 auto;
+                                "
+                        >
+                        <h1 style="margin:0; font-size:24px; color:#ffffff;">
+                            
+                        </h1>
+                    </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                    <td style="padding:35px 30px; color:#1f2937;">
+          
+                      <p style="margin:0 0 14px; font-size:16px;">
+                        Hello <strong>{{ user }}</strong>,
+                      </p>
+          
+                      <p style="margin:0 0 20px; font-size:16px; line-height:1.6;">
+                        We’ve received a request to withdraw funds from your Cardone Mining Capital account.
+                        Below are the details of your request:
+                      </p>
+          
+                      <!-- Details Box -->
+                      <table width="100%" cellpadding="0" cellspacing="0"
+                             style="background-color:#f9fafb; border-radius:6px; padding:20px; margin-bottom:20px;">
+                        <tr>
+                          <td style="font-size:15px; line-height:1.8;">
+                            <strong>Amount:</strong> {{ amount }}<br>
+                            <strong>Withdrawal Method:</strong> {{ Withdrawal_method }}<br>
+                            <strong>Destination Address:</strong> {{ address }}<br>
+                            <strong>Status:</strong>
+                            <span style="color:#f59e0b; font-weight:600;">Pending</span>
+                          </td>
+                        </tr>
+                      </table>
+          
+                      <p style="margin:0 0 25px; font-size:15px; line-height:1.6; color:#374151;">
+                        Your payment request has been successfully submitted. Confirmation typically
+                        occurs within <strong>2–3 minutes</strong>.
+                      </p>
+          
+                    
+          
+                    </td>
+                  </tr>
+          
+                <!-- Footer -->
+                <tr>
+                    <td style="background-color:#f0f0f0; padding:20px; text-align:center; font-size:14px; color:#666666;">
+                        <p style="margin:0;">
+                            © 2026 cardoneminingcapital.com All rights reserved.
+                        </p>
+                        <p style="margin:5px 0 0 0;">
+                            18851 NE 29th Ave Suite 1000 Aventura, FL 33180
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
+
+
+

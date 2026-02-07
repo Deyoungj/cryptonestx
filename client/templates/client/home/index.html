@@ -1,0 +1,957 @@
+{% extends 'client/home/base.html' %}
+{% load i18n %}
+{% load static %}
+
+
+{% block title %} <title>CryptoNextx - investment</title> {% endblock title %}
+
+
+{% block menu %}
+
+<!-- Start Header Area -->
+<header class="header navbar-area">
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-lg-12">
+            <div class="nav-inner">
+                <!-- Start Navbar -->
+                <nav class="navbar navbar-expand-lg">
+                    <a class="navbar-brand" href=" {% url 'home' %} ">
+                        <img src="{% static 'client/images/logo/cryptonextx2.png' %}" alt="Logo">
+                    </a>
+                    <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="toggler-icon"></span>
+                        <span class="toggler-icon"></span>
+                        <span class="toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                        <ul id="nav" class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a href="{% url 'home' %}" class="active" aria-label="Toggle navigation"> Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'about' %}" aria-label="Toggle navigation"> About</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{%  url 'affiliate' %}" aria-label="Toggle navigation">Affiliate</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a href="{% url 'faq' %}" aria-label="Toggle navigation">Faq</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'contact' %}" aria-label="Toggle navigation">Contact</a>
+                            </li>
+
+                    </ul>
+
+                    {% comment %} <form action="{% url 'set_language' %}" method="post" class="d-flex align-items-center gap-2">
+                      {% csrf_token %}
+                      <label for="lang-switch" class="form-label mb-0 text-muted fw-semibold">🌐 Language</label>
+                      <select name="language" id="lang-switch" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>🇺🇸 English</option>
+                        <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>🇫🇷 Français</option>
+                        <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>🇪🇸 Español</option>
+                        <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>🇸🇦 العربية</option>
+                        <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>🇮🇳 हिन्दी</option>
+                        <option value="pt" {% if LANGUAGE_CODE == 'pt' %}selected{% endif %}>🇵🇹 Português</option>
+                        <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>🇷🇺 Русский</option>
+                        <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>🇩🇪 Deutsch</option>
+                      </select>
+                    </form> {% endcomment %}
+
+                    </div> <!-- navbar collapse -->
+                    <div class="button ml-3">
+                        {% if request.user.is_authenticated %}
+                         <a class="btn" href="{% url 'overview' %}">Dashboard</a>
+                
+                        {% else %}
+                        <a href=" {% url 'login' %} " class="btn">Sign in</a>
+                        {% endif %}
+                        
+                    </div>
+
+                   
+                </nav>
+                <!-- End Navbar -->
+            </div>
+        </div>
+    </div> <!-- row -->
+</div> <!-- container -->
+</header>
+<!-- End Header Area -->
+
+{% endblock menu %}
+
+
+
+
+
+{% block content %}
+    
+
+    
+    <!-- Start Hero Area -->
+<section class="hero-area">
+    <img class="hero-shape" src="{% static 'client/images/hero/hero-shape.svg'%}" alt="#">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 col-md-12 col-12">
+                <div class="hero-content">
+                    <h4 class="wow fadeInUp" data-wow-delay=".2s">Welcome To CryptoNextx Investments</h4>
+                    <h1 class="wow fadeInUp" data-wow-delay=".4s">Navigate Your Financial Future to <br>
+                        with
+                        <span>
+                            <img class="text-shape" src="{% static 'client/images/hero/text-shape.svg'%}" alt="#">
+                             Confidence.
+                        </span>
+                    </h1>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">
+                        Explore a world of investment opportunities with CryptoNextx.
+                        From stocks to cryptocurrencies,
+                        take control of your financial journey with a platform built for investors like you.
+                        
+                    </p>
+                    <div class="button wow fadeInUp" data-wow-delay=".8s">
+                        {% if request.user.is_authenticated %}
+                            <a class="btn" href="{% url 'overview' %}">Dashboard</a>
+                        
+                        {% else %}
+                        <a href=" {% url 'register' %} " class="btn ">Get Started</a>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 col-12">
+                <div class="hero-image">
+                    <img class="main-image" src="{% static 'client/images/hero/home2-bg.png'%}" alt="#">
+                    <img class="h2-move-1" src="{% static 'client/images/hero/h2-bit-l.png'%}" alt="#">
+                    <img class="h2-move-2" src="{% static 'client/images/hero/h2-bit-m.png'%}" alt="#">
+                    <img class="h2-move-3" src="{% static 'client/images/hero/h2-bit-s.png'%}" alt="#">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- End Hero Area -->
+
+    <!-- Start Feature Area -->
+    <div class="feature section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Why choose us</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Our features</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">AAt CryptoNextx, we believe in making investments accessible, transparent, and secure for everyone. Here’s why thousands of users trust us with their financial goals.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".2s">
+                    <div class="feature-box">
+                        <div class="tumb">
+                            <img src="{% static 'client/images/features/feature-icon-1.png'%}" alt="">
+                        </div>
+                        <h4 class="text-title">Easy Sign Up</h4>
+                        <p>Quick and hassle-free signup to get you started on your investment journey in no time.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".4s">
+                    <div class="feature-box">
+                        <div class="tumb">
+                            <img src="{% static 'client/images/features/feature-icon-2.png'%}" alt="">
+                        </div>
+                        <h4 class="text-title">Safe & Secure</h4>
+                        <p>Advanced security measures ensure your data and investments are always protected.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".6s">
+                    <div class="feature-box">
+                        <div class="tumb">
+                            <img src="{% static 'client/images/features/feature-icon-3.png'%}" alt="">
+                        </div>
+                        <h4 class="text-title">Seamless Transactions</h4>
+                        <p>Easily fund your account or withdraw your earnings with minimal processing times.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Features Area -->
+
+    <!-- Start Get Start Process Area -->
+    <section class="start-process section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Ready to get started?</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Ready to get started?3 Steps To Start</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Your investment journey starts here. Take the first step today!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="single-process">
+                        <span class="serial">01</span>
+                        <h3>Sign Up</h3>
+                        <p>Create an account in minutes with our easy registration process.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="single-process">
+                        <span class="serial">02</span>
+                        <h3>Fund Your Account</h3>
+                        <p>Deposit funds securely using your preferred payment method.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="single-process">
+                        <span class="serial">03</span>
+                        <h3>Start Investing</h3>
+                        <p>Explore a wide range of opportunities and grow your portfolio.
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Get Start Process Area -->
+
+    <!-- Start Team Area -->
+    <section class="team section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Expert Team</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Meet Our Team</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Our team of seasoned experts is dedicated to guiding you on your investment journey. 
+                            With years of experience in finance, technology, and strategy, we’re here to help you succeed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".3s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team4.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>Deco Milan
+                                <span>Founder</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".5s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team1.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>Liza Marko
+                                <span>Developer</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".7s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team2.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>John Smith
+                                <span>Designer</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+                <div class="col-lg-3 col-md-6 col-12 wow fadeInUp" data-wow-delay=".9s">
+                    <!-- Start Single Team -->
+                    <div class="single-team">
+                        <div class="team-image">
+                            <img src="{% static 'client/images/team/team3.jpg'%}" alt="#">
+                        </div>
+                        <div class="content">
+                            <h4>Amion Doe
+                                <span>Co-Founder</span>
+                            </h4>
+                            {% comment %} <ul class="social">
+                                <li><a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a></li>
+                                <li><a href="javascript:void(0)"><i class="lni lni-linkedin-original"></i></a></li>
+                            </ul> {% endcomment %}
+                        </div>
+                    </div>
+                    <!-- End Single Team -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--/ End Team Area -->
+
+
+
+
+
+
+       <!-- Start Team Area -->
+       <section class="team section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s"></h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Our Plans   </h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+               
+
+                
+
+
+                {% for plan in plans %}
+         <div class="col-lg-3 col-md-6 mb-3 wow fadeInUp" data-wow-duration="0.3s" data-wow-delay="0.3s">
+            <div class="profit-box" style="background: linear-gradient(to right, #6342ff, #3e19ff); padding: 20px; border-radius: 10px; transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+                <h4 class="mb-5" style="color: white;">{{ plan.plan_name }}</h4>
+                <span style="font-size: 40px; font-weight: 700; padding-right: 10px; line-height: 40px; color: white;" class="prices">{{ plan.percent }}%</span>
+                <span style="font-size: 17px; color: white;" class="users">{{ plan.period }}</span>
+
+                <hr style="border-color: white;">
+                <p class="text mt-4" style="color: white;">Minimum: <span>${{ plan.minimum_amount }}</span></p>
+                <hr style="border-color: white;">
+                <p class="text mt-2" style="color: white;">Maximum: <span>${{ plan.maximum_amount }}</span></p>
+                <hr style="border-color: white;">
+                <p class="text mt-2" style="color: white;">ROI: <span>{{ plan.percent }}%</span></p>
+                <hr style="border-color: white;">
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'invest_form' plan.plan_name %}" class="btn wow fadeInUp pl-2"
+                    data-wow-duration="0.3s" data-wow-delay="0.3s"
+                    style="background-color: white; color: #3e19ff; border: 2px solid #3e19ff; 
+                           border-radius: 25px; padding: 10px 20px; font-size: 16px; 
+                           text-decoration: none; display: inline-block; text-align: center; 
+                           cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease;">
+                    Invest
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn wow fadeInUp pl-2"
+                    data-wow-duration="0.3s" data-wow-delay="0.3s"
+                    style="background-color: white; color: #3e19ff; border: 2px solid #3e19ff; 
+                           border-radius: 25px; padding: 10px 20px; font-size: 16px; 
+                           text-decoration: none; display: inline-block; text-align: center; 
+                           cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease;">
+                    Invest
+                </a>
+            {% endif %}
+            <hr style="border-color: white;">
+        </div>
+    </div>
+{% endfor %}
+
+
+
+
+
+                
+
+
+            </div>
+        </div>
+    </section>
+    <!--/ End Team Area -->
+
+
+
+
+    <!-- Start Intro Video Area -->
+    {% comment %} <section class="intro-video-area section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="inner-content-head">
+                        <div class="inner-content">
+                            <img class="shape1" src="assets/images/video/shape1.svg" alt="#">
+                            <img class="shape2" src="assets/images/video/shape2.svg" alt="#">
+                            <div class="section-title">
+                                <span class="wow zoomIn" data-wow-delay=".2s">Create your own experience</span>
+                                <h2 class="wow fadeInUp" data-wow-delay=".4s">Watch Our intro video</h2>
+                                <p class="wow fadeInUp" data-wow-delay=".6s">There are many variations of passages of
+                                    Lorem
+                                    Ipsum available, but the majority have suffered alteration in some form.</p>
+                            </div>
+                            <div class="intro-video-play">
+                                <div class="play-thumb wow zoomIn" data-wow-delay=".2s">
+                                    <a href="https://www.youtube.com/watch?v=r44RKWyfcFw&amp;fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM"
+                                        class="glightbox video"><i class="lni lni-play"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+    <!-- End Intro Video Area -->
+
+    <!-- Start Road Map Area -->
+<section class="road-map section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Road Map</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">
+                        
+                        There are many variations of passages of Lorem
+                        Ipsum available, but the majority have suffered alteration in some form.
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="top-row">
+            <div class="">
+                <div class="row road-map-slider">
+
+                    <!-- Repeatable Road Map Entry Template -->
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map down">
+                            <span class="arrow"></span>
+                            <h3>Apr 10,2018
+                                <span>Development Started</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map">
+                            <span class="arrow"></span>
+                            <h3>May 15,2018
+                                <span>Exchange Bitcontent to Bitcoin</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map down">
+                            <span class="arrow"></span>
+                            <h3>Jan 05,2018
+                                <span>BTCC mode of payment</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map">
+                            <span class="arrow"></span>
+                            <h3>Mar 21,2019
+                                <span>Send-Receive coin Bitconcent & mobile</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map down">
+                            <span class="arrow"></span>
+                            <h3>Feb 25,2020
+                                <span>Coin Marketcap, World Coin Index</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map">
+                            <span class="arrow"></span>
+                            <h3>Dec 22,2020
+                                <span>BTCC mode of payment in Bitcoin</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!-- Repeat the same pattern for remaining entries -->
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map down">
+                            <span class="arrow"></span>
+                            <h3>Feb 25,2020
+                                <span>Coin Marketcap, World Coin Index</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map">
+                            <span class="arrow"></span>
+                            <h3>Jan 05,2018
+                                <span>BTCC mode of payment</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map down">
+                            <span class="arrow"></span>
+                            <h3>May 15,2018
+                                <span>Exchange Bitcontent to Bitcoin</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-12 p-0">
+                        <div class="single-map">
+                            <span class="arrow"></span>
+                            <h3>Dec 22,2020
+                                <span>BTCC mode of payment in Bitcoin</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- End Road Map Area -->
+
+    <!-- Start Testimonials Area -->
+<section class="testimonials style2 section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h3 class="wow zoomIn" data-wow-delay=".2s">Customer Reviews</h3>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Our Testimonials</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">
+                        
+                        Don't just take our word for it—our users' success stories speak for themselves.
+                        Here’s what some of our valued investors have to say about their experience with CryptoNextx.
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row testimonial-slider">
+
+            <!-- START Testimonial 1 -->
+            <div class="col-lg-6 col-12">
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon"><i class="lni lni-quotation"></i></div>
+                        <div class="text">
+                            <p>
+                                
+                                “CryptoNextx has completely transformed how I approach investing.
+                                The platform is easy to use, and they have helped me make more informed decisions.”
+                                
+                            </p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-1.png' %}" alt="#">
+                            <h4 class="name">John R Silva
+                                <span class="deg">Investor</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START Testimonial 2 -->
+            <div class="col-lg-6 col-12">
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon"><i class="lni lni-quotation"></i></div>
+                        <div class="text">
+                            <p>
+                                
+                                “As a beginner, I was intimidated by investing. CryptoNextx made the process simple and secure.
+                                Now, I feel confident in my investment choices!”
+                                
+                            </p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-2.png' %}" alt="#">
+                            <h4 class="name">David Warner
+                                <span class="deg">First-Time Investor</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START Testimonial 3 -->
+            <div class="col-lg-6 col-12">
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon"><i class="lni lni-quotation"></i></div>
+                        <div class="text">
+                            <p>
+                                
+                                “I’ve recommended CryptoNextx to several clients.
+                                Their commitment to security and transparency gives me peace of mind when helping others invest.”
+                                
+                            </p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-3.png' %}" alt="#">
+                            <h4 class="name">Jems Gilario
+                                <span class="deg">Graphics Designer</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START Testimonial 4 -->
+            <div class="col-lg-6 col-12">
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon"><i class="lni lni-quotation"></i></div>
+                        <div class="text">
+                            <p>
+                                
+                                “I’ve been in the investment game for years,
+                                but CryptoNextx’s platform offers unparalleled ease of use and advanced features.
+                                It’s now my go-to tool for making smarter investment choices.”
+                                
+                            </p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-2.png' %}" alt="#">
+                            <h4 class="name">David Warner
+                                <span class="deg">Experienced Investor</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START Testimonial 5 -->
+            <div class="col-lg-6 col-12">
+                <div class="single-testimonial">
+                    <div class="inner-content">
+                        <div class="quote-icon"><i class="lni lni-quotation"></i></div>
+                        <div class="text">
+                            <p>
+                                
+                                “CryptoNextx has not only helped me manage my personal investments but also enabled me
+                                to guide my business investments with confidence. Their support team is outstanding too!”
+                                
+                            </p>
+                        </div>
+                        <div class="author">
+                            <img src="{% static 'client/images/testimonial/testi-3.png' %}" alt="#">
+                            <h4 class="name">Jems Gilario
+                                <span class="deg">Entrepreneur</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+    <!-- End Testimonial Area -->
+
+    <!-- Start Blog Section Area -->
+    {% comment %} <section class="blog-section section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Blogs</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Our Latest News</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">There are many variations of passages of Lorem
+                            Ipsum available, but the majority have suffered alteration in some form.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".4s">
+                    <!-- Start Single Blog Grid -->
+                    <div class="single-blog-grid">
+                        <div class="blog-img">
+                            <a href="blog-single.html">
+                                <img src="assets/images/blog/blog-1.png" alt="#">
+                            </a>
+                        </div>
+                        <div class="blog-content">
+                            <div class="meta-info">
+                                <a class="date" href="javascript:void(0)"><i class="lni lni-timer"></i> 10 June 2023
+                                </a>
+                                <a class="author" href="javascript:void(0)"><i class="lni lni-user"></i> Anjelio Joly
+                                </a>
+                            </div>
+                            <h4>
+                                <a href="blog-single.html">The Intersection Where Blockchain Meets Energy.</a>
+                            </h4>
+                            <p>Lorem ipsum dolor sit amet, adipscing elitr, sit gifted sed diam nonumy eirmod tempor
+                                ividunt dolore.</p>
+                            <div class="button">
+                                <a href="blog-single.html" class="btn">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Single Blog Grid -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".6s">
+                    <!-- Start Single Blog -->
+                    <div class="single-blog-grid">
+                        <div class="blog-img">
+                            <a href="blog-single.html">
+                                <img src="assets/images/blog/blog-2.png" alt="#">
+                            </a>
+                        </div>
+                        <div class="blog-content">
+                            <div class="meta-info">
+                                <a class="date" href="javascript:void(0)"><i class="lni lni-timer"></i> 5 Aug 2023
+                                </a>
+                                <a class="author" href="javascript:void(0)"><i class="lni lni-user"></i> Kumila ksusi
+                                </a>
+                            </div>
+                            <h4>
+                                <a href="blog-single.html">Pros & Cons of Premined Cryptocurrencies.</a>
+                            </h4>
+                            <p>Lorem ipsum dolor sit amet, adipscing elitr, sit gifted sed diam nonumy eirmod tempor
+                                ividunt dolore.</p>
+                            <div class="button">
+                                <a href="blog-single.html" class="btn">Read Blog</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Single Blog Grid -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".8s">
+                    <!-- Start Single Blog Grid -->
+                    <div class="single-blog-grid">
+                        <div class="blog-img">
+                            <a href="blog-single.html">
+                                <img src="assets/images/blog/blog-3.png" alt="#">
+                            </a>
+                        </div>
+                        <div class="blog-content">
+                            <div class="meta-info">
+                                <a class="date" href="javascript:void(0)"><i class="lni lni-timer"></i> 25 Dec 2023
+                                </a>
+                                <a class="author" href="javascript:void(0)"><i class="lni lni-user"></i> Alex Jendro
+                                </a>
+                            </div>
+                            <h4>
+                                <a href="blog-single.html">How & Where To Market Your ICO Startup.</a>
+                            </h4>
+                            <p>Lorem ipsum dolor sit amet, adipscing elitr, sit gifted sed diam nonumy eirmod tempor
+                                ividunt dolore.</p>
+                            <div class="button">
+                                <a href="blog-single.html" class="btn">Read Blog</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Single Blog Grid -->
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+    <!-- End Blog Section Area -->
+
+    <!-- Start Faq Area -->
+<section class="faq section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-title">
+                    <h3 class="wow zoomIn" data-wow-delay=".2s">Faq</h3>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">frequently asked questions</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">
+                        At CryptoNextx, we understand that starting your investment journey can raise many questions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- First column -->
+            <div class="col-lg-6 col-md-12 col-12">
+                <div class="accordion" id="accordionExample">
+
+                    <!-- Q1 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                                <span class="title">What is CryptoNextx?</span><i class="lni lni-plus"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="heading1"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <p>
+                                    
+                                    CryptoNextx is an online investment platform offering a range of traditional and alternative investment options,
+                                    from stocks and bonds to cryptocurrencies and emerging markets.
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                <span class="title">How do I get started?</span><i class="lni lni-plus"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <p>
+                                    
+                                    Simply sign up for an account, deposit funds, and begin exploring investment opportunities right away!
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                <span class="title">Is my data safe with CryptoNextx?</span><i class="lni lni-plus"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <p>
+                                    
+                                    Yes! We use industry-leading security protocols,
+                                    including two-factor authentication (2FA) and encryption,
+                                    to protect your personal and financial information.
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second column -->
+            <div class="col-lg-6 col-md-12 col-12 xs-margin">
+                <div class="accordion" id="accordionExample2">
+
+                    <!-- Q4 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading11">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
+                                <span class="title">Is CryptoNextx available worldwide?</span><i class="lni lni-plus"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse11" class="accordion-collapse collapse" aria-labelledby="heading11"
+                            data-bs-parent="#accordionExample2">
+                            <div class="accordion-body">
+                                <p>
+                                    
+                                    Yes, CryptoNextx is accessible globally,
+                                    though some investment options may be restricted based on regional regulations.
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading22">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse22" aria-expanded="false" aria-controls="collapse22">
+                                <span class="title">Are there any fees associated with using CryptoNextx?</span><i class="lni lni-plus"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse22" class="accordion-collapse collapse" aria-labelledby="heading22"
+                            data-bs-parent="#accordionExample2">
+                            <div class="accordion-body">
+                                <p>
+                                    
+                                    Yes, there may be transaction fees depending on the type of investment or
+                                    withdrawal you make. Please refer to our fee schedule for more details.
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Q6 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading33">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse33" aria-expanded="false" aria-controls="collapse33">
+                                <span class="title">How do I contact customer support?</span><i class="lni lni-plus"></i>
+                            </button>
+                        </h2>
+                        <div id="collapse33" class="accordion-collapse collapse" aria-labelledby="heading33"
+                            data-bs-parent="#accordionExample2">
+                            <div class="accordion-body">
+                                <p>
+                                    
+                                    You can reach our dedicated support team through email, live chat,
+                                    or our contact form available on the website.
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+    <!--/ End Faq Area -->
+
+    {% endblock content %}

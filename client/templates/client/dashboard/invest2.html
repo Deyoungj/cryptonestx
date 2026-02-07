@@ -1,0 +1,364 @@
+
+
+{% extends 'client/dashboard/base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% block title %}TetherSurge | % trans "Invest" %}{% endblock title %}
+
+
+{% block invest_active %}active current-page{% endblock invest_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+{% block content %}
+
+
+<div class="nk-content nk-content-lg nk-content-fluid ">
+    <div class="container-xl wide-lg ">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head text-center">
+                    <div class="nk-block-head-content">
+                        <div class="nk-block-head-sub"><span>{% trans "Choose an Option" %}</span></div>
+                        <div class="nk-block-head-content">
+                            <h2 class="nk-block-title fw-normal">{% trans "Investment Plan" %}</h2>
+                            <div class="nk-block-des">
+                                <p>{% trans "Choose your investment plan and start earning." %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-block">
+
+                    <form action="https://dashlite.net/demo6/invest/invest-form.html" class="plan-iv">
+                        
+                        <div class="plan-iv-list nk-slider nk-slider-s2">
+                            <ul class="plan-list slider-init"
+                                data-slick='{"slidesToShow": 3, "slidesToScroll": 1, "infinite":false, "responsive":[						{"breakpoint": 992,"settings":{"slidesToShow": 2}},						{"breakpoint": 768,"settings":{"slidesToShow": 1}}					]}'>
+                                
+                                
+                                {% for plan in plans %}
+                                    
+                               
+                                    
+                                <li class="plan-item">
+
+                                    <input type="radio" id="plan-iv-1" name="plan-iv"
+                                        class="plan-control">
+                                    <div class="plan-item-card">
+                                        <div class="plan-item-head">
+                                            <div class="plan-item-heading">
+                                                <h4 class="plan-item-title card-title title">{{plan.plan_name|title}}</h4>
+                                                <p class="sub-text">
+                                                {% trans "Enjoy entry level of invest & earn money." %}</p>
+                                            </div>
+                                            <div class="plan-item-summary card-text">
+                                                <div class="row">
+                                                    <div class="col-6"><span
+                                                            class="lead-text">{{plan.percent}}%</span><span
+                                                            class="sub-text">{% trans "Daily Interest" %}</span></div>
+                                                    <div class="col-6"><span
+                                                            class="lead-text">{{plan.period_length}}</span><span
+                                                            class="sub-text">{% trans "Term Days" %}</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="plan-item-body">
+                                            <div class="plan-item-desc card-text">
+                                                <ul class="plan-item-desc-list">
+                                                    <li><span class="desc-label">{% trans "Min Deposit" %}</span> - <span
+                                                            class="desc-data">${{plan.minimum_amount}}</span></li>
+                                                    <li><span class="desc-label">{% trans "Max Deposit" %}</span> - <span
+                                                            class="desc-data">${{plan.maximum_amount}}</span></li>
+                                                    <li><span class="desc-label">{% trans "Deposit Return" %}</span> -
+                                                        <span class="desc-data">Yes</span></li>
+                                                    <li><span class="desc-label">{% trans "Total Return" %}</span> - <span
+                                                            class="desc-data">{{plan.period_length}}%</span></li>
+                                                </ul>
+                                                <div class="plan-iv-actions text-center"><a 
+                                                    href="{% url 'invest_form' plan.plan_name %}" 
+                                                    class="btn btn-primary btn-lg">
+                                                    <span>{% trans "Continue to Invest" %}</span> <em
+                                                        class="icon ni ni-arrow-right"></em></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                {% endfor %}
+
+
+
+
+                                
+
+                                {% comment %} <li class="plan-item"><input type="radio" id="plan-iv-2" name="plan-iv"
+                                        class="plan-control">
+                                    <div class="plan-item-card">
+                                        <div class="plan-item-head">
+                                            <div class="plan-item-heading">
+                                                <h4 class="plan-item-title card-title title">Silver</h4>
+                                                <p class="sub-text">Best plan for user to invest & earn
+                                                    money.</p>
+                                            </div>
+                                            <div class="plan-item-summary card-text">
+                                                <div class="row">
+                                                    <div class="col-6"><span
+                                                            class="lead-text">4.76%</span><span
+                                                            class="sub-text">Daily Interest</span></div>
+                                                    <div class="col-6"><span
+                                                            class="lead-text">21</span><span
+                                                            class="sub-text">Term Days</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="plan-item-body">
+                                            <div class="plan-item-desc card-text">
+                                                <ul class="plan-item-desc-list">
+                                                    <li><span class="desc-label">Min Deposit</span> - <span
+                                                            class="desc-data">$2000</span></li>
+                                                    <li><span class="desc-label">Max Deposit</span> - <span
+                                                            class="desc-data">$4,999</span></li>
+                                                    <li><span class="desc-label">Deposit Return</span> -
+                                                        <span class="desc-data">Yes</span></li>
+                                                    <li><span class="desc-label">Total Return</span> - <span
+                                                            class="desc-data">200%</span></li>
+                                                </ul>
+                                                <div class="plan-item-action"><label for="plan-iv-2"
+                                                        class="plan-label"><span
+                                                            class="plan-label-base">Choose this
+                                                            plan</span><span
+                                                            class="plan-label-selected">Plan
+                                                            Selected</span></label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="plan-item"><input type="radio" id="plan-iv-3" name="plan-iv"
+                                        class="plan-control">
+                                    <div class="plan-item-card">
+                                        <div class="plan-item-head">
+                                            <div class="plan-item-heading">
+                                                <h4 class="plan-item-title card-title title">Dimond</h4>
+                                                <p class="sub-text">Advance level of invest & earn to
+                                                    quickly.</p>
+                                            </div>
+                                            <div class="plan-item-summary card-text">
+                                                <div class="row">
+                                                    <div class="col-6"><span
+                                                            class="lead-text">14.29%</span><span
+                                                            class="sub-text">Daily Interest</span></div>
+                                                    <div class="col-6"><span
+                                                            class="lead-text">14</span><span
+                                                            class="sub-text">Term Days</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="plan-item-body">
+                                            <div class="plan-item-desc card-text">
+                                                <ul class="plan-item-desc-list">
+                                                    <li><span class="desc-label">Min Deposit</span> - <span
+                                                            class="desc-data">$5000</span></li>
+                                                    <li><span class="desc-label">Max Deposit</span> - <span
+                                                            class="desc-data">$20,000</span></li>
+                                                    <li><span class="desc-label">Deposit Return</span> -
+                                                        <span class="desc-data">Yes</span></li>
+                                                    <li><span class="desc-label">Total Return</span> - <span
+                                                            class="desc-data">300%</span></li>
+                                                </ul>
+                                                <div class="plan-item-action"><label for="plan-iv-3"
+                                                        class="plan-label"><span
+                                                            class="plan-label-base">Choose this
+                                                            plan</span><span
+                                                            class="plan-label-selected">Plan
+                                                            Selected</span></label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="plan-item"><input type="radio" id="plan-iv-4" name="plan-iv"
+                                        class="plan-control">
+                                    <div class="plan-item-card">
+                                        <div class="plan-item-head">
+                                            <div class="plan-item-heading">
+                                                <h4 class="plan-item-title card-title title">Starter</h4>
+                                                <p class="sub-text">Enjoy entry level of invest & earn
+                                                    money.</p>
+                                            </div>
+                                            <div class="plan-item-summary card-text">
+                                                <div class="row">
+                                                    <div class="col-6"><span
+                                                            class="lead-text">1.67%</span><span
+                                                            class="sub-text">Daily Interest</span></div>
+                                                    <div class="col-6"><span
+                                                            class="lead-text">30</span><span
+                                                            class="sub-text">Term Days</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="plan-item-body">
+                                            <div class="plan-item-desc card-text">
+                                                <ul class="plan-item-desc-list">
+                                                    <li><span class="desc-label">Min Deposit</span> - <span
+                                                            class="desc-data">$250</span></li>
+                                                    <li><span class="desc-label">Max Deposit</span> - <span
+                                                            class="desc-data">$1,999</span></li>
+                                                    <li><span class="desc-label">Deposit Return</span> -
+                                                        <span class="desc-data">Yes</span></li>
+                                                    <li><span class="desc-label">Total Return</span> - <span
+                                                            class="desc-data">125%</span></li>
+                                                </ul>
+                                                <div class="plan-item-action"><label for="plan-iv-4"
+                                                        class="plan-label"><span
+                                                            class="plan-label-base">Choose this
+                                                            plan</span><span
+                                                            class="plan-label-selected">Plan
+                                                            Selected</span></label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="plan-item"><input type="radio" id="plan-iv-5" name="plan-iv"
+                                        class="plan-control">
+                                    <div class="plan-item-card">
+                                        <div class="plan-item-head">
+                                            <div class="plan-item-heading">
+                                                <h4 class="plan-item-title card-title title">Silver</h4>
+                                                <p class="sub-text">Best plan for user to invest & earn
+                                                    money.</p>
+                                            </div>
+                                            <div class="plan-item-summary card-text">
+                                                <div class="row">
+                                                    <div class="col-6"><span
+                                                            class="lead-text">4.76%</span><span
+                                                            class="sub-text">Daily Interest</span></div>
+                                                    <div class="col-6"><span
+                                                            class="lead-text">21</span><span
+                                                            class="sub-text">Term Days</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="plan-item-body">
+                                            <div class="plan-item-desc card-text">
+                                                <ul class="plan-item-desc-list">
+                                                    <li><span class="desc-label">Min Deposit</span> - <span
+                                                            class="desc-data">$2000</span></li>
+                                                    <li><span class="desc-label">Max Deposit</span> - <span
+                                                            class="desc-data">$4,999</span></li>
+                                                    <li><span class="desc-label">Deposit Return</span> -
+                                                        <span class="desc-data">Yes</span></li>
+                                                    <li><span class="desc-label">Total Return</span> - <span
+                                                            class="desc-data">200%</span></li>
+                                                </ul>
+                                                <div class="plan-item-action"><label for="plan-iv-5"
+                                                        class="plan-label"><span
+                                                            class="plan-label-base">Choose this
+                                                            plan</span><span
+                                                            class="plan-label-selected">Plan
+                                                            Selected</span></label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="plan-item"><input type="radio" id="plan-iv-6" name="plan-iv"
+                                        class="plan-control" checked>
+                                    <div class="plan-item-card">
+                                        <div class="plan-item-head">
+                                            <div class="plan-item-heading">
+                                                <h4 class="plan-item-title card-title title">Dimond</h4>
+                                                <p class="sub-text">Advance level of invest & earn to
+                                                    quickly.</p>
+                                            </div>
+                                            <div class="plan-item-summary card-text">
+                                                <div class="row">
+                                                    <div class="col-6"><span
+                                                            class="lead-text">14.29%</span><span
+                                                            class="sub-text">Daily Interest</span></div>
+                                                    <div class="col-6"><span
+                                                            class="lead-text">14</span><span
+                                                            class="sub-text">Term Days</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="plan-item-body">
+                                            <div class="plan-item-desc card-text">
+                                                <ul class="plan-item-desc-list">
+                                                    <li><span class="desc-label">Min Deposit</span> - <span
+                                                            class="desc-data">$5000</span></li>
+                                                    <li><span class="desc-label">Max Deposit</span> - <span
+                                                            class="desc-data">$20,000</span></li>
+                                                    <li><span class="desc-label">Deposit Return</span> -
+                                                        <span class="desc-data">Yes</span></li>
+                                                    <li><span class="desc-label">Total Return</span> - <span
+                                                            class="desc-data">300%</span></li>
+                                                </ul>
+                                                <div class="plan-item-action"><label for="plan-iv-6"
+                                                        class="plan-label"><span
+                                                            class="plan-label-base">Choose this
+                                                            plan</span><span
+                                                            class="plan-label-selected">Plan
+                                                            Selected</span></label></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li> {% endcomment %}
+                            </ul>
+                        </div>
+                        {% comment %} <div class="plan-iv-actions text-center"><button class="btn btn-primary btn-lg">
+                                <span>Continue to Invest</span> <em
+                                    class="icon ni ni-arrow-right"></em></button></div> {% endcomment %}
+                    </form>
+                </div>
+                <br />
+                <br />
+                <h4 class="nk-modal-title">{% trans "Investment Transactions" %}</h4>
+                <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{% trans "Reference" %}</th>
+                        <th scope="col">{% trans "Amount" %}</th>
+                        <th scope="col">{% trans "Plan" %}</th>
+                        <th scope="col">{% trans "Start Date" %}</th>
+                        <th scope="col">{% trans "Due Date" %}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for investment in investments %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ investment.investment_id }}</td>
+                                    <td>${{ investment.amount }}</td>
+                                    <td>{{ investment.plan }}</td>
+                                   
+                                    <td>{{ investment.start_date|date:"M d, Y" }}</td>
+                                    <td>{{ investment.due_date|date:"M d, Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">{% trans "No investments found." %}</td>
+                                </tr>
+                                {% endfor %}
+                
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+

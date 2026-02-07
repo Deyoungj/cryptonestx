@@ -1,0 +1,391 @@
+{% extends 'client/dashboard/base.html' %}
+
+{% load static %}
+
+{% block title %}Cardone mining Capital | Deposit {% endblock title %}
+
+{% block deposit_active %}  active {% endblock deposit_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+{% block content %}
+
+ 
+ <div class="page-header">
+  <h2 class="page-title"> Deposit  </h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+    
+    </ol>
+  </nav>
+</div>   
+
+
+
+ <div class="row">
+  <div class="col-sm-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+
+        <h2>Deposit</h2>
+
+        {% if message != "" %}
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <div>
+                {{message}}
+                </div>
+            </div> 
+        {% endif %}
+
+        <form class="mt-5" action="" method="post" enctype='multipart/form-data'>
+             {% csrf_token %}
+
+            <div class="form-group">
+                <label>Enter Amount</label>
+                <input type="number" class="form-control form-control-lg" name="amount" min="75" required placeholder="Amount" aria-label="amount">
+                <h6 class="text-muted font-weight-normal mt-2">Note: minimum Deposit $ 75</h6>
+            </div>
+
+
+            <div class="form-group">
+                <label>Choose Payment Method</label>
+                <select class="form-select form-select-lg" required name="payment_method" id="payment_g">
+
+
+                    {% for payment_gate in payment_gates %}
+                        <option {% if forloop.first %} selected {% endif %}>
+                            {{ payment_gate.name }} | {{ payment_gate.address }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+
+
+
+
+            <div class="modal fade" id="modernModal" tabindex="-1" aria-labelledby="modernModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md bg-gray-dark">
+                    <div class="modal-content shadow-lg rounded-4">
+                    <!-- <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="modernModalLabel">Modern Pop-up</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div> -->
+                    <div class="modal-body  d-flex justify-content-center align-items-center">
+                        <h4>Complete Your Payment</h4>
+
+                        
+                    </div>
+
+                    <div class=" text-center p-2">
+                       <p> <b>Instructions: </b> To complete your payment of <strong id="m"></strong> 
+                        using <strong id="w"></strong>. Please copy the address below and make your payment. 
+                        When you have made your payment submit a screenshot of it for verification.</p>
+
+
+                        <div class="p-3 ">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="referralLink" value="" readonly>
+                                <button class="btn btn-outline-secondary" id="copyBtn" type="button">
+                                Copy
+                                </button>
+                            </div>
+                            <div id="copyMessage" class="mt-2 text-success" style="display: none;">
+                                Link copied to clipboard!
+                            </div>
+                        </div>
+
+
+                        <div class="p-3">
+
+                            
+                            <div class="form-group">
+                                <label>Submit payment proof</label>
+                                <div class="input-group col-xs-12">
+                                    <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                    <input type="file" class="file-upload-default" required name="paymentp" accept="image/*" id="fileInput">
+                                    <span class="input-group-append ms-2">
+                                    <button class="file-upload-browse btn btn-primary" type="button" id="browseButton">Browse</button>
+                                    </span>
+                                </div>
+                                </div>
+                        </div>
+
+                        <div class="">
+                            <button type="submit" class="btn btn-success">Complete Payment</button>
+                        </div>
+                        <p class="mt-2">This transaction will appear on your wallet
+                                                    statement as Deposit {{plan.plan_name}}.</p>
+                        
+                        <div class="mt-3 mb-3">
+                            <button type="button" class="btn btn-outline-light btn-fw"data-bs-dismiss="modal">Cancle</button>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cancle</button>
+                        <button type="submit" class="btn btn-success">complete</button>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+        
+
+
+            <button type="button" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
+                Confirm & Proceed</button>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+</div>
+
+
+
+
+
+
+ <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Deposit History</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              #
+                            </th>
+                            
+                            <th> Reference </th>
+                            <th> Amount </th>
+                            <th> Payment Method</th>
+                            <!-- <th> withdrawal_type" </th> -->
+                            <th> Date </th>
+                            <th> Status </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+
+                        {% for deposit in deposits %}
+
+                             <tr>
+
+                            </td> 
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ deposit.reference }}</td>
+                            <td>${{ deposit.amount }}</td>
+                            <td>{{ deposit.payment_method }}</td>
+                            <!-- <td>{{ withdrawal.withdrawal_type }}</td> -->
+
+                            <td>{{ deposit.timestamp|date:"M d, Y H:i A" }}</td>
+                            
+
+                                <td>
+                                <span class="badge {% if deposit.status == 'successful' %}badge-outline-success{% elif deposit.status == 'pending' %}badge-outline-warning{% else %}badge-outline-danger{% endif %}">
+                                    {{ deposit.status|title }}
+                                </span>
+                            </td>
+
+                              
+                          </tr>
+                          <tr>
+                          {% empty %}
+                          <tr>
+                              <td colspan="7" class="text-center text-muted">No Withdrawal Yet.</td>
+                          </tr>
+                        {% endfor %}
+                         
+                       
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get the input field and the output text element
+    // var inputField = document.getElementById("inputField");
+    // var outputText = document.getElementById("outputText");
+
+
+    var custom_amount = document.getElementById("custom-amount");
+    var invest_amount = document.getElementById("invest_amount");
+
+
+    var payment_g = document.getElementById("payment_g");
+    //var payment_m = document.getElementById("payment_m");
+    g = payment_g.options[payment_g.selectedIndex].text
+    console.log(g)
+    //refUrl.value = g.split('|')[1]
+
+
+    var m = document.getElementById("m");
+    var w = document.getElementById("w");
+    
+
+    var tr = document.getElementById("tr");
+
+    var refUrl = document.getElementById("referralLink");
+
+
+    payment_g.addEventListener("change", function() {
+        // Update the text content of the output text element
+
+        console.log('hello')
+        //payment_m.textContent = payment_g.options[payment_g.selectedIndex].text.split('|')[0];
+
+        w.textContent = payment_g.options[payment_g.selectedIndex].text;
+
+        g = payment_g.options[payment_g.selectedIndex].text
+        refUrl.value = g.split('|')[1]
+       
+        
+            
+    });
+
+    // Add an event listener to the input field for "input" event
+    // inputField.addEventListener("input", function() {
+        // Update the text content of the output text element
+        // outputText.textContent = "You typed: " + inputField.value;
+    // });
+
+
+
+
+    
+});
+
+
+</script>
+
+
+
+
+<script>
+  // JavaScript to trigger the file input when the "Browse" button is clicked
+  document.getElementById('browseButton').addEventListener('click', function() {
+    document.getElementById('fileInput').click();  // Trigger the file input click event
+  });
+
+  // Optional: Show file name in the text input when a file is selected
+  document.getElementById('fileInput').addEventListener('change', function() {
+    var fileName = this.files[0] ? this.files[0].name : '';
+    document.querySelector('.file-upload-info').value = fileName;
+  });
+</script>
+
+
+
+
+    <script>
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      // Get the input field
+      var referralLink = document.getElementById('referralLink');
+
+      // Select the text field
+      referralLink.select();
+      referralLink.setSelectionRange(0, 99999); // For mobile devices
+
+      // Copy the text to the clipboard
+      document.execCommand('copy');
+
+      // Show a message indicating the link was copied
+      var message = document.getElementById('copyMessage');
+      message.style.display = 'block';
+
+      // Hide the message after 2 seconds
+      setTimeout(function() {
+        message.style.display = 'none';
+      }, 2000);
+    });
+  </script>
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get the input field and the output text element
+    // var inputField = document.getElementById("inputField");
+    // var outputText = document.getElementById("outputText");
+
+
+    var custom_amount = document.getElementById("custom-amount");
+    var invest_amount = document.getElementById("invest_amount");
+
+
+    var payment_g = document.getElementById("payment_g");
+    //var payment_m = document.getElementById("payment_m");
+    g = payment_g.options[payment_g.selectedIndex].text
+    console.log(g)
+    //refUrl.value = g.split('|')[1]
+
+
+    var m = document.getElementById("m");
+    var w = document.getElementById("w");
+    
+
+    var tr = document.getElementById("tr");
+
+    var refUrl = document.getElementById("refUrl");
+
+
+    payment_g.addEventListener("change", function() {
+        // Update the text content of the output text element
+
+        console.log('hello')
+        //payment_m.textContent = payment_g.options[payment_g.selectedIndex].text.split('|')[0];
+
+        w.textContent = payment_g.options[payment_g.selectedIndex].text;
+
+        g = payment_g.options[payment_g.selectedIndex].text
+        refUrl.value = g.split('|')[1]
+       
+        
+        
+    });
+
+    // Add an event listener to the input field for "input" event
+    // inputField.addEventListener("input", function() {
+        // Update the text content of the output text element
+        // outputText.textContent = "You typed: " + inputField.value;
+    // });
+
+
+
+
+    
+});
+
+
+</script>
+
+
+    {% endblock content %}

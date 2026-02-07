@@ -1,0 +1,195 @@
+
+
+{% extends 'client/dashboard/base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}TetherSurge | Referrals{% endblock title %}
+
+
+{% block withdraw_active %}active current-page{% endblock withdraw_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+{% block content %}
+
+
+
+<div class="nk-content nk-content-lg nk-content-fluid">
+    <div class="container-xl wide-lg">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-lg">
+                    <div class="nk-block-head-content">
+                        {% comment %} <div class="nk-block-head-sub"><a href="{% url 'invest' %}" class="back-to"> {% endcomment %}
+                            {% comment %} <em
+                                    class="icon ni ni-arrow-left"></em><span>Back to plan</span></a></div> {% endcomment %}
+                        <div class="nk-block-head-content">
+                            <h2 class="nk-block-title fw-normal">{% trans "Referrals" %}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nk-block invest-block">
+                    <form class="invest-form" method="POST" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row g-gs">
+                            <div class="col-lg-7">
+                               
+                                {% if message != "" %}
+                                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                                        <div>
+                                        {{message}}
+                                        </div>
+                                    </div> 
+                                {% endif %}
+                                <div class="invest-field form-group">
+                                    <div class="form-label-group"><label class="form-label">
+                                    {% trans "Enter Your Amount" %}</label>
+                                        {% comment %} 
+                                            <div class="dropdown"><a href="#" class="link py-1"
+                                                    data-bs-toggle="dropdown">Change Currency</a>
+                                                <div class="dropdown-menu dropdown-menu-xxs dropdown-menu-end">
+                                                    <ul class="link-list-plain sm text-center">
+                                                        <li><a href="#">USD</a></li>
+                                                        <li><a href="#">EUR</a></li>
+                                                        <li><a href="#">CAD</a></li>
+                                                        <li><a href="#">BTC</a></li>
+                                                        <li><a href="#">ETH</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div> 
+                                        {% endcomment %}
+                                    </div>
+                                    <div class="form-control-group">
+                                        <div class="form-info">{% trans "USD" %}</div>
+                                        <input type="number"
+                                            
+                                            min="1" max="{{referral_balance}}"
+                                            class="form-control form-control-amount form-control-lg"
+                                            id="custom-amount" required name="amount" >
+                                       
+                                    </div>
+                                    <div class="form-note pt-2">
+                            
+                                       {% trans "referral balance" %} ${{referral_balance}} 
+                                       
+                                        
+
+                                        </div>
+                                </div>
+                                <div class="form-label-group"><label class="form-label">
+                                {% trans "Choose Payment Method" %}</label></div>
+                                
+                                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" required name="payment_method" id="payment_g">
+                                    
+                                    {% for payment_gate in c_paymentgates %}
+                                        <option selected>{{payment_gate.name}} | {{payment_gate.address}} </option>
+                                        
+                                       
+                                        
+                                    {% endfor %} 
+                                    
+                                    
+                                   
+                                    
+                        
+                                        
+                                    
+                                    
+                                  </select>
+                                
+                        <div class="form-label-group"><label class="form-label">{% trans "}Enter Payment Address" %}</label></div>
+                                  <input type="text" required class="form-control mb-4 copy-text" name="address" id="refUrl"
+                                                                            placeholder="enter payment address">
+
+                                
+
+                                   
+
+                               
+
+                            </div>
+
+                            
+
+
+
+
+
+                            <div class="col-xl-4 col-lg-5 offset-xl-1">
+                             
+                            </div>
+                        </div>
+
+                       
+                        <button class="btn btn-lg btn-mw btn-primary" type="submit">{% trans "Withdraw" %}</button>
+
+                    </form>
+                </div>
+
+
+                <br />
+                <br />
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{% trans "Referred User" %}</th>
+                        <th scope="col">{% trans "Email" %}</th>
+                        <th scope="col">{% trans "Referral Bonus" %}</th>
+                        <th scope="col">{% trans "Referral Date" %}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for referral in referrals %}
+                        <tr>
+                            <td scope="row">{{ forloop.counter }}</td>
+                            <td>{{ referral.referred.full_name }}</td>
+                            <td>{{ referral.referred.email }}</td>
+                            <td>${{ referral.amount }}</td>
+                            <td>{{ referral.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">{% trans "No referrals yet." %}</td>
+                        </tr>
+                        {% endfor %}
+                      
+                    </tbody>
+                  </table>
+                  
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+                
+
+
+{% endblock content %}
+
+
+
+

@@ -1,0 +1,464 @@
+{% extends 'client/dashboard/base.html' %}
+
+{% load static %}
+
+{% block title %}Cardone Capital | Overview {% endblock title %}
+
+{% block dash_active %}  active {% endblock dash_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+ {% block content %}
+
+
+ <div class="row">
+              <div class="col-sm-4 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Account Balance</h5>
+                    <div class="row">
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0">${{account_balance}} </h2>
+                          <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+                        </div>
+                        <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
+                      </div>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-wallet text-primary ml-auto"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Total Invested</h5>
+                    <div class="row">
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0">${{total_investments_amount}} </h2>
+                          <p class="text-success ms-2 mb-0 font-weight-medium">+8.3%</p>
+                        </div>
+                        <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
+                      </div>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-finance text-danger ml-auto"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Total Profit</h5>
+                    <div class="row">
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0">${{account_total_profit}}</h2>
+                          <p class="text-danger ms-2 mb-0 font-weight-medium">-2.1% </p>
+                        </div>
+                        <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
+                      </div>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-trending-up text-success ml-auto"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+             <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Investments</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              #
+                            </th>
+                            
+                            <th> Reference </th>
+                            <th> Amount </th>
+                            <th> Plan </th>
+                            <th> Start Date </th>
+                            <th> Due Date </th>
+                            <th> Status </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+
+                        {% for investment in investments_list %}
+
+                             <tr>
+                            <!-- <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td> -->
+                            <!-- <td>
+                              <img src="assets/images/faces/face1.jpg" alt="image" />
+                              <span class="ps-2">Henry Klein</span>
+                            </td> -->
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ investment.investment_id }}</td>
+                            <td>${{ investment.amount }}</td>
+                            <td>{{ investment.plan }}</td>
+                           
+                            <td>{{ investment.start_date|date:"M d, Y" }}</td>
+                            <td>{{ investment.due_date|date:"M d, Y" }}</td>
+                            <td>
+
+                              {% if investment.is_matured %}
+                                <div class="badge badge-outline-success">complete</div>
+                              {% else %}
+                               <div class="badge badge-outline-warning">Active</div>
+                              {% endif %}
+
+
+                              
+                            </td>
+                          </tr>
+                          <tr>
+                          {% empty %}
+                          <tr>
+                              <td colspan="7" class="text-center text-muted">No investments Yet.</td>
+                          </tr>
+                        {% endfor %}
+                         
+                         <!--    <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face2.jpg" alt="image" />
+                              <span class="ps-2">Estella Bryan</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Website </td>
+                            <td> Cash on delivered </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-warning">Pending</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face5.jpg" alt="image" />
+                              <span class="ps-2">Lucy Abbott</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> App design </td>
+                            <td> Credit card </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-danger">Rejected</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face3.jpg" alt="image" />
+                              <span class="ps-2">Peter Gill</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Development </td>
+                            <td> Online Payment </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-success">Approved</div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td>
+                            <td>
+                              <img src="assets/images/faces/face4.jpg" alt="image" />
+                              <span class="ps-2">Sallie Reyes</span>
+                            </td>
+                            <td> 02312 </td>
+                            <td> $14,500 </td>
+                            <td> Website </td>
+                            <td> Credit card </td>
+                            <td> 04 Dec 2019 </td>
+                            <td>
+                              <div class="badge badge-outline-success">Approved</div>
+                            </td>
+                          </tr> -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            <div class="row">
+              <div class="col-sm-6 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h2>Refer Us & Earn</h2>
+                    <h6 class="text-muted font-weight-normal">Use the link below to invite your friends</h6>
+                    <div class="row">
+                      <div class="col-12 col-sm-12 col-xl-12 my-auto">
+
+                          <div class="input-group">
+                            <input type="text" class="form-control" id="referralLink" value="{{referral_link}}" readonly>
+                            <button class="btn btn-outline-secondary" id="copyBtn" type="button">
+                              Copy
+                            </button>
+                          </div>
+                          <div id="copyMessage" class="mt-2 text-success" style="display: none;">
+                            Link copied to clipboard!
+                          </div>
+                           
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h5>Referral Bonus</h5>
+                    <div class="row">
+                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex d-sm-block d-md-flex align-items-center">
+                          <h2 class="mb-0">$ {{referral_balance}}</h2>
+                          <!-- <p class="text-success ms-2 mb-0 font-weight-medium">+8.3%</p> -->
+                        </div>
+                        <!-- <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6> -->
+                      </div>
+                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                        <i class="icon-lg mdi mdi-gift-outline text-danger ml-auto"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+
+            </div>
+
+
+
+
+
+
+
+             <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Referrals</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              #
+                            </th>
+                            
+                            <th> User </th>
+                            <th> Referral Deposit </th>
+                            <th> Referral Bonus </th>
+                            <th> Date </th>
+                            <!-- <th> Start Date </th>
+                            <th> Due Date </th>
+                            <th> Status </th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+
+
+                        {% for referral in referrals %}
+
+                             <tr>
+                            <!-- <td>
+                              <div class="form-check form-check-muted m-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                </label>
+                              </div>
+                            </td> -->
+                            <!-- <td>
+                              <img src="assets/images/faces/face1.jpg" alt="image" />
+                              <span class="ps-2">Henry Klein</span>
+                            </td> -->
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ referral.referred.email }}</td>
+                            <td>${{ referral.deposit.amount }}</td>
+                            <td>${{ referral.amount }}</td>
+                            
+                            <td>{{ referral.created_at }}</td>
+                  
+                          </tr>
+                          <tr>
+                          {% empty %}
+                          <tr>
+                              <td colspan="7" class="text-center text-muted">No Referrals Yet.</td>
+                          </tr>
+                        {% endfor %}
+                         
+                      
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            <div class="row">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <h4 class="card-title">Visitors by Countries</h4>
+                    <div class="row">
+                      <div class="col-md-5">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <i class="flag-icon flag-icon-us"></i>
+                                </td>
+                                <td>USA</td>
+                                <td class="text-end"> 1500 </td>
+                                <td class="text-end font-weight-medium"> 56.35% </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <i class="flag-icon flag-icon-de"></i>
+                                </td>
+                                <td>Germany</td>
+                                <td class="text-end"> 800 </td>
+                                <td class="text-end font-weight-medium"> 33.25% </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <i class="flag-icon flag-icon-au"></i>
+                                </td>
+                                <td>Australia</td>
+                                <td class="text-end"> 760 </td>
+                                <td class="text-end font-weight-medium"> 15.45% </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <i class="flag-icon flag-icon-gb"></i>
+                                </td>
+                                <td>United Kingdom</td>
+                                <td class="text-end"> 450 </td>
+                                <td class="text-end font-weight-medium"> 25.00% </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <i class="flag-icon flag-icon-ro"></i>
+                                </td>
+                                <td>Romania</td>
+                                <td class="text-end"> 620 </td>
+                                <td class="text-end font-weight-medium"> 10.25% </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <i class="flag-icon flag-icon-br"></i>
+                                </td>
+                                <td>Brasil</td>
+                                <td class="text-end"> 230 </td>
+                                <td class="text-end font-weight-medium"> 75.00% </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="col-md-7">
+                        <div id="audience-map" class="vector-map"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+   <script>
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      // Get the input field
+      var referralLink = document.getElementById('referralLink');
+
+      // Select the text field
+      referralLink.select();
+      referralLink.setSelectionRange(0, 99999); // For mobile devices
+
+      // Copy the text to the clipboard
+      document.execCommand('copy');
+
+      // Show a message indicating the link was copied
+      var message = document.getElementById('copyMessage');
+      message.style.display = 'block';
+
+      // Hide the message after 2 seconds
+      setTimeout(function() {
+        message.style.display = 'none';
+      }, 2000);
+    });
+  </script>
+ {% endblock content %}

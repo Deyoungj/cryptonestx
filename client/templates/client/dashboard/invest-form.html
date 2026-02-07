@@ -1,0 +1,162 @@
+{% extends 'client/dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Cardone Capital | Withdraw {% endblock title %}
+
+
+{% block invest_active %} active {% endblock invest_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+{% block content %}
+
+
+
+
+<div class="row">
+              <div class="col-sm-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+
+                    <h2>Complete Imvestment</h2>
+
+                    {% if message != "" %}
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <div>
+                            {{message}}
+                            </div>
+                        </div> 
+                    {% endif %}
+
+                    <form class="mt-5" action="" method="post">
+                         {% csrf_token %}
+
+
+                         <div class="form-group">
+                            <label>Chosen Plan</label>
+                            <input type="text" class="form-control form-control-lg" value="{{ plan.plan_name}}  | Invest for {{plan.period_length}}days and get daily profit {{plan.percent}}% " readonly aria-label="amount">
+
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label>Enter Amount</label>
+                            <input type="number" id="custom-amount" class="form-control form-control-lg" min="{{plan.minimum_amount}}" max="{{plan.maximum_amount}}" required name="amount" placeholder="Amount" aria-label="amount">
+                            <h6 class="text-muted font-weight-normal mt-2">Note: Minimum invest $ {{plan.minimum_amount}} and upto ${{plan.maximum_amount}}</h6>
+                        </div>
+
+
+                        
+                        <!-- <h4> Investment Details</h4>
+
+                        <ul class="nk-iv-wg4-overview g-2">
+                        <li>
+                            <div class="sub-text">Investment Type"</div>
+                            <div class="lead-text">{{plan.plan_name|title}}</div>
+                        </li>
+                        <li>
+                            <div class="sub-text">Term of the scheme</div>
+                            <div class="lead-text">{{plan.period_length}} days</div>
+                        </li>
+                        
+                        <li>
+                            <div class="sub-text">Daily profit </div>
+                            <div class="lead-text">{{plan.percent}}%</div>
+                        </li>
+                        
+                        <li>
+                            <div class="sub-text">Total Return</div>
+                            <div class="lead-text" id="tr">$0</div>
+                        </li>
+                        
+                    </ul>
+
+                    <div class="nk-iv-wg4-sub">
+                                            <ul class="nk-iv-wg4-list">
+                                                <li>
+                                                    <div class="sub-text">"Payment Method</div>
+                                                    <div class="lead-text" id="payment_m">none</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+
+                    <div class="nk-iv-wg4-sub">
+                                            <ul class="nk-iv-wg4-list">
+                                                <li>
+                                                    <div class="sub-text">Amount to invest</div>
+                                                    <div class="lead-text" id="invest_amount">$0</div>
+                                                </li>
+                                                
+                                            </ul>
+                                        </div> -->
+
+
+
+                        <button type="submit" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
+                            Complete Invest</button>
+                    </form>
+
+
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Get the input field and the output text element
+    // var inputField = document.getElementById("inputField");
+    // var outputText = document.getElementById("outputText");
+
+    // Add an event listener to the input field for "input" event
+    // inputField.addEventListener("input", function() {
+        // Update the text content of the output text element
+        // outputText.textContent = "You typed: " + inputField.value;
+    // });
+
+
+    custom_amount.addEventListener("input", function() {
+        // Update the text content of the output text element
+        invest_amount.textContent = "$" + custom_amount.value;
+        m.textContent = "$" + custom_amount.value;
+        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
+    });
+
+
+
+    custom_amount.addEventListener("input", function() {
+        // Update the text content of the output text element
+        invest_amount.textContent = "$" + custom_amount.value;
+        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
+    });
+
+    
+});
+
+
+</script>
+
+
+{% endblock content %}
+
+
+
+

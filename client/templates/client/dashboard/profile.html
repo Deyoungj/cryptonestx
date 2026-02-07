@@ -1,0 +1,167 @@
+{% extends 'client/dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Cardone Capital | Profile {% endblock title %}
+
+{% block profile_active %}  active current-page {% endblock profile_active %}
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+ {% block content %}
+
+<div class="row">
+      <div class="col-sm-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+
+            <h2>profile</h2>
+
+            <form class="mt-5 form-sample" action="" method="post" enctype='multipart/form-data'>
+              {% csrf_token %}
+
+                <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Full Name</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="full_name" value="{{user.full_name}}" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Email</label>
+                    <div class="col-sm-9">
+                      <input type="email" value="{{user.email}}" readonly class="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+               <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Phone</label>
+                    <div class="col-sm-9">
+                      <input type="text" value="{{user.profile.phone}}" name="phone"  placeholder="Phone number" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Gender</label>
+                    <div class="col-sm-9">
+                      <select class="form-select form-select-lg"  id="payment_g" name="gender"> 
+                            {% if user.profile.gender == "female" %}
+                     <option>Male</option>
+                     <option selected>Female</option>
+                     {% elif user.profile.gender == "female" %}
+                     <option selected>Male</option>
+                     <option >Female</option>
+                     {% else %}
+
+                     <option>Male</option>
+                     <option>Female</option>
+                     {% endif %}
+                        </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Address</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="address" value="{{user.profile.address}}" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Zipcode</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="zipcode" value="{{user.profile.zip_code}}" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">State</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="state" id="address-st" value="{{user.profile.state}}" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Country</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="country" id="address-st" value="{{user.profile.country}}" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              
+
+              <div class="col-12 flex mb-4">
+                        <div class="user-avatar md"> <img class="img-xs rounded-circle" src="{{ request.user.profile.profile_picture.url }}" id="currentProfilePicture" name="profile_picture"  alt="Profile Picture"> </div>
+                        <br />
+                        <input type="file" class="btn btn-outline-success btn-fw"  id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(event)">
+                    </div>
+
+
+                <!-- <div class="form-group">
+                    <label>Enter Amount</label>
+                    <input type="number" class="form-control form-control-lg" placeholder="Amount" aria-label="amount">
+                    <h6 class="text-muted font-weight-normal mt-2">Note: minimum Deposit $ 500</h6>
+                </div> -->
+
+
+                <button type="submit" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
+                    Update Profile</button>
+            </form>
+
+
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+
+
+<script>
+    // JavaScript for live image preview
+    function previewImage(event) {
+        const currentProfilePicture = document.getElementById('currentProfilePicture');
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentProfilePicture.src = e.target.result; // Update image source
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+{% endblock content %}

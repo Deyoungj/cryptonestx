@@ -1,0 +1,223 @@
+{% extends 'client/dashboard/base.html' %}
+
+{% load static %}
+
+{% block title %}Cardone Capital | Invest {% endblock title %}
+
+{% block invest_active %}  active {% endblock invest_active %}
+
+
+ {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+
+ ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+
+
+
+
+
+
+ {% block content %}
+
+
+ <style>
+  .scroll-container {
+    overflow-x: scroll; /* Enable scrolling */
+    -ms-overflow-style: none;  /* Hide scrollbar for Internet Explorer */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    display: flex;
+    flex-wrap: nowrap;
+    cursor: grab;
+  }
+
+  .scroll-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and newer versions of Edge */
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .col-sm-4 {
+    flex: 0 0 auto; /* Prevent columns from wrapping */
+  }
+</style>
+
+
+ <div class="page-header">
+  <h2 class="page-title"> Investment Plan  </h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+    
+    </ol>
+  </nav>
+</div> 
+
+
+
+ <div class="row  scroll-container">
+
+              {% for plan in plans %}
+                <div class="col-sm-4 grid-margin  ">
+                <div class="card">
+                    <div class="card-body justify-content-center">
+                    <h3 class="mb-5">{{plan.plan_name|title}}</h3>
+                    <!-- <h3 class="mb-0">$500 - $1000</h3> -->
+
+                    <div class="row mt-3">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="">
+                            <h3 class="mb-2">{{plan.percent}}%</h3>
+                            <h6 class="text-muted font-weight-normal">Daily Intrest</h6>
+                        </div>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                            <h3>{{plan.period_length}}</h3>
+                            <h6 class="text-muted font-weight-normal">Term Days</h6>
+                        </div>
+                    </div>
+
+                    
+
+                    <hr>
+                    <div class="row mt-5">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex   d-md-flex align-items-center">
+                            <h4 class="mb-0">Minimum</h4>
+                        </div>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                            <h5>${{plan.minimum_amount}}</h5>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-3">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex   d-md-flex align-items-center">
+                            <h4 class="mb-0">Maximum</h4>
+                        </div>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                            <h5>${{plan.maximum_amount}}</h5>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                        <div class="d-flex   d-md-flex align-items-center">
+                            <h4 class="mb-0">ROI</h4>
+                        </div>
+                        </div>
+                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+                            <h5>{{plan.percent}}%</h5>
+                        </div>
+                    </div>
+
+
+
+                   
+
+                    <div class="d-flex justify-content-center align-items-center mt-5" style="height: 100px;">
+                      <a href="{% url 'invest_form' plan.plan_name %}" class="btn btn-inverse-success btn-fw">Invest</a>
+                    </div>
+                    
+
+
+
+
+                    </div>
+                </div>
+                </div>
+
+
+                {% endfor %}
+
+
+    <!-- </div> -->
+    </div>
+
+  
+
+
+
+
+  <script>
+  const scrollContainer = document.querySelector('.scroll-container');
+
+  let isMouseDown = false;
+  let startX, scrollLeft;
+
+  // When mouse is pressed down
+  scrollContainer.addEventListener('mousedown', (e) => {
+    isMouseDown = true;
+    startX = e.pageX - scrollContainer.offsetLeft;
+    scrollLeft = scrollContainer.scrollLeft;
+    scrollContainer.style.cursor = 'grabbing'; // Change cursor to grabbing
+  });
+
+  // When mouse moves
+  scrollContainer.addEventListener('mousemove', (e) => {
+    if (!isMouseDown) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainer.offsetLeft;
+    const walk = (x - startX) * 2; // Adjust scroll speed (larger number = faster scroll)
+    scrollContainer.scrollLeft = scrollLeft - walk;
+  });
+
+  // When mouse is released
+  scrollContainer.addEventListener('mouseup', () => {
+    isMouseDown = false;
+    scrollContainer.style.cursor = 'grab'; // Revert cursor to grab
+  });
+
+  // When mouse leaves the container
+  scrollContainer.addEventListener('mouseleave', () => {
+    isMouseDown = false;
+    scrollContainer.style.cursor = 'grab'; // Revert cursor to grab
+  });
+</script>
+
+
+<script>
+  // JavaScript to trigger the file input when the "Browse" button is clicked
+  document.getElementById('browseButton').addEventListener('click', function() {
+    document.getElementById('fileInput').click();  // Trigger the file input click event
+  });
+
+  // Optional: Show file name in the text input when a file is selected
+  document.getElementById('fileInput').addEventListener('change', function() {
+    var fileName = this.files[0] ? this.files[0].name : '';
+    document.querySelector('.file-upload-info').value = fileName;
+  });
+</script>
+
+
+
+
+    <script>
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      // Get the input field
+      var referralLink = document.getElementById('referralLink');
+
+      // Select the text field
+      referralLink.select();
+      referralLink.setSelectionRange(0, 99999); // For mobile devices
+
+      // Copy the text to the clipboard
+      document.execCommand('copy');
+
+      // Show a message indicating the link was copied
+      var message = document.getElementById('copyMessage');
+      message.style.display = 'block';
+
+      // Hide the message after 2 seconds
+      setTimeout(function() {
+        message.style.display = 'none';
+      }, 2000);
+    });
+  </script>
+
+
+
+ {% endblock content %}

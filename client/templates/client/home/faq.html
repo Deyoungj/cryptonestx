@@ -1,0 +1,394 @@
+{% extends 'client/home/base.html' %}
+{% load i18n %}
+{% load static %}
+
+
+{% block title %} <title>CryptoNextx - FAQ</title> {% endblock title %}
+
+
+{% block menu %}
+
+      <!-- Start Header Area -->
+      <header class="header navbar-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <div class="nav-inner">
+                        <!-- Start Navbar -->
+                        <nav class="navbar navbar-expand-lg">
+                            <a class="navbar-brand" href=" {% url 'home' %} ">
+                                <img src="{% static 'client/images/logo/cryptonextx2.png' %}" alt="Logo">
+                            </a>
+                            <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                                <span class="toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                                <ul id="nav" class="navbar-nav ms-auto">
+                                    <li class="nav-item">
+                                        <a href="{% url 'home' %}"  aria-label="Toggle navigation">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'about' %}"  aria-label="Toggle navigation">About</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="{% url 'affiliate' %}" aria-label="Toggle navigation">Affiliate</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a href="{% url 'faq' %}" class="active" aria-label="Toggle navigation">Faq</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'contact' %}" aria-label="Toggle navigation">Contact</a>
+                                    </li>
+                                </ul>
+
+                                {% comment %} <form action="{% url 'set_language' %}" method="post" class="d-flex align-items-center gap-2">
+                                  {% csrf_token %}
+                                  <label for="lang-switch" class="form-label mb-0 text-muted fw-semibold">🌐 HomeLanguage</label>
+                                  <select name="language" id="lang-switch" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>🇺🇸 English</option>
+                                    <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>🇫🇷 Français</option>
+                                    <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>🇪🇸 Español</option>
+                                    <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>🇸🇦 العربية</option>
+                                    <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>🇮🇳 हिन्दी</option>
+                                    <option value="pt" {% if LANGUAGE_CODE == 'pt' %}selected{% endif %}>🇵🇹 Português</option>
+                                    <option value="ru" {% if LANGUAGE_CODE == 'ru' %}selected{% endif %}>🇷🇺 Русский</option>
+                                    <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>🇩🇪 Deutsch</option>
+                                  </select>
+                                </form> {% endcomment %}
+                            </div> <!-- navbar collapse -->
+                            <div class="button">
+                                {% if request.user.is_authenticated %}
+                                 <a class="btn" href="{% url 'overview' %}">Dashboard</a>
+                        
+                                {% else %}
+                                <a href=" {% url 'login' %} " class="btn">Sign in</a>
+                                {% endif %}
+                                
+                            </div>
+                        </nav>
+                        <!-- End Navbar -->
+                    </div>
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+    </header>
+    <!-- End Header Area -->
+
+{% endblock menu %}
+
+
+{% block content %}
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 offset-lg-3 col-md-12 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">FAQ</h1>
+                        <ul class="breadcrumb-nav">
+                            <li><a href=" {% url 'home' %} ">Home</a></li>
+                            <li>FAQ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+
+
+     <!-- Start Faq Area -->
+     <section class="faq section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        {% comment %} <h3 class="wow zoomIn" data-wow-delay=".2s">Faq</h3> {% endcomment %}
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">frequently asked questions.</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">At CryptoNextx, we understand that starting your investment journey can raise many questions.
+                            </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-12">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                                    <span class="title">What is CryptoNextx?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="heading1"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <p>CryptoNextx is an online investment platform offering a range of traditional and alternative investment options, 
+                                        from stocks and bonds to cryptocurrencies and emerging markets.</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                    <span class="title">How do I get started?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <p>Simply sign up for an account, deposit funds, and begin exploring investment opportunities right away!.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                    <span class="title">Is my data safe with CryptoNextx?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <p>Yes! We use industry-leading security protocols, 
+                                        including two-factor authentication (2FA) and encryption, to protect your personal and financial information.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-12 xs-margin">
+                    <div class="accordion" id="accordionExample2">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading11">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
+                                    <span class="title">Is CryptoNextx available worldwide?.</span><i class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse11" class="accordion-collapse collapse" aria-labelledby="heading11"
+                                data-bs-parent="#accordionExample2">
+                                <div class="accordion-body">
+                                    <p>Yes, CryptoNextx is accessible globally, though some investment options may be restricted based on regional regulations.</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading22">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse22" aria-expanded="false" aria-controls="collapse22">
+                                    <span class="title">Are there any fees associated with using CryptoNextx?.</span><i class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse22" class="accordion-collapse collapse" aria-labelledby="heading22"
+                                data-bs-parent="#accordionExample2">
+                                <div class="accordion-body">
+                                    <p>Yes, there may be transaction fees depending on the type of investment or 
+                                        withdrawal you make. Please refer to our fee schedule for more details.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading33">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse33" aria-expanded="false" aria-controls="collapse33">
+                                    <span class="title">How do I contact customer support?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse33" class="accordion-collapse collapse" aria-labelledby="heading33"
+                                data-bs-parent="#accordionExample2">
+                                <div class="accordion-body">
+                                    <p>You can reach our dedicated support team through email, live chat, or our contact form available on the website..</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+
+                
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="row mt-5">
+                <div class="col-lg-6 col-md-12 col-12">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse90" aria-expanded="false" aria-controls="collapse1">
+                                    <span class="title">How do I create an account?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse90" class="accordion-collapse collapse" aria-labelledby="heading1"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <p>Creating an account is simple! Click the "Sign Up" button, fill in your details, verify your email, 
+                                        and you’re ready to go.</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse100" aria-expanded="false" aria-controls="collapse2">
+                                    <span class="title">Is there a fee to register?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse100" class="accordion-collapse collapse" aria-labelledby="heading2"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <p>No, signing up for CryptoNextx is completely free..</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse300" aria-expanded="false" aria-controls="collapse3">
+                                    <span class="title">How do I deposit funds into my account?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse300" class="accordion-collapse collapse" aria-labelledby="heading3"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <p>You can deposit funds via bank transfer, card payment, or cryptocurrency. 
+                                        Visit the “Deposit” section in your dashboard to get started.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-12 xs-margin">
+                    <div class="accordion" id="accordionExample2">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading11">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse114" aria-expanded="false" aria-controls="collapse11">
+                                    <span class="title">How long do withdrawals take?.</span><i class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse114" class="accordion-collapse collapse" aria-labelledby="heading11"
+                                data-bs-parent="#accordionExample2">
+                                <div class="accordion-body">
+                                    <p>Withdrawals are typically processed within 1-3 business days, depending on your selected withdrawal method.</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading22">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse229" aria-expanded="false" aria-controls="collapse22">
+                                    <span class="title">Is my money safe with CryptoNextx?.</span><i class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse229" class="accordion-collapse collapse" aria-labelledby="heading22"
+                                data-bs-parent="#accordionExample2">
+                                <div class="accordion-body">
+                                    <p>Yes, your funds are protected with top-tier security measures, including encryption, 
+                                        two-factor authentication (2FA), and secure payment gateways.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading33">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse3312" aria-expanded="false" aria-controls="collapse33">
+                                    <span class="title">How do you protect my personal information?.</span><i
+                                        class="lni lni-plus"></i>
+                                </button>
+                            </h2>
+                            <div id="collapse3312" class="accordion-collapse collapse" aria-labelledby="heading33"
+                                data-bs-parent="#accordionExample2">
+                                <div class="accordion-body">
+                                    <p>We follow strict data protection regulations and employ industry-standard encryption to safeguard your personal data.</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+
+                
+            </div>
+
+
+
+
+
+
+        </div>
+    </section>
+    <!--/ End Faq Area -->
+
+
+
+
+
+
+
+
+   
+        {% endblock content %}
+
