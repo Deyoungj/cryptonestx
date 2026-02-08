@@ -58,37 +58,37 @@ def register(request):
             return render(request, "user/signup.html", {'message': "Passwords didn't match"})
 
 
-        try:
-            # a_subject = "Welcome"
+        # try:
+        #     # a_subject = "Welcome"
 
-            html_content = render_to_string('user/email_temp/welcome.html',{
-                'user':full_name,
+        #     html_content = render_to_string('user/email_temp/welcome.html',{
+        #         'user':full_name,
                   
-            }
-            )
+        #     }
+        #     )
 
 
-            a_html_content = render_to_string('user/email_temp/welcome_admin.html',{
-                'user':full_name,
-                'email':email,
+        #     a_html_content = render_to_string('user/email_temp/welcome_admin.html',{
+        #         'user':full_name,
+        #         'email':email,
                   
-            }
-            )
+        #     }
+        #     )
 
-            email_msg = EmailMultiAlternatives(
-                    subject="Welcome to Cardone Mining Capital",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[email],
-                    )   
+        #     email_msg = EmailMultiAlternatives(
+        #             subject="Welcome to Cardone Mining Capital",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[email],
+        #             )   
             
 
-            a_email_msg = EmailMultiAlternatives(
-                    subject="New Account Signup Alert",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.ADMIN_EMAIL_CUSTOM],
-                    )   
+        #     a_email_msg = EmailMultiAlternatives(
+        #             subject="New Account Signup Alert",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[settings.ADMIN_EMAIL_CUSTOM],
+        #             )   
 
 
 
@@ -96,36 +96,36 @@ def register(request):
 
 
 
-            email_msg.attach_alternative(html_content, "text/html")
-            a_email_msg.attach_alternative(a_html_content, "text/html")
+        #     email_msg.attach_alternative(html_content, "text/html")
+        #     a_email_msg.attach_alternative(a_html_content, "text/html")
 
 
 
-            # logo_path = os.path.join(
-            #     settings.BASE_DIR,
-            #     "client/static/client/images/logo1.png"
-            # )
+        #     # logo_path = os.path.join(
+        #     #     settings.BASE_DIR,
+        #     #     "client/static/client/images/logo1.png"
+        #     # )
 
 
 
-            # with open(logo_path, "rb") as f:
-            #     logo = MIMEImage(f.read())
-            #     logo.add_header("Content-ID", "<logo>")
-            #     logo.add_header("Content-Disposition", "inline", filename="logo.png")
-            #     email_msg.attach(logo)
+        #     # with open(logo_path, "rb") as f:
+        #     #     logo = MIMEImage(f.read())
+        #     #     logo.add_header("Content-ID", "<logo>")
+        #     #     logo.add_header("Content-Disposition", "inline", filename="logo.png")
+        #     #     email_msg.attach(logo)
 
-            # a_email_msg = EmailMessage(a_subject, a_message, to=[email])
-            # a_email_msg.content_subtype = 'html'
+        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[email])
+        #     # a_email_msg.content_subtype = 'html'
             
-            # # email_msg = send_mail(subject, 'message', to=[email])
+        #     # # email_msg = send_mail(subject, 'message', to=[email])
 
-            # email_msg.send()
-            email_msg.send()
-            a_email_msg.send()
+        #     # email_msg.send()
+        #     email_msg.send()
+        #     a_email_msg.send()
 
 
-        except Exception as e:
-            print(e)
+        # except Exception as e:
+        #     print(e)
 
 
             
@@ -418,51 +418,51 @@ def referral_signup(request, referral_code):
 
 
         
-        try:
-            # a_subject = "Welcome"
+        # try:
+        #     # a_subject = "Welcome"
 
-            html_content = render_to_string('user/email_temp/welcome.html',{
-                'user':full_name,
+        #     html_content = render_to_string('user/email_temp/welcome.html',{
+        #         'user':full_name,
                   
-            }
-            )
+        #     }
+        #     )
 
-            b_html_content = render_to_string('user/email_temp/welcome.html',{
-                'user':full_name,
+        #     b_html_content = render_to_string('user/email_temp/welcome.html',{
+        #         'user':full_name,
                   
-            }
-            )
+        #     }
+        #     )
 
 
-            a_html_content = render_to_string('user/email_temp/welcome_admin.html',{
-                'user':full_name,
-                'email':email,
+        #     a_html_content = render_to_string('user/email_temp/welcome_admin.html',{
+        #         'user':full_name,
+        #         'email':email,
                   
-            }
-            )
+        #     }
+        #     )
 
-            email_msg = EmailMultiAlternatives(
-                    subject="Welcome to Cardone Mining Capital",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[email],
-                    )   
+        #     email_msg = EmailMultiAlternatives(
+        #             subject="Welcome to Cardone Mining Capital",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[email],
+        #             )   
             
 
-            a_email_msg = EmailMultiAlternatives(
-                    subject="New referal Signup Alert",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.ADMIN_EMAIL_CUSTOM],
-                    ) 
+        #     a_email_msg = EmailMultiAlternatives(
+        #             subject="New referal Signup Alert",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[settings.ADMIN_EMAIL_CUSTOM],
+        #             ) 
 
 
-            b_email_msg = EmailMultiAlternatives(
-                    subject="referal Signup Alert",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[ref_user.email],
-                    )   
+        #     b_email_msg = EmailMultiAlternatives(
+        #             subject="referal Signup Alert",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[ref_user.email],
+        #             )   
 
 
 
@@ -470,38 +470,38 @@ def referral_signup(request, referral_code):
 
 
 
-            email_msg.attach_alternative(html_content, "text/html")
-            a_email_msg.attach_alternative(a_html_content, "text/html")
-            b_email_msg.attach_alternative(b_html_content, "text/html")
+        #     email_msg.attach_alternative(html_content, "text/html")
+        #     a_email_msg.attach_alternative(a_html_content, "text/html")
+        #     b_email_msg.attach_alternative(b_html_content, "text/html")
 
 
 
-            # logo_path = os.path.join(
-            #     settings.BASE_DIR,
-            #     "client/static/client/images/logo1.png"
-            # )
+        #     # logo_path = os.path.join(
+        #     #     settings.BASE_DIR,
+        #     #     "client/static/client/images/logo1.png"
+        #     # )
 
 
 
-            # with open(logo_path, "rb") as f:
-            #     logo = MIMEImage(f.read())
-            #     logo.add_header("Content-ID", "<logo>")
-            #     logo.add_header("Content-Disposition", "inline", filename="logo.png")
-            #     email_msg.attach(logo)
+        #     # with open(logo_path, "rb") as f:
+        #     #     logo = MIMEImage(f.read())
+        #     #     logo.add_header("Content-ID", "<logo>")
+        #     #     logo.add_header("Content-Disposition", "inline", filename="logo.png")
+        #     #     email_msg.attach(logo)
 
-            # a_email_msg = EmailMessage(a_subject, a_message, to=[email])
-            # a_email_msg.content_subtype = 'html'
+        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[email])
+        #     # a_email_msg.content_subtype = 'html'
             
-            # # email_msg = send_mail(subject, 'message', to=[email])
+        #     # # email_msg = send_mail(subject, 'message', to=[email])
 
-            # email_msg.send()
-            email_msg.send()
-            a_email_msg.send()
-            b_email_msg.send()
+        #     # email_msg.send()
+        #     email_msg.send()
+        #     a_email_msg.send()
+        #     b_email_msg.send()
 
 
-        except Exception as e:
-            print(e)
+        # except Exception as e:
+        #     print(e)
 
             
 

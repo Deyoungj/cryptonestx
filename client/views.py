@@ -57,22 +57,22 @@ def contact(request):
 
 
 
-        try:
-            message = render_to_string('client/dashboard/mail_temp/contact.html',{
-            'fullname':fullname,
-            'email': email,
-            'message': message,
+        # try:
+        #     message = render_to_string('client/dashboard/mail_temp/contact.html',{
+        #     'fullname':fullname,
+        #     'email': email,
+        #     'message': message,
             
            
-            }
-            )
+        #     }
+        #     )
 
-            email_msg = EmailMessage(subject, message, to=[settings.ADMIN_EMAIL_CUSTOM])
-            email_msg.content_subtype = 'html'
+        #     email_msg = EmailMessage(subject, message, to=[settings.ADMIN_EMAIL_CUSTOM])
+        #     email_msg.content_subtype = 'html'
 
-            email_msg.send()
-        except Exception as e:
-            print('ERROR', e)
+        #     email_msg.send()
+        # except Exception as e:
+        #     print('ERROR', e)
 
         
 
@@ -252,76 +252,76 @@ def invest_form(request, plan):
     
         # # # # for admin
 
-        try:
-            # a_subject = "Withdrawal Request from a user"
+        # try:
+        #     # a_subject = "Withdrawal Request from a user"
 
-            a_message = render_to_string('client/dashboard/mail_temp/invest_admin.html',{
-                'user':request.user.full_name,
-                'email':request.user.email,
-                'amount': amount,
-                "plan": request.POST.get('plan', None).split("|")[1],
+        #     a_message = render_to_string('client/dashboard/mail_temp/invest_admin.html',{
+        #         'user':request.user.full_name,
+        #         'email':request.user.email,
+        #         'amount': amount,
+        #         "plan": request.POST.get('plan', None).split("|")[1],
                 
                
                
-            }
-            )
+        #     }
+        #     )
 
 
-            # c_subject = "Investment"
+        #     # c_subject = "Investment"
 
-            message = render_to_string('client/dashboard/mail_temp/invest.html',{
-                'user':request.user.full_name,
-                'amount': amount,
-                "plan": request.POST.get('plan', None).split("|")[1],
+        #     message = render_to_string('client/dashboard/mail_temp/invest.html',{
+        #         'user':request.user.full_name,
+        #         'amount': amount,
+        #         "plan": request.POST.get('plan', None).split("|")[1],
                 
                
-            }
-            )
+        #     }
+        #     )
 
-            # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
-            # a_email_msg.content_subtype = 'html'
+        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
+        #     # a_email_msg.content_subtype = 'html'
 
 
-            # email_msg = EmailMessage(c_subject, message, to=[request.user.email])
-            # email_msg.content_subtype = 'html'
+        #     # email_msg = EmailMessage(c_subject, message, to=[request.user.email])
+        #     # email_msg.content_subtype = 'html'
             
-            # # email_msg = send_mail(subject, 'message', to=[email])
+        #     # # email_msg = send_mail(subject, 'message', to=[email])
 
-            # email_msg.send()
-            # a_email_msg.send()
+        #     # email_msg.send()
+        #     # a_email_msg.send()
 
 
 
-            a_email_msg = EmailMultiAlternatives(
-                    subject="Investment from a user",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.ADMIN_EMAIL_CUSTOM],
-                    )  
+        #     a_email_msg = EmailMultiAlternatives(
+        #             subject="Investment from a user",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[settings.ADMIN_EMAIL_CUSTOM],
+        #             )  
             
 
-            a_email_msg.attach_alternative(a_message, "text/html")
+        #     a_email_msg.attach_alternative(a_message, "text/html")
 
 
-            email_msg = EmailMultiAlternatives(
-                    subject="Investment Successful",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[request.user.email],
-                    )  
+        #     email_msg = EmailMultiAlternatives(
+        #             subject="Investment Successful",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[request.user.email],
+        #             )  
             
-            email_msg.attach_alternative(message, "text/html")
+        #     email_msg.attach_alternative(message, "text/html")
 
         
 
-            a_email_msg.send()
-            email_msg.send()
+        #     a_email_msg.send()
+        #     email_msg.send()
 
-            return redirect('overview')
+        #     return redirect('overview')
 
 
-        except Exception as e:
-            print(e)
+        # except Exception as e:
+        #     print(e)
 
         
 
@@ -428,65 +428,65 @@ def deposit(request):
 
         # # # for admin
 
-        try:
-            # a_subject = "Deposit Request from a user"
-            # c_subject = "Deposit"
+        # try:
+        #     # a_subject = "Deposit Request from a user"
+        #     # c_subject = "Deposit"
 
 
-            a_message = render_to_string('client/dashboard/mail_temp/admin_deposit.html',{
-                'user':request.user.full_name,
-                'email':request.user.email,
-                'amount': amount,
-                "payment_method": payment_method,
-                "payment_image": image_base64                                                                                        
+        #     a_message = render_to_string('client/dashboard/mail_temp/admin_deposit.html',{
+        #         'user':request.user.full_name,
+        #         'email':request.user.email,
+        #         'amount': amount,
+        #         "payment_method": payment_method,
+        #         "payment_image": image_base64                                                                                        
                
                
-            }
-            )
+        #     }
+        #     )
 
 
-            message = render_to_string('client/dashboard/mail_temp/deposit.html',{
-            'user':request.user.full_name,
-            'amount': amount,
-            "payment_method": payment_method,
+        #     message = render_to_string('client/dashboard/mail_temp/deposit.html',{
+        #     'user':request.user.full_name,
+        #     'amount': amount,
+        #     "payment_method": payment_method,
            
-        }
-        )
+        # }
+        # )
 
-            # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
-            # a_email_msg.content_subtype = 'html'
+        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
+        #     # a_email_msg.content_subtype = 'html'
 
-            # a_email_msg.attach()
+        #     # a_email_msg.attach()
 
 
-            a_email_msg = EmailMultiAlternatives(
-                    subject="Deposit Request from a user",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.ADMIN_EMAIL_CUSTOM],
-                    )  
+        #     a_email_msg = EmailMultiAlternatives(
+        #             subject="Deposit Request from a user",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[settings.ADMIN_EMAIL_CUSTOM],
+        #             )  
             
 
-            a_email_msg.attach_alternative(a_message, "text/html")
+        #     a_email_msg.attach_alternative(a_message, "text/html")
 
-            a_email_msg.attach(f' {request.user.full_name}_deposit.jpg', image_bytes, "image/jpeg")
+        #     a_email_msg.attach(f' {request.user.full_name}_deposit.jpg', image_bytes, "image/jpeg")
 
 
-            email_msg = EmailMultiAlternatives(
-                    subject="Deposit Request",
-                    body="",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[request.user.email],
-                    )  
+        #     email_msg = EmailMultiAlternatives(
+        #             subject="Deposit Request",
+        #             body="",
+        #             from_email=settings.DEFAULT_FROM_EMAIL,
+        #             to=[request.user.email],
+        #             )  
             
-            email_msg.attach_alternative(message, "text/html")
+        #     email_msg.attach_alternative(message, "text/html")
     
             
 
-            a_email_msg.send()
-            email_msg .send()
-        except Exception as e:
-            print(e)
+        #     a_email_msg.send()
+        #     email_msg .send()
+        # except Exception as e:
+        #     print(e)
         
     
     
@@ -549,61 +549,61 @@ def withdraw(request):
 
 
 
-            try:
-                # a_subject = ""
+            # try:
+            #     # a_subject = ""
 
 
 
 
-                a_message = render_to_string('client/dashboard/mail_temp/withdraw_admin.html',{
-                    'user':request.user.full_name,
-                    'amount': amount,
-                    "Withdrawal_method": Withdrawal_method,
-                    "address": address
+            #     a_message = render_to_string('client/dashboard/mail_temp/withdraw_admin.html',{
+            #         'user':request.user.full_name,
+            #         'amount': amount,
+            #         "Withdrawal_method": Withdrawal_method,
+            #         "address": address
                 
                 
-                }
-                )
+            #     }
+            #     )
 
-                message = render_to_string('client/dashboard/mail_temp/withdraw.html',{
-                'user':request.user.full_name,
-                'amount': amount,
-                "Withdrawal_method": Withdrawal_method,
-                "address": address
+            #     message = render_to_string('client/dashboard/mail_temp/withdraw.html',{
+            #     'user':request.user.full_name,
+            #     'amount': amount,
+            #     "Withdrawal_method": Withdrawal_method,
+            #     "address": address
             
-                }
-                )
+            #     }
+            #     )
 
-                # print(request.user.email)
+            #     # print(request.user.email)
 
-                a_email_msg = EmailMultiAlternatives(
-                        subject="Withdrawal Request from a user",
-                        body="",
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        to=[settings.ADMIN_EMAIL_CUSTOM],
-                        )  
+            #     a_email_msg = EmailMultiAlternatives(
+            #             subject="Withdrawal Request from a user",
+            #             body="",
+            #             from_email=settings.DEFAULT_FROM_EMAIL,
+            #             to=[settings.ADMIN_EMAIL_CUSTOM],
+            #             )  
                 
 
-                a_email_msg.attach_alternative(a_message, "text/html")
+            #     a_email_msg.attach_alternative(a_message, "text/html")
 
 
-                email_msg = EmailMultiAlternatives(
-                        subject="Withdrawal",
-                        body="",
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        to=[request.user.email],
-                        )  
+            #     email_msg = EmailMultiAlternatives(
+            #             subject="Withdrawal",
+            #             body="",
+            #             from_email=settings.DEFAULT_FROM_EMAIL,
+            #             to=[request.user.email],
+            #             )  
                 
-                email_msg.attach_alternative(message, "text/html")
+            #     email_msg.attach_alternative(message, "text/html")
 
             
                 
-                a_email_msg.send()
+            #     a_email_msg.send()
                 
-                email_msg.send()
+            #     email_msg.send()
                 
-            except Exception as e:
-                print(e)
+            # except Exception as e:
+            #     print(e)
         
 
 

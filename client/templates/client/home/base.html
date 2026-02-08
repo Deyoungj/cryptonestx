@@ -32,6 +32,22 @@
     <!--=== Responsive Css ===-->
     <link rel="stylesheet" href="{% static 'client/css/responsive.css' %}">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- Smartsupp Live Chat script -->
+
+    <!-- Smartsupp Live Chat script -->
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = '35117e20cb1012f22c6b522bed133ce723b1eee7';
+window.smartsupp||(function(d) {
+  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+  c.type='text/javascript';c.charset='utf-8';c.async=true;
+  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+})(document);
+</script>
+<noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+
+
 
 </head>
 
@@ -66,7 +82,9 @@
     {% block content %}{% endblock content %}
 
 
-
+<div id="toast" class="toast">
+  <span id="toast-text"></span>
+</div>
 
     <!-- Start Footer Area -->
 <footer class="footer section">
@@ -162,6 +180,50 @@
     <script src="{% static 'client/js/glightbox.min.js' %}"></script>
     <script src="{% static 'client/js/count-up.min.js' %}"></script>
     <script src="{% static 'client/js/main.js' %}"></script>
+
+    <script>
+  const investments = [
+    { name: "James A.", amount: "$500" },
+    { name: "Linda K.", amount: "$1,200" },
+    { name: "Michael T.", amount: "$7,050" },
+    { name: "Sophia R.", amount: "$2,000" },
+    { name: "Daniel O.", amount: "$950" },
+    { name: "Olivia M.", amount: "$1,500" },
+    { name: "Olivia M.", amount: "$7,500" },
+    { name: "Ethan B.", amount: "$1,100" },
+    { name: "Ava S.", amount: "$800" },
+    { name: "William L.", amount: "$1,300" },
+  ];
+
+  const toast = document.getElementById("toast");
+  const toastText = document.getElementById("toast-text");
+
+  let index = 0;
+
+  function showToast() {
+    const item = investments[index];
+    toastText.innerHTML = `<strong>${item.name}</strong> invested <strong>${item.amount}</strong>`;
+    
+    toast.classList.add("show");
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+
+    index = (index + 1) % investments.length;
+  }
+
+  // First toast after page load
+  setTimeout(showToast, 1500);
+
+  // Repeat every 6 seconds
+  setInterval(showToast, 6000);
+</script>
+
+
+
+
+
     <script>
         //========= Road Map 
         tns({
