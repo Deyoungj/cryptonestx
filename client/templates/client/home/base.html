@@ -101,11 +101,11 @@ window.smartsupp||(function(d) {
                                     <img src="{% static 'client/images/logo/cryptonextx2.png' %}" alt="#">
                                 </a>
                             </div>
-                            <p>{% trans "Explore a world of investment opportunities with CryptoNextx." %}</p>
-                            <h4 class="social-title">{% trans "Follow Us On:" %}</h4>
+                            <p>Explore a world of investment opportunities with CryptoNextx.</p>
+                            <h4 class="social-title">contact Us:</h4>
                             <ul class="social">
                                 <li><a href="javascript:void(0)"><i class="lni lni-phone-filled"></i></a></li>
-                                <li><a href="https://www.instagram.com/tethersurge?igsh=bXBrc3pmNHYxOGc3"><i class="lni lni-instagram"></i></a></li>
+                                <li><a href="mailto:cryptonextx@gmail.com"><i class="lni lni-envelope"></i></a></li>
                             </ul>
                         </div>
                         <!-- End Single Widget -->
@@ -113,10 +113,10 @@ window.smartsupp||(function(d) {
                     <div class="col-lg-2 col-md-6 col-12">
                         <!-- Single Widget -->
                         <div class="single-footer f-link">
-                            <h3>{% trans "Company" %}</h3>
+                            <h3>Company</h3>
                             <ul>
-                                <li><a href="{% url 'about' %}">{% trans "About" %}</a></li>
-                                <li><a href="{% url 'affiliate' %}">{% trans "Affiliate" %}</a></li>
+                                <li><a href="{% url 'about' %}">About</a></li>
+                                <li><a href="{% url 'affiliate' %}">Affiliate</a></li>
                             </ul>
                         </div>
                         <!-- End Single Widget -->
@@ -124,10 +124,10 @@ window.smartsupp||(function(d) {
                     <div class="col-lg-2 col-md-6 col-12">
                         <!-- Single Widget -->
                         <div class="single-footer f-link">
-                            <h3>{% trans "Support" %}</h3>
+                            <h3>Support</h3>
                             <ul>
-                                <li><a href="{% url 'faq' %}">{% trans "FAQ" %}</a></li>
-                                <li><a href="{% url 'contact' %}">{% trans "Contact" %}</a></li>
+                                <li><a href="{% url 'faq' %}">FAQ</a></li>
+                                <li><a href="{% url 'contact' %}">Contact</a></li>
                             </ul>
                         </div>
                         <!-- End Single Widget -->
@@ -135,8 +135,8 @@ window.smartsupp||(function(d) {
                     <div class="col-lg-4 col-md-6 col-12">
                         <!-- Single Widget -->
                         <div class="single-footer newsletter">
-                            <h3>{% trans "Contact" %}</h3>
-                            <p>support@cryptonestx.org</p>
+                            {% comment %} <h3>Contact</h3>
+                            <p>support@cryptonestx.org</p> {% endcomment %}
                             {% comment %} <p>+44 7874 354380</p>
                             <a class="color-white" href="https://wa.me/447874354380">Whatsapp</a> {% endcomment %}
                         </div>
@@ -154,7 +154,7 @@ window.smartsupp||(function(d) {
             <div class="inner-content">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-12">
-                        <p class="copyright-text">© 2025 cryptonestx - {% trans "All Rights Reserved" %}</p>
+                        <p class="copyright-text">© 2025 cryptonestx - All Rights Reserved</p>
                     </div>
                     <div class="col-lg-6 col-md-6 col-12">
                         {# Optional: Add developer credit here with {% trans %} if needed #}
