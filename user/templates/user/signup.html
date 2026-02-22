@@ -45,49 +45,206 @@
 
 
 
-                    <form class="card login-form inner-content" method="post">
+                    <form method="post" enctype="multipart/form-data" id="registerForm">
                         {% csrf_token %}
-                        <div class="card-body">
-                            <div class="title">
-                                <h3>Register Now</h3>
-                                <p>Use the form below to create your account.</p>
+
+                        <!-- Progress -->
+                        <div class="mb-4">
+                            <div class="progress" style="height:6px;">
+                                <div id="progressBar" class="progress-bar bg-primary" style="width:50%"></div>
                             </div>
-                            
-                            <div class="input-head">
-                                <div class="row">
-                                    <div class="col-lg-12 col-12">
-                                        <div class="form-group input-group">
-                                            <label><i class="lni lni-user"></i></label>
-                                            <input class="form-control" name="fullname" id="fullname" type="text" placeholder="Your fullname" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 col-12">
-                                        <div class="form-group input-group">
-                                            <label><i class="lni lni-envelope"></i></label>
-                                            <input class="form-control" name="email" id="email"  type="email" placeholder="Your email" required>
-                                        </div>
-                                    </div>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <div class="text-center">
+                                    <div id="stepIndicator1" class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px;">1</div>
+                                    <small>Account</small>
                                 </div>
-                                <div class="form-group input-group">
-                                    <label><i class="lni lni-lock-alt"></i></label>
-                                    <input class="form-control" name="password" id="password" type="password" placeholder="Your password" required>
-                                </div>
-                                <div class="form-group input-group">
-                                    <label><i class="lni lni-lock-alt"></i></label>
-                                    <input class="form-control" name="password1" id="password1" type="password" placeholder="Confirm password" required>
+
+                                <div class="text-center">
+                                    <div id="stepIndicator2" class="rounded-circle bg-light border d-flex align-items-center justify-content-center" style="width:40px;height:40px;">2</div>
+                                    <small>KYC</small>
                                 </div>
                             </div>
-                            <div class="button">
-                                <button class="btn" type="submit">Create Account</button>
-                            </div>
-                            <h4 class="create-account">Already have an account? <a href=" {% url 'login' %} ">Sign In</a>
-                            </h4>
                         </div>
+
+                        <!-- STEP 1 -->
+                        <div id="step1">
+
+                            {% comment %} <div class="mb-3">
+                                <input type="text" name="fullname" class="form-control" placeholder="Full Name" required>
+                            </div> {% endcomment %}
+                            <div class="form-group input-group">
+                                    <label><i class="lni lni-user"></i></label>
+                                    <input class="form-control" type="text" id="sign-up" name="fullname"
+                                        placeholder="Enter your Full Name" required>
+                                </div>
+
+                            <div class="form-group input-group">
+                                    <label><i class="lni lni-envelope"></i></label>
+                                    <input class="form-control" type="email" id="sign-up" name="email"
+                                        placeholder="Enter your email" required>
+                                </div>
+
+                            
+
+                            <div class="form-group input-group">
+                                    <label><i class="lni lni-lock-alt"></i></label>
+                                    <input class="form-control" type="password" id="pass" name="password"
+                                        placeholder="Enter password" required>
+                                </div>
+
+    
+                            <div class="form-group input-group">
+                                    <label><i class="lni lni-lock-alt"></i></label>
+                                    <input class="form-control" type="password" id="pass1" name="password1"
+                                        placeholder="Confirm your password" required>
+                                </div>
+                            
+
+                            <div class="d-grid">
+                                <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
+                            </div>
+
+                        </div>
+
+                        <!-- STEP 2 -->
+                        <div id="step2" class="d-none">
+
+                            <div class="row g-3">
+
+                                <!-- FRONT -->
+                                <div class="col-md-6">
+                                    <div class="border border-2 border-dashed rounded p-4 text-center position-relative upload-box" id="frontBox">
+                                        <p class="mb-2 fw-semibold">Upload ID Front</p>
+                                        <small class="text-muted">Click or Drag & Drop</small>
+
+                                        <input type="file" name="id_front" id="id_front" hidden required>
+
+                                        <img id="previewFront" class="img-fluid rounded mt-3 d-none">
+
+                                        <div class="position-absolute top-0 end-0 m-2 bg-success text-white rounded-circle d-flex align-items-center justify-content-center success-check d-none" style="width:30px;height:30px;">
+                                            ✓
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BACK -->
+                                <div class="col-md-6">
+                                    <div class="border border-2 border-dashed rounded p-4 text-center position-relative upload-box" id="backBox">
+                                        <p class="mb-2 fw-semibold">Upload ID Back</p>
+                                        <small class="text-muted">Click or Drag & Drop</small>
+
+                                        <input type="file" name="id_back" id="id_back" hidden required>
+
+                                        <img id="previewBack" class="img-fluid rounded mt-3 d-none">
+
+                                        <div class="position-absolute top-0 end-0 m-2 bg-success text-white rounded-circle d-flex align-items-center justify-content-center success-check d-none" style="width:30px;height:30px;">
+                                            ✓
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group input-group mt-4">
+                                    <label><i class="lni lni-lock-alt"></i></label>
+                                    <input class="form-control" type="text" id="pass1" name="ssn"
+                                        placeholder="Enter SSN" required>
+                                </div>
+
+                            
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-outline-secondary" onclick="prevStep()">Back</button>
+                                <button type="submit" class="btn btn-primary">Submit Registration</button>
+                            </div>
+
+                        </div>
+
                     </form>
+
+
                 </div>
             </div>
         </div>
     </div>
     <!-- End Account Signup Area -->
+
+       <script>
+
+            // STEP NAVIGATION
+            function nextStep() {
+                document.getElementById("step1").classList.add("d-none");
+                document.getElementById("step2").classList.remove("d-none");
+
+                document.getElementById("progressBar").style.width = "100%";
+
+                document.getElementById("stepIndicator1").classList.remove("bg-primary","text-white");
+                document.getElementById("stepIndicator1").classList.add("bg-success");
+
+                document.getElementById("stepIndicator2").classList.remove("bg-light");
+                document.getElementById("stepIndicator2").classList.add("bg-primary","text-white");
+            }
+
+            function prevStep() {
+                document.getElementById("step2").classList.add("d-none");
+                document.getElementById("step1").classList.remove("d-none");
+
+                document.getElementById("progressBar").style.width = "50%";
+
+                document.getElementById("stepIndicator1").classList.add("bg-primary","text-white");
+                document.getElementById("stepIndicator2").classList.remove("bg-primary","text-white");
+                document.getElementById("stepIndicator2").classList.add("bg-light");
+            }
+
+
+            // DRAG & DROP
+            function setupUpload(boxId, inputId, previewId) {
+
+                const box = document.getElementById(boxId);
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+                const check = box.querySelector(".success-check");
+
+                box.addEventListener("click", () => input.click());
+
+                box.addEventListener("dragover", e => {
+                    e.preventDefault();
+                    box.classList.add("dragover");
+                });
+
+                box.addEventListener("dragleave", () => {
+                    box.classList.remove("dragover");
+                });
+
+                box.addEventListener("drop", e => {
+                    e.preventDefault();
+                    input.files = e.dataTransfer.files;
+                    previewFile();
+                });
+
+                input.addEventListener("change", previewFile);
+
+                function previewFile() {
+                    const file = input.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        preview.src = e.target.result;
+                        preview.classList.remove("d-none");
+                        check.classList.add("show");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            setupUpload("frontBox","id_front","previewFront");
+            setupUpload("backBox","id_back","previewBack");
+
+</script>
+
+
+
 
     {% endblock content %}

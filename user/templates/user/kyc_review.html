@@ -1,0 +1,43 @@
+{% extends 'client/home/base.html' %}
+{% block title %}<title>KYC Review</title>{% endblock %}
+
+{% block content %}
+
+<div class="section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+
+                <div class="card shadow-sm p-5 border-0">
+
+                    <div class="mb-4">
+                        <div class="bg-warning text-white rounded-circle mx-auto d-flex align-items-center justify-content-center"
+                             style="width:80px;height:80px;font-size:32px;">
+                            ⏳
+                        </div>
+                    </div>
+
+                    <h3 class="fw-bold mb-3">Your Account Is Under Review</h3>
+
+                    <p class="text-muted mb-4">
+                        Thank you for completing your registration.
+                        Our team is currently reviewing your documents.
+                        This usually takes a few minutes.
+                    </p>
+
+                    <div class="alert alert-info">
+                        Please wait while we verify your information.
+                    </div>
+
+                    <a href="{% url 'home' %}" class="btn btn-primary mt-3">
+                        Return to Home
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

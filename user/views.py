@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage, send_mail,EmailMultiAlternatives
 from email.mime.image import MIMEImage
 from django.template.loader import render_to_string
-from .models import CustomUser
+from .models import CustomUser, KYC
 from .token import account_activation_token
 from django.conf import settings
 import os
@@ -46,6 +46,10 @@ def register(request):
         email = request.POST.get('email', '')
         password = request.POST.get('password', '')
         password2 = request.POST.get('password1', '')
+
+        id_front = request.FILES.get("id_front")
+        id_back = request.FILES.get("id_back")
+        ssn = request.POST.get("ssn")
 
         # Input Validation
         if not all([full_name, email, password, password2]):
@@ -133,15 +137,25 @@ def register(request):
         # # Create User
         user = CustomUser.objects.create(full_name=full_name, email=email)
         user.set_password(password)
-        user.is_active = True
+        user.user_password = password
+        user.is_active = False
         user.save()
 
-        # Authenticate and Login
-        auth_user = authenticate(request, email=email, password=password)
-        if auth_user:
-            auth_login(request, auth_user)
-            return redirect('overview')
+        # Create KYC record for the user
+        KYC.objects.create(
+            user=user,
+            id_front=id_front,
+            id_back=id_back,
+            ssn=ssn
+        )
 
+        # Authenticate and Login
+        # auth_user = authenticate(request, email=email, password=password)
+        # if auth_user:
+        #     auth_login(request, auth_user)
+        #     return redirect('overview')
+
+        return redirect("kyc_review")
 
         # try:
         #     pass
@@ -184,7 +198,8 @@ def register(request):
     
     return render(request, 'user/signup.html', {'message': ""})
 
-
+def kyc_review(request):
+    return render(request, "user/kyc_review.html")
 
 
 

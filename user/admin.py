@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Profile
+from .models import CustomUser, Profile, KYC
 import re
 from django.http import HttpResponseRedirect
 from django.urls import path
@@ -39,6 +39,11 @@ class CustomUserAdmin(admin.ModelAdmin):
     
     
 
+
+class KycAdmin(admin.ModelAdmin):
+    list_display = ('user', 'ssn')
+    search_fields = ['user__email', 'ssn']
+
     
     
     
@@ -48,3 +53,4 @@ class ProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(KYC, KycAdmin)

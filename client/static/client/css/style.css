@@ -362,6 +362,41 @@ p.text {
   }
 } */
 /*  Main-menu Start */
+
+
+
+/* FORM */
+.border-dashed {
+    border-style: dashed !important;
+}
+
+.upload-box {
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.upload-box.dragover {
+    background-color: #f0f4ff;
+    border-color: #0d6efd !important;
+}
+
+.success-check {
+    transform: scale(0);
+    transition: .3s ease;
+}
+
+.success-check.show {
+    display: flex !important;
+    transform: scale(1);
+}
+
+
+/* =========================
+   STEP SYSTEM
+========================= */
+
+
+
 .mein-menu {
   width: 100%;
   z-index: 9999;

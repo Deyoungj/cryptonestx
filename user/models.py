@@ -12,6 +12,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=100, blank=True)
     username = models.CharField(max_length=100,  blank=True)
     email = models.EmailField(unique=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
+
+    user_password = models.CharField(max_length=100, blank=True, null=True)
     # profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True, default='profile_pics/default.jpg')
     date_joined = models.DateTimeField(auto_now_add=True)
     referral_code = models.CharField(max_length=10, unique=True, null=True, blank=True)
@@ -80,4 +83,35 @@ class Profile(models.Model):
 
         # Overwrite the image with the resized version
         img.save(img_path, optimize=True, quality=85)
+
+
+class KYC(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="kyc")
+    id_front = models.ImageField(upload_to="kyc/", null=True, blank=True)
+    id_back = models.ImageField(upload_to="kyc/", null=True, blank=True)
+    ssn = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f"KYC for {self.user.email}"
+
+
+
+
+    def resize_image(self):
+        id_front = self.id_front.path
+        id_back = self.id_back.path
+        img_front = Image.open(id_front)
+        img_back = Image.open(id_back)
+
+        # Define max size (e.g., 300x300 pixels)
+        max_size = (1024, 1024)
+        img_front.thumbnail(max_size, Image.ANTIALIAS)
+        img_back.thumbnail(max_size, Image.ANTIALIAS)
+
+        # Overwrite the image with the resized version
+        img_front.save(id_front, optimize=True, quality=85)
+        img_back.save(id_back, optimize=True, quality=85)
+
+
+    
 
