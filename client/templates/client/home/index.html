@@ -46,6 +46,8 @@
                                 <a href="{% url 'contact' %}" aria-label="Toggle navigation">Contact</a>
                             </li>
 
+                            
+
                     </ul>
 
                     {% comment %} <form action="{% url 'set_language' %}" method="post" class="d-flex align-items-center gap-2">
@@ -121,6 +123,7 @@
                         
                         {% else %}
                         <a href=" {% url 'register' %} " class="btn ">Get Started</a>
+                        <a href=" {% url 'login' %} " class="btn ">Sign in</a>
                         {% endif %}
                         
                     </div>
