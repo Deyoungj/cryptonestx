@@ -100,9 +100,6 @@ def faq(request):
 
 
 
-
-
-
 @login_required(redirect_field_name='overview', login_url='login')
 def overview(request):
     
@@ -116,7 +113,8 @@ def overview(request):
     referrals = ReferralBonus.objects.filter(referrer=request.user)
     # referred = 
     
-    total_investmented_amount = Investment.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
+    # total_investmented_amount = Investment.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
+    total_investmented_amount = account.total_invested
     total_investments = Investment.objects.filter(user=request.user).count()
     
     total_deposit_amount = Deposit.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
@@ -124,7 +122,8 @@ def overview(request):
     total_withdraw_amount = Withdrawal.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
     total_referral_bonus_amount = ReferralBonus.objects.filter(referrer=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
     
-    total_investments_amount = Investment.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
+    # total_investments_amount = Investment.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0.00
+    total_investments_amount = account.total_invested
     total_investments_profits_amount = Investment.objects.filter(user=request.user, is_matured=True).aggregate(Sum('returns'))['returns__sum'] or 0.00
     
     # Locked investment balance
@@ -220,8 +219,10 @@ def invest_form(request, plan):
             return render(request, 'client/dashboard/invest-form.html', {"message":"insufficient balance "})
 
         account.account_balance -= int(amount)
+        account.total_invested += int(amount)
         account.save()
         
+
         Investment.objects.create(user=request.user, plan=plan, amount=amount,returns=expected_returns, due_date=due_date)
         
         
