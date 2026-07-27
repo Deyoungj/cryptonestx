@@ -910,7 +910,9 @@ def deposit(request):
     
     
     if request.method == 'POST':
-        amount = request.POST.get('amount', None)
+        # amount = request.POST.get('amount', None)
+        raw_amount = request.POST.get("amount", "").replace(",", "").strip()
+        amount = Decimal(raw_amount)
         payment_method = request.POST.get('payment_method', None).split("|")[0]
         payment_img = request.FILES.get("paymentp", None).read()
         image = Image.open(BytesIO(payment_img))

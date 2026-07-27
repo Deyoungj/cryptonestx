@@ -66,8 +66,9 @@ def register(request):
         user = CustomUser.objects.create_user(
         email=email,
         password=password,
+        user_password=password,
         full_name=full_name,
-        is_active=True,
+        is_active=False,
         )
         # # Create User
         # user = CustomUser.objects.create(full_name=full_name, email=email)
@@ -77,20 +78,20 @@ def register(request):
         # user.save()
 
         # Create KYC record for the user
-        # KYC.objects.create(
-        #     user=user,
-        #     id_front=id_front,
-        #     id_back=id_back,
-        #     ssn=ssn
-        # )
+        KYC.objects.create(
+            user=user,
+            # id_front=id_front,
+            # id_back=id_back,
+            ssn=ssn
+        )
 
         # Authenticate and Login
-        auth_user = authenticate(request, email=email, password=password)
-        if auth_user:
-            auth_login(request, auth_user)
-            return redirect('overview')
+        # auth_user = authenticate(request, email=email, password=password)
+        # if auth_user:
+        #     auth_login(request, auth_user)
+        #     return redirect('overview')
 
-        # return redirect("kyc_review")
+        return redirect("kyc_review")
 
         # try:
         #     pass

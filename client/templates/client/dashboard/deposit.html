@@ -2000,11 +2000,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const fileInput = document.getElementById("paymentp");
     const fileName = document.getElementById("paymentFileName");
 
-    const depositAmount = document.getElementById("depositAmount");
+    // const depositAmount = document.getElementById("depositAmount");
 
 
 
-    depositAmount.addEventListener("input", function () {
+    amountInput.addEventListener("input", function () {
         let value = this.value.replace(/,/g, "");
 
         // Allow only numbers and decimal point
@@ -2034,12 +2034,31 @@ document.addEventListener("DOMContentLoaded", function () {
      * Update the payment preview whenever
      * the user changes the amount.
      */
+    // function updateAmountPreview() {
+
+    //     const amount = parseFloat(amountInput.value);
+
+    //     if (!isNaN(amount) && amount > 0) {
+    //         amountPreview.textContent = "$" + amount.toFixed(2);
+    //     } else {
+    //         amountPreview.textContent = "$0.00";
+    //     }
+
+    // }
+
+
     function updateAmountPreview() {
 
-        const amount = parseFloat(amountInput.value);
+        const amount = parseFloat(
+            amountInput.value.replace(/,/g, "")
+        );
 
         if (!isNaN(amount) && amount > 0) {
-            amountPreview.textContent = "$" + amount.toFixed(2);
+            amountPreview.textContent =
+                "$" + amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
         } else {
             amountPreview.textContent = "$0.00";
         }

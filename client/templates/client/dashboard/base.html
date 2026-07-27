@@ -1442,6 +1442,251 @@
             }
         }
 
+
+
+
+
+
+
+
+        /* =========================================================
+   PROFILE DROPDOWN
+========================================================= */
+
+.cx-top-profile-wrap {
+    position: relative;
+}
+
+.cx-top-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--cx-text);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 14px;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.cx-top-profile:hover {
+    background: var(--cx-surface-hover);
+}
+
+.cx-top-profile img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(115, 68, 255, 0.25);
+}
+
+.cx-top-profile-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.cx-top-profile > .ph-caret-down {
+    font-size: 15px;
+    transition: transform 0.2s ease;
+}
+
+.cx-top-profile-wrap.is-open
+.cx-top-profile > .ph-caret-down {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   DROPDOWN
+========================================================= */
+
+.cx-profile-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 280px;
+
+    padding: 10px;
+
+    background: var(--cx-surface);
+    border: 1px solid var(--cx-border);
+
+    border-radius: 18px;
+
+    box-shadow: var(--cx-shadow-lg);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.98);
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease,
+        transform 0.2s ease;
+
+    z-index: 1000;
+}
+
+.cx-profile-menu::before {
+    content: "";
+
+    position: absolute;
+
+    top: -6px;
+    right: 24px;
+
+    width: 12px;
+    height: 12px;
+
+    background: var(--cx-surface);
+
+    border-left: 1px solid var(--cx-border);
+    border-top: 1px solid var(--cx-border);
+
+    transform: rotate(45deg);
+}
+
+.cx-profile-menu-wrap {
+    position: relative;
+}
+
+.cx-profile-menu-wrap.is-open .cx-profile-menu,
+.cx-top-profile-wrap.is-open .cx-profile-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   PROFILE HEADER
+========================================================= */
+
+.cx-profile-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px;
+}
+
+.cx-profile-menu-header img {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 2px solid rgba(115, 68, 255, 0.25);
+}
+
+.cx-profile-menu-header > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.cx-profile-menu-header strong {
+    color: var(--cx-text);
+    font-size: 14px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cx-profile-menu-header span {
+    color: var(--cx-text-muted);
+    font-size: 12px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   MENU ITEMS
+========================================================= */
+
+.cx-profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    color: var(--cx-text);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.cx-profile-menu-item:hover {
+    background: var(--cx-surface-hover);
+    color: var(--cx-primary);
+}
+
+.cx-profile-menu-item > i:first-child {
+    width: 20px;
+    font-size: 19px;
+}
+
+.cx-menu-arrow {
+    margin-left: auto;
+    font-size: 14px;
+    color: var(--cx-text-muted);
+}
+
+.cx-profile-menu-divider {
+    height: 1px;
+    background: var(--cx-border);
+    margin: 8px 4px;
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.cx-profile-logout {
+    color: #ef4444;
+}
+
+.cx-profile-logout:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+}
+
+
+
+
+
+
+
     </style>
 
 
@@ -1878,7 +2123,7 @@
 
 
             <!-- PROFILE -->
-
+<!-- 
             <a
                 href="{% url 'profile' %}"
                 class="cx-top-profile"
@@ -1897,7 +2142,80 @@
 
                 <i class="ph ph-caret-down"></i>
 
-            </a>
+            </a> -->
+
+            <div class="cx-top-profile-wrap">
+
+    <button
+        type="button"
+        class="cx-top-profile"
+        id="cxProfileToggle"
+        aria-expanded="false"
+        aria-controls="cxProfileMenu"
+    >
+        <img
+            src="{{ request.user.profile.profile_picture.url }}"
+            alt="{{ user.full_name|default:user.email }}"
+        >
+
+        <span class="cx-top-profile-name">
+            {{ user.full_name|default:user.email }}
+        </span>
+
+        <i class="ph ph-caret-down"></i>
+    </button>
+
+    <div
+        class="cx-profile-menu"
+        id="cxProfileMenu"
+    >
+
+        <div class="cx-profile-menu-header">
+
+            <img
+                src="{{ request.user.profile.profile_picture.url }}"
+                alt="{{ user.full_name|default:user.email }}"
+            >
+
+            <div>
+                <strong>
+                    {{ user.full_name|default:"User" }}
+                </strong>
+
+                <span>
+                    {{ user.email }}
+                </span>
+            </div>
+
+        </div>
+
+        <div class="cx-profile-menu-divider"></div>
+
+        <a href="{% url 'profile' %}" class="cx-profile-menu-item">
+            <i class="ph ph-user-circle"></i>
+            <span>My Profile</span>
+            <i class="ph ph-caret-right cx-menu-arrow"></i>
+        </a>
+
+        <a href="{% url 'profile' %}" class="cx-profile-menu-item">
+            <i class="ph ph-shield-check"></i>
+            <span>Account & Security</span>
+            <i class="ph ph-caret-right cx-menu-arrow"></i>
+        </a>
+
+        <div class="cx-profile-menu-divider"></div>
+
+        <a
+            href="{% url 'logout' %}"
+            class="cx-profile-menu-item cx-profile-logout"
+        >
+            <i class="ph ph-sign-out"></i>
+            <span>Logout</span>
+        </a>
+
+    </div>
+
+</div>
 
 
         </div>
@@ -2451,6 +2769,45 @@
         }
 
     </script>
+
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const profileWrap = document.querySelector(".cx-top-profile-wrap");
+    const profileToggle = document.getElementById("cxProfileToggle");
+
+    if (!profileWrap || !profileToggle) {
+        return;
+    }
+
+    profileToggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        const isOpen = profileWrap.classList.toggle("is-open");
+
+        profileToggle.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+    });
+
+    document.addEventListener("click", function (event) {
+
+        if (!profileWrap.contains(event.target)) {
+
+            profileWrap.classList.remove("is-open");
+
+            profileToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+
+    });
+
+});
+</script>
 
 
 </body>

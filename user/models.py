@@ -114,45 +114,45 @@ class KYC(models.Model):
     #     img_back.save(id_back, optimize=True, quality=85)
 
 
-    def _resize_image(self, image_field):
-        if not image_field:
-            return
+    # def _resize_image(self, image_field):
+    #     if not image_field:
+    #         return
 
-        image = Image.open(image_field)
+    #     image = Image.open(image_field)
 
-        # Correct orientation based on the camera's EXIF data
-        image = ImageOps.exif_transpose(image)
+    #     # Correct orientation based on the camera's EXIF data
+    #     image = ImageOps.exif_transpose(image)
 
-        # Don't allow images larger than 2000x2000
-        max_size = (2000, 2000)
-        image.thumbnail(max_size, Image.Resampling.LANCZOS)
+    #     # Don't allow images larger than 2000x2000
+    #     max_size = (2000, 2000)
+    #     image.thumbnail(max_size, Image.Resampling.LANCZOS)
 
-        # JPEG doesn't support alpha
-        if image.mode not in ("RGB", "L"):
-            image = image.convert("RGB")
+    #     # JPEG doesn't support alpha
+    #     if image.mode not in ("RGB", "L"):
+    #         image = image.convert("RGB")
 
-        buffer = BytesIO()
+    #     buffer = BytesIO()
 
-        image.save(
-            buffer,
-            format="JPEG",
-            quality=90,
-            optimize=True,
-        )
+    #     image.save(
+    #         buffer,
+    #         format="JPEG",
+    #         quality=90,
+    #         optimize=True,
+    #     )
 
-        new_name = image_field.name.rsplit(".", 1)[0] + ".jpg"
+    #     new_name = image_field.name.rsplit(".", 1)[0] + ".jpg"
 
-        image_field.save(
-            new_name,
-            ContentFile(buffer.getvalue()),
-            save=False,
-        )
+    #     image_field.save(
+    #         new_name,
+    #         ContentFile(buffer.getvalue()),
+    #         save=False,
+    #     )
 
-    def save(self, *args, **kwargs):
-        self._resize_image(self.id_front)
-        self._resize_image(self.id_back)
+    # def save(self, *args, **kwargs):
+    #     self._resize_image(self.id_front)
+    #     self._resize_image(self.id_back)
 
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
 
     
