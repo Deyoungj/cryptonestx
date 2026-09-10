@@ -2,9 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .manager import CustomUserManager
 from django.utils.crypto import get_random_string
-from PIL import Image  
+from PIL import Image, ImageOps  
 import os
-
+from io import BytesIO
+from django.core.files.base import ContentFile
 from decimal import Decimal
 
 
@@ -97,20 +98,61 @@ class KYC(models.Model):
 
 
 
-    def resize_image(self):
-        id_front = self.id_front.path
-        id_back = self.id_back.path
-        img_front = Image.open(id_front)
-        img_back = Image.open(id_back)
+    # def resize_image(self):
+    #     id_front = self.id_front.path
+    #     id_back = self.id_back.path
+    #     img_front = Image.open(id_front)
+    #     img_back = Image.open(id_back)
 
-        # Define max size (e.g., 300x300 pixels)
-        max_size = (1024, 1024)
-        img_front.thumbnail(max_size, Image.ANTIALIAS)
-        img_back.thumbnail(max_size, Image.ANTIALIAS)
+    #     # Define max size (e.g., 300x300 pixels)
+    #     max_size = (1024, 1024)
+    #     img_front.thumbnail(max_size, Image.ANTIALIAS)
+    #     img_back.thumbnail(max_size, Image.ANTIALIAS)
 
-        # Overwrite the image with the resized version
-        img_front.save(id_front, optimize=True, quality=85)
-        img_back.save(id_back, optimize=True, quality=85)
+    #     # Overwrite the image with the resized version
+    #     img_front.save(id_front, optimize=True, quality=85)
+    #     img_back.save(id_back, optimize=True, quality=85)
+
+
+    def _resize_image(self, image_field):
+        if not image_field:
+            return
+
+        image = Image.open(image_field)
+
+        # Correct orientation based on the camera's EXIF data
+        image = ImageOps.exif_transpose(image)
+
+        # Don't allow images larger than 2000x2000
+        max_size = (2000, 2000)
+        image.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+        # JPEG doesn't support alpha
+        if image.mode not in ("RGB", "L"):
+            image = image.convert("RGB")
+
+        buffer = BytesIO()
+
+        image.save(
+            buffer,
+            format="JPEG",
+            quality=90,
+            optimize=True,
+        )
+
+        new_name = image_field.name.rsplit(".", 1)[0] + ".jpg"
+
+        image_field.save(
+            new_name,
+            ContentFile(buffer.getvalue()),
+            save=False,
+        )
+
+    def save(self, *args, **kwargs):
+        self._resize_image(self.id_front)
+        self._resize_image(self.id_back)
+
+        super().save(*args, **kwargs)
 
 
     
