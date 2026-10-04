@@ -1755,17 +1755,18 @@
 
             <!-- SETTINGS -->
 
-            <div class="cx-nav-item">
+
+             <div class="cx-nav-item">
 
                 <a
-                    href="{% url 'profile' %}"
-                    class="cx-nav-link"
+                    href="{% url 'upgrade_level_2' %}"
+                    class="cx-nav-link {% block upgrade_level_2_active %}{% endblock upgrade_level_2_active %}"
                 >
 
-                    <i class="ph ph-gear-six"></i>
+                    <i class="ph ph-arrow-circle-up"></i>
 
                     <span>
-                        Settings
+                        Upgrade Account
                     </span>
 
                     <i class="ph ph-caret-right cx-nav-arrow"></i>
@@ -1773,6 +1774,7 @@
                 </a>
 
             </div>
+
 
 
         </div>

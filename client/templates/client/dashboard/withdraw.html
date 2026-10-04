@@ -759,6 +759,229 @@
         -moz-appearance: textfield;
         appearance: textfield;
     }
+
+    .wd-upgrade-card {
+    overflow: hidden;
+}
+
+.wd-upgrade-content {
+    position: relative;
+    padding: 42px 34px;
+    text-align: center;
+}
+
+.wd-upgrade-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 18px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 20px;
+
+    color: var(--wd-primary);
+    background: rgba(115, 68, 255, .10);
+
+    font-size: 1.7rem;
+}
+
+.wd-upgrade-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    color: var(--wd-primary);
+    background: rgba(115, 68, 255, .08);
+
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+}
+
+.wd-upgrade-content h2 {
+    margin: 17px 0 10px;
+
+    color: var(--wd-text);
+
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 850;
+    letter-spacing: -.03em;
+}
+
+.wd-upgrade-content > p {
+    max-width: 570px;
+    margin: 0 auto;
+
+    color: var(--wd-muted);
+
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+.wd-upgrade-content > p strong {
+    color: var(--wd-text);
+}
+
+.wd-upgrade-balance {
+    max-width: 480px;
+
+    margin: 25px auto;
+
+    padding: 18px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    text-align: left;
+
+    border: 1px solid var(--wd-border);
+    border-radius: 18px;
+
+    background: var(--wd-soft);
+}
+
+.wd-upgrade-balance span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--wd-muted);
+
+    font-size: .78rem;
+}
+
+.wd-upgrade-balance strong {
+    color: var(--wd-text);
+
+    font-size: 1.35rem;
+    font-weight: 850;
+}
+
+.wd-upgrade-balance-icon {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 13px;
+
+    color: var(--wd-primary);
+    background: rgba(115, 68, 255, .10);
+
+    font-size: 1.2rem;
+}
+
+.wd-upgrade-steps {
+    max-width: 560px;
+
+    margin: 25px auto;
+
+    text-align: left;
+}
+
+.wd-upgrade-step {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 13px;
+
+    padding: 14px 0;
+}
+
+.wd-upgrade-step + .wd-upgrade-step {
+    border-top: 1px solid var(--wd-border);
+}
+
+.wd-step-number {
+    flex: 0 0 34px;
+
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 11px;
+
+    color: #fff;
+    background: var(--wd-primary);
+
+    font-size: .78rem;
+    font-weight: 800;
+}
+
+.wd-upgrade-step strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--wd-text);
+
+    font-size: .88rem;
+}
+
+.wd-upgrade-step span {
+    display: block;
+
+    color: var(--wd-muted);
+
+    font-size: .79rem;
+    line-height: 1.55;
+}
+
+.wd-upgrade-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-width: 220px;
+
+    padding: 13px 20px;
+
+    border-radius: 14px;
+
+    color: #fff !important;
+    background: var(--wd-primary);
+
+    text-decoration: none;
+
+    font-size: .88rem;
+    font-weight: 800;
+
+    transition:
+        transform .2s ease,
+        opacity .2s ease;
+}
+
+.wd-upgrade-button:hover {
+    color: #fff !important;
+    transform: translateY(-2px);
+    opacity: .92;
+}
+
+@media (max-width: 600px) {
+
+    .wd-upgrade-content {
+        padding: 30px 18px;
+    }
+
+    .wd-upgrade-balance {
+        padding: 15px;
+    }
+
+    .wd-upgrade-button {
+        width: 100%;
+    }
+}
 </style>
 
 
@@ -799,20 +1022,290 @@
     ========================== -->
     <div class="wd-grid">
 
-        <!-- FORM -->
-        <section class="wd-card">
+       <!-- FORM / LEVEL 2 UPGRADE -->
+{% if withdrawal_enabled %}
 
-            <div class="wd-card-header">
+<section class="wd-card">
 
-                <div class="wd-card-title">
+    <div class="wd-card-header">
 
-                    <div class="wd-card-title-icon">
-                        <i class="ph ph-wallet"></i>
+        <div class="wd-card-title">
+
+            <div class="wd-card-title-icon">
+                <i class="ph ph-wallet"></i>
+            </div>
+
+            <div>
+                <h2>Withdrawal Request</h2>
+                <span>Enter the details for your withdrawal</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="wd-card-body">
+
+        {% if message != "" %}
+            <div class="wd-alert" role="alert">
+                <i class="ph ph-check-circle"></i>
+
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- AVAILABLE BALANCE -->
+        <div class="wd-balance">
+
+            <div class="wd-balance-label">
+                <i class="ph ph-wallet"></i>
+                Available Balance
+            </div>
+
+            <div class="wd-balance-value">
+                ${{ account_balance }}
+            </div>
+
+            <div class="wd-balance-note">
+                Only available account funds can be requested for withdrawal.
+            </div>
+
+        </div>
+
+
+        <form action="" method="post">
+            {% csrf_token %}
+
+            <!-- AMOUNT -->
+            <div class="wd-field">
+
+                <label class="wd-label" for="withdrawAmount">
+                    <i class="ph ph-currency-dollar"></i>
+                    Withdrawal Amount
+                </label>
+
+                <div class="wd-input-wrap">
+
+                    <i class="ph ph-currency-dollar wd-input-icon"></i>
+
+                    <input
+                        type="text"
+                        id="withdrawAmount"
+                        class="wd-input"
+                        name="amount"
+                        required
+                        placeholder="0.00"
+                        inputmode="decimal"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div class="wd-amount-info">
+                    <span>Available to withdraw</span>
+                    <strong>${{ account_balance }}</strong>
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT METHOD -->
+            <div class="wd-field">
+
+                <label class="wd-label" for="paymentMethod">
+                    <i class="ph ph-coins"></i>
+                    Payment Method
+                </label>
+
+                <div class="wd-input-wrap">
+
+                    <i class="ph ph-wallet wd-input-icon"></i>
+
+                    <select
+                        class="wd-select"
+                        id="paymentMethod"
+                        name="payment_method"
+                        required
+                    >
+
+                        <option value="" disabled selected>
+                            Select payment method
+                        </option>
+
+                        {% for payment_gate in c_paymentgates %}
+                            <option value="{{ payment_gate.name }}">
+                                {{ payment_gate.name }}
+                            </option>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="wd-help">
+                    Select the asset or payment network you want to receive your funds through.
+                </div>
+
+            </div>
+
+
+            <!-- ADDRESS -->
+            <div class="wd-field">
+
+                <label class="wd-label" for="withdrawAddress">
+                    <i class="ph ph-qr-code"></i>
+                    Payment Address
+                </label>
+
+                <div class="wd-input-wrap">
+
+                    <i class="ph ph-link-simple wd-input-icon"></i>
+
+                    <input
+                        type="text"
+                        id="withdrawAddress"
+                        class="wd-input"
+                        required
+                        name="address"
+                        placeholder="Enter wallet or payment address"
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-label="Payment address"
+                    >
+
+                </div>
+
+                <div class="wd-help">
+                    Double-check the destination address before submitting your withdrawal.
+                </div>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+            <button type="submit" class="wd-submit">
+
+                <i class="ph ph-paper-plane-tilt"></i>
+
+                Submit Withdrawal Request
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+{% else %}
+
+
+<!-- =====================================================
+     LEVEL 2 REQUIRED
+====================================================== -->
+
+<section class="wd-card wd-upgrade-card">
+
+    <div class="wd-card-body">
+
+        <div class="wd-upgrade-content">
+
+            <div class="wd-upgrade-icon">
+                <i class="ph ph-lock-key"></i>
+            </div>
+
+            <div class="wd-upgrade-badge">
+                <i class="ph ph-shield-warning"></i>
+                LEVEL 2 REQUIRED
+            </div>
+
+            <h2>Withdrawals Are Not Available Yet</h2>
+
+            <p>
+                Your account is currently on
+                <strong>Level {{ account_level }}</strong>.
+                Complete the Level 2 eligibility process to enable
+                withdrawal access.
+            </p>
+
+
+            <!-- PROMOTIONAL BALANCE -->
+            <div class="wd-upgrade-balance">
+
+                <div>
+
+                    <span>Promotional Credit</span>
+
+                    <strong>
+                        ${{ promotional_balance|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+                <div class="wd-upgrade-balance-icon">
+                    <i class="ph ph-gift"></i>
+                </div>
+
+            </div>
+
+
+            <!-- STEPS -->
+            <div class="wd-upgrade-steps">
+
+                <div class="wd-upgrade-step">
+
+                    <div class="wd-step-number">
+                        1
                     </div>
 
                     <div>
-                        <h2>Withdrawal Request</h2>
-                        <span>Enter the details for your withdrawal</span>
+                        <strong>Complete eligibility</strong>
+
+                        <span>
+                            Meet the requirements for your account's
+                            Level 2 upgrade.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="wd-upgrade-step">
+
+                    <div class="wd-step-number">
+                        2
+                    </div>
+
+                    <div>
+                        <strong>Upgrade to Level 2</strong>
+
+                        <span>
+                            Your eligible promotional credit can be
+                            released into your main account balance.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="wd-upgrade-step">
+
+                    <div class="wd-step-number">
+                        3
+                    </div>
+
+                    <div>
+                        <strong>Withdrawal access</strong>
+
+                        <span>
+                            Once withdrawal eligibility is enabled,
+                            you can submit withdrawal requests.
+                        </span>
                     </div>
 
                 </div>
@@ -820,162 +1313,21 @@
             </div>
 
 
-            <div class="wd-card-body">
+            <a
+                href="{% url 'upgrade_level_2' %}"
+                class="wd-upgrade-button"
+            >
+                <i class="ph ph-arrow-up-right"></i>
+                Upgrade to Level 2
+            </a>
 
-                {% if message != "" %}
-                    <div class="wd-alert" role="alert">
-                        <i class="ph ph-check-circle"></i>
+        </div>
 
-                        <div>
-                            {{ message }}
-                        </div>
-                    </div>
-                {% endif %}
+    </div>
 
+</section>
 
-                <!-- AVAILABLE BALANCE -->
-                <div class="wd-balance">
-
-                    <div class="wd-balance-label">
-                        <i class="ph ph-wallet"></i>
-                        Available Balance
-                    </div>
-
-                    <div class="wd-balance-value">
-                        ${{ account_balance }}
-                    </div>
-
-                    <div class="wd-balance-note">
-                        Only available account funds can be requested for withdrawal.
-                    </div>
-
-                </div>
-
-
-                <form action="" method="post">
-                    {% csrf_token %}
-
-                    <!-- AMOUNT -->
-                    <div class="wd-field">
-
-                        <label class="wd-label" for="withdrawAmount">
-                            <i class="ph ph-currency-dollar"></i>
-                            Withdrawal Amount
-                        </label>
-
-                        <div class="wd-input-wrap">
-
-                            <i class="ph ph-currency-dollar wd-input-icon"></i>
-
-                            <input
-                                type="text"
-                                id="withdrawAmount"
-                                class="wd-input"
-                                name="amount"
-                                min="10"
-                                required
-                                placeholder="0.00"
-                                inputmode="decimal"
-                                autocomplete="off"
-                            >
-
-                        </div>
-
-                        <div class="wd-amount-info">
-                            <span>Available to withdraw</span>
-                            <strong>${{ account_balance }}</strong>
-                        </div>
-
-                    </div>
-
-
-                    <!-- PAYMENT METHOD -->
-                    <div class="wd-field">
-
-                        <label class="wd-label" for="paymentMethod">
-                            <i class="ph ph-coins"></i>
-                            Payment Method
-                        </label>
-
-                        <div class="wd-input-wrap">
-
-                            <i class="ph ph-wallet wd-input-icon"></i>
-
-                            <select
-                                class="wd-select"
-                                id="paymentMethod"
-                                name="payment_method"
-                                required
-                            >
-
-                                <option value="" disabled selected>
-                                    Select payment method
-                                </option>
-
-                                {% for payment_gate in c_paymentgates %}
-                                    <option value="{{ payment_gate.name }}">
-                                        {{ payment_gate.name }}
-                                    </option>
-                                {% endfor %}
-
-                            </select>
-
-                        </div>
-
-                        <div class="wd-help">
-                            Select the asset or payment network you want to receive your funds through.
-                        </div>
-
-                    </div>
-
-
-                    <!-- ADDRESS -->
-                    <div class="wd-field">
-
-                        <label class="wd-label" for="withdrawAddress">
-                            <i class="ph ph-qr-code"></i>
-                            Payment Address
-                        </label>
-
-                        <div class="wd-input-wrap">
-
-                            <i class="ph ph-link-simple wd-input-icon"></i>
-
-                            <input
-                                type="text"
-                                id="withdrawAddress"
-                                class="wd-input"
-                                required
-                                name="address"
-                                placeholder="Enter wallet or payment address"
-                                autocomplete="off"
-                                spellcheck="false"
-                                aria-label="Payment address"
-                            >
-
-                        </div>
-
-                        <div class="wd-help">
-                            Double-check the destination address before submitting your withdrawal.
-                        </div>
-
-                    </div>
-
-
-                    <!-- SUBMIT -->
-                    <button type="submit" class="wd-submit">
-
-                        <i class="ph ph-paper-plane-tilt"></i>
-
-                        Submit Withdrawal Request
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        </section>
+{% endif %}
 
 
         <!-- SIDE INFORMATION -->

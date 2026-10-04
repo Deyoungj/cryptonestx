@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from user.models import CustomUser, Profile
 from .models import (Transaction, Withdrawal,
                      Deposit, Account, ReferralBonus,
-                     Investment, Paymentgateway, clientPaymentgateway, Plan
+                     Investment, Paymentgateway, clientPaymentgateway, Plan, PromotionalCreditClaim
                      ) 
 from django.conf import settings
 from django.core.mail import  EmailMessage, EmailMultiAlternatives
@@ -19,11 +19,19 @@ from django.utils.crypto import get_random_string
 from datetime import timedelta
 from .utils import get_monthly_referral_profit
 from django.utils import timezone
+from django.db import transaction
 from django.contrib.sites.shortcuts import get_current_site
 
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
+# from decimal import Decimal, InvalidOperation
 
+# from django.contrib.auth.decorators import login_required
+# from django.db import transaction
+# from django.db.models import Sum
+# from django.shortcuts import render
+
+# from .models import Account, Investment, Withdrawal, clientPaymentgateway
 
 
 
@@ -186,6 +194,7 @@ def invest(request):
     
     context = {
         'account': account,
+        'account_balance': round(account.account_balance,2),
         "plans":Plan.objects.all(),
         "investments":investments,
         'locked_investments': locked_investments,
@@ -200,7 +209,140 @@ def invest(request):
     return render(request, 'client/dashboard/invest.html', context)
 
 
+@login_required(login_url="login")
+def upgrade_level_2(request):
+    account = Account.objects.get(user=request.user)
 
+    # User is already Level 2 or higher
+    if account.level >= 2:
+        return render(
+            request,
+            "client/dashboard/upgrade_level_2.html",
+            {
+                "account": account,
+                "already_upgraded": True,
+                "projected_balance": account.account_balance,
+            },
+        )
+
+    # Get or create the promotion claim record
+    claim, created = PromotionalCreditClaim.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "promotional_amount": account.promotional_balance,
+        },
+    )
+
+    if request.method == "POST":
+
+        with transaction.atomic():
+
+            # Lock account to prevent duplicate claims
+            account = Account.objects.select_for_update().get(
+                user=request.user
+            )
+
+            claim = PromotionalCreditClaim.objects.select_for_update().get(
+                user=request.user
+            )
+
+            # Already upgraded
+            if account.level >= 2:
+                messages.info(
+                    request,
+                    "Your account is already upgraded to Level 2.",
+                )
+                return redirect("upgrade_level_2")
+
+            # Already claimed
+            if claim.status == "claimed":
+                messages.info(
+                    request,
+                    "Your promotional credit has already been released.",
+                )
+                return redirect("upgrade_level_2")
+
+            # Level 2 eligibility
+            if not account.is_verified:
+                messages.error(
+                    request,
+                    "Your account must be verified before you can upgrade to Level 2.",
+                )
+                return redirect("upgrade_level_2")
+
+            # Promotional balance must exist
+            if account.promotional_balance <= Decimal("0.00"):
+                messages.error(
+                    request,
+                    "There is no promotional credit available to release.",
+                )
+                return redirect("upgrade_level_2")
+
+            # ==========================================
+            # RELEASE PROMOTIONAL CREDIT
+            # ==========================================
+
+            promotional_amount = account.promotional_balance
+
+            account.account_balance += promotional_amount
+            account.promotional_balance = Decimal("0.00")
+
+            # Upgrade account
+            account.level = 2
+
+            # Enable normal withdrawal eligibility
+            account.withdrawal_enabled = True
+
+            account.save(
+                update_fields=[
+                    "account_balance",
+                    "promotional_balance",
+                    "level",
+                    "withdrawal_enabled",
+                ]
+            )
+
+            # ==========================================
+            # RECORD PROMOTIONAL CLAIM
+            # ==========================================
+
+            claim.promotional_amount = promotional_amount
+            claim.claimed_amount = promotional_amount
+            claim.status = "claimed"
+            claim.claimed_at = timezone.now()
+
+            claim.save(
+                update_fields=[
+                    "promotional_amount",
+                    "claimed_amount",
+                    "status",
+                    "claimed_at",
+                ]
+            )
+
+        messages.success(
+            request,
+            f"Congratulations! Your account is now Level 2 and "
+            f"${promotional_amount:,.2f} has been released to your main balance.",
+        )
+
+        return redirect("upgrade_level_2")
+
+    # Calculate projected balance for display
+    projected_balance = (
+        account.account_balance + account.promotional_balance
+    )
+
+    return render(
+        request,
+        "client/dashboard/upgrade_level_2.html",
+        {
+            "account": account,
+            "claim": claim,
+            "already_upgraded": False,
+            "projected_balance": projected_balance,
+        },
+    )
 
 
 @login_required(redirect_field_name='invest_form', login_url='login')
@@ -244,97 +386,7 @@ def invest_form(request, plan):
         message_s = "investment Successful"
         
         
-        # c_subject = "Investment"
-
-        # message = render_to_string('client/dashboard/mail_temp/invest.html',{
-        #     'user':request.user.full_name,
-        #     'amount': amount,
-        #     "plan": request.POST.get('plan', None).split("|")[1],
-            
-           
-        # }
-        # )
-
-
-
-        # email_msg = EmailMessage(c_subject, message, to=[request.user.email])
-        # email_msg.content_subtype = 'html'
-
-
-    
-        # # # # for admin
-
-        # try:
-        #     # a_subject = "Withdrawal Request from a user"
-
-        #     a_message = render_to_string('client/dashboard/mail_temp/invest_admin.html',{
-        #         'user':request.user.full_name,
-        #         'email':request.user.email,
-        #         'amount': amount,
-        #         "plan": request.POST.get('plan', None).split("|")[1],
-                
-               
-               
-        #     }
-        #     )
-
-
-        #     # c_subject = "Investment"
-
-        #     message = render_to_string('client/dashboard/mail_temp/invest.html',{
-        #         'user':request.user.full_name,
-        #         'amount': amount,
-        #         "plan": request.POST.get('plan', None).split("|")[1],
-                
-               
-        #     }
-        #     )
-
-        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
-        #     # a_email_msg.content_subtype = 'html'
-
-
-        #     # email_msg = EmailMessage(c_subject, message, to=[request.user.email])
-        #     # email_msg.content_subtype = 'html'
-            
-        #     # # email_msg = send_mail(subject, 'message', to=[email])
-
-        #     # email_msg.send()
-        #     # a_email_msg.send()
-
-
-
-        #     a_email_msg = EmailMultiAlternatives(
-        #             subject="Investment from a user",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[settings.ADMIN_EMAIL_CUSTOM],
-        #             )  
-            
-
-        #     a_email_msg.attach_alternative(a_message, "text/html")
-
-
-        #     email_msg = EmailMultiAlternatives(
-        #             subject="Investment Successful",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[request.user.email],
-        #             )  
-            
-        #     email_msg.attach_alternative(message, "text/html")
-
         
-
-        #     a_email_msg.send()
-        #     email_msg.send()
-
-        #     return redirect('overview')
-
-
-        # except Exception as e:
-        #     print(e)
-
         
 
     
@@ -419,88 +471,7 @@ def deposit(request):
         message_s = "Deposit is been processed"
         
         
-        # c_subject = "Deposit"
-
-        # message = render_to_string('client/dashboard/mail_temp/deposit.html',{
-        #     'user':request.user.full_name,
-        #     'amount': amount,
-        #     "payment_method": payment_method,
-           
-        # }
-        # )
-
-
-
-        # email_msg = EmailMessage(c_subject, message,to=[request.user.email])
-        # email_msg.content_subtype = 'html'
         
-  
-
-
-
-        # # # for admin
-
-        # try:
-        #     # a_subject = "Deposit Request from a user"
-        #     # c_subject = "Deposit"
-
-
-        #     a_message = render_to_string('client/dashboard/mail_temp/admin_deposit.html',{
-        #         'user':request.user.full_name,
-        #         'email':request.user.email,
-        #         'amount': amount,
-        #         "payment_method": payment_method,
-        #         "payment_image": image_base64                                                                                        
-               
-               
-        #     }
-        #     )
-
-
-        #     message = render_to_string('client/dashboard/mail_temp/deposit.html',{
-        #     'user':request.user.full_name,
-        #     'amount': amount,
-        #     "payment_method": payment_method,
-           
-        # }
-        # )
-
-        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
-        #     # a_email_msg.content_subtype = 'html'
-
-        #     # a_email_msg.attach()
-
-
-        #     a_email_msg = EmailMultiAlternatives(
-        #             subject="Deposit Request from a user",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[settings.ADMIN_EMAIL_CUSTOM],
-        #             )  
-            
-
-        #     a_email_msg.attach_alternative(a_message, "text/html")
-
-        #     a_email_msg.attach(f' {request.user.full_name}_deposit.jpg', image_bytes, "image/jpeg")
-
-
-        #     email_msg = EmailMultiAlternatives(
-        #             subject="Deposit Request",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[request.user.email],
-        #             )  
-            
-        #     email_msg.attach_alternative(message, "text/html")
-    
-            
-
-        #     a_email_msg.send()
-        #     email_msg .send()
-        # except Exception as e:
-        #     print(e)
-        
-    
     
     context = {
         'account_balance': round(account.account_balance,2),
@@ -522,214 +493,183 @@ def deposit(request):
 
 
 
-@login_required(redirect_field_name='withdraw', login_url='login')
-def withdraw(request):
-    
-    account = Account.objects.filter(user=request.user).first()
-    # locked = Investment.objects.filter(user=request.user, invest_status='active').aggregate(Sum('amount'))["amount__sum"]
-    locked_investments = Investment.objects.filter(user=request.user, is_matured=False).aggregate(Sum('amount'))['amount__sum'] or 0.00
-    withdrawals =  Withdrawal.objects.filter(user=request.user)
-    message_s = ""
-    
-    if request.method == "POST":
-        amount = float(request.POST.get('amount', None))
-        Withdrawal_method = request.POST.get('payment_method', None)
-        address = request.POST.get('address', None)
-        
-        
-        # print(amount > account.account_balance)
-        
-        # if amount > account.account_balance:
-        #     message_s = "Insufficient funds."
-            
-        
-        # elif amount < 10:
-            
-        #     message_s = "minmum amount for withdrawal 10 ."
-
-        if not account.withdrawal_enabled:
-            message_s = "Withdrawal is currently unavailable for your account."
-        elif amount > account.account_balance:
-            message_s = "Insufficient funds."
-        elif amount < 10:
-            message_s = "Minimum withdrawal amount is $10."
-
-        else:
-            
-            Withdrawal.objects.create(user=request.user, amount=amount, Withdrawal_method=Withdrawal_method, address=address)
-            
-            message_s = "Your withdrawal is in progress"
-        
-
-
-
-
-
-            # try:
-            #     # a_subject = ""
-
-
-
-
-            #     a_message = render_to_string('client/dashboard/mail_temp/withdraw_admin.html',{
-            #         'user':request.user.full_name,
-            #         'amount': amount,
-            #         "Withdrawal_method": Withdrawal_method,
-            #         "address": address
-                
-                
-            #     }
-            #     )
-
-            #     message = render_to_string('client/dashboard/mail_temp/withdraw.html',{
-            #     'user':request.user.full_name,
-            #     'amount': amount,
-            #     "Withdrawal_method": Withdrawal_method,
-            #     "address": address
-            
-            #     }
-            #     )
-
-            #     # print(request.user.email)
-
-            #     a_email_msg = EmailMultiAlternatives(
-            #             subject="Withdrawal Request from a user",
-            #             body="",
-            #             from_email=settings.DEFAULT_FROM_EMAIL,
-            #             to=[settings.ADMIN_EMAIL_CUSTOM],
-            #             )  
-                
-
-            #     a_email_msg.attach_alternative(a_message, "text/html")
-
-
-            #     email_msg = EmailMultiAlternatives(
-            #             subject="Withdrawal",
-            #             body="",
-            #             from_email=settings.DEFAULT_FROM_EMAIL,
-            #             to=[request.user.email],
-            #             )  
-                
-            #     email_msg.attach_alternative(message, "text/html")
-
-            
-                
-            #     a_email_msg.send()
-                
-            #     email_msg.send()
-                
-            # except Exception as e:
-            #     print(e)
-        
-
-
-    
-    context = {
-        'account_balance': round(account.account_balance,2),
-        # "plans":Plan.objects.all(),
-        "c_paymentgates": clientPaymentgateway.objects.all(),
-        'locked_investments': locked_investments,
-        "message":message_s,
-        "withdrawals":withdrawals
-        
-        
-    }
-    
-    
-    return render(request, 'client/dashboard/withdraw.html', context)
-
-
-
-
-
-
-
-# @login_required(redirect_field_name='invest', login_url='login')
-# def invest(request):
+# @login_required(redirect_field_name='withdraw', login_url='login')
+# def withdraw(request):
     
 #     account = Account.objects.filter(user=request.user).first()
 #     # locked = Investment.objects.filter(user=request.user, invest_status='active').aggregate(Sum('amount'))["amount__sum"]
 #     locked_investments = Investment.objects.filter(user=request.user, is_matured=False).aggregate(Sum('amount'))['amount__sum'] or 0.00
-#     investments = Investment.objects.filter(user=request.user)
+#     withdrawals =  Withdrawal.objects.filter(user=request.user)
 #     message_s = ""
     
-    
-#     if request.method == 'POST':
+#     if request.method == "POST":
 #         amount = float(request.POST.get('amount', None))
-#         plan_s = request.POST.get('plan', None).split("|")[0]
-        
-#         plan = Plan.objects.get(id=plan_s)
-        
-#         print(request.POST.get('plan', None).split("|")[1])
-#         expected_returns = amount * (float(plan.percent) / 100)
-#         lock_period = timedelta(days=plan.period_length)
-#         due_date = timezone.now().date() + lock_period
-        
-#         Investment.objects.create(user=request.user, plan=plan, amount=amount,returns=expected_returns, due_date=due_date)
+#         Withdrawal_method = request.POST.get('payment_method', None)
+#         address = request.POST.get('address', None)
         
         
+#         # print(amount > account.account_balance)
         
-        
-#         # Withdrawal.objects.create(user=request.user, amount=amount, Withdrawal_method=Withdrawal_method, address=address)
-        
-#         message_s = "investment Successful"
-        
-        
-#         # c_subject = "Investment"
-
-#         # message = render_to_string('client/dashboard/mail_temp/invest.html',{
-#         #     'user':request.user.full_name,
-#         #     'amount': amount,
-#         #     "plan": request.POST.get('plan', None).split("|")[1],
+#         # if amount > account.account_balance:
+#         #     message_s = "Insufficient funds."
             
-           
-#         # }
-#         # )
-
-
-
-#         # email_msg = EmailMessage(c_subject, message, to=[request.user.email])
-#         # email_msg.content_subtype = 'html'
-
-
-    
-#         # # # # for admin
-
-#         # a_subject = "Withdrawal Request from a user"
-
-#         # a_message = render_to_string('client/dashboard/mail_temp/invest_admin.html',{
-#         #     'user':request.user.full_name,
-#         #     'email':request.user.email,
-#         #     'amount': amount,
-#         #     "plan": request.POST.get('plan', None).split("|")[1],
-            
-           
-           
-#         # }
-#         # )
-
-#         # a_email_msg = EmailMessage(a_subject, a_message, to=[settings.ADMIN_EMAIL_CUSTOM])
-#         # a_email_msg.content_subtype = 'html'
         
-#         # # # email_msg = send_mail(subject, 'message', to=[email])
+#         # elif amount < 10:
+            
+#         #     message_s = "minmum amount for withdrawal 10 ."
 
-#         # email_msg.send()
-#         # a_email_msg.send()
+#         if not account.withdrawal_enabled:
+#             message_s = "Withdrawal is currently unavailable for your account."
+#         elif amount > account.account_balance:
+#             message_s = "Insufficient funds."
+#         elif amount < 10:
+#             message_s = "Minimum withdrawal amount is $10."
+
+#         else:
+            
+#             Withdrawal.objects.create(user=request.user, amount=amount, Withdrawal_method=Withdrawal_method, address=address)
+            
+#             message_s = "Your withdrawal is in progress"
+        
+
+
+
+
+
+        
+
 
     
 #     context = {
 #         'account_balance': round(account.account_balance,2),
-#         "plans":Plan.objects.all(),
+#         # "plans":Plan.objects.all(),
+#         "c_paymentgates": clientPaymentgateway.objects.all(),
 #         'locked_investments': locked_investments,
 #         "message":message_s,
-#         "investments":investments,
-        
-        
+#         "withdrawals":withdrawals
         
         
 #     }
     
-#     return render(request, 'client/dashboard/invest.html', context)
+    
+#     return render(request, 'client/dashboard/withdraw.html', context)
+
+
+
+@login_required(redirect_field_name='withdraw', login_url='login')
+def withdraw(request):
+
+    account = Account.objects.filter(user=request.user).first()
+
+    locked_investments = (
+        Investment.objects
+        .filter(user=request.user, is_matured=False)
+        .aggregate(Sum('amount'))['amount__sum']
+        or Decimal("0.00")
+    )
+
+    message_s = ""
+
+    if request.method == "POST":
+
+        # Get form values
+        raw_amount = request.POST.get('amount', '').replace(',', '').strip()
+        withdrawal_method = request.POST.get('payment_method', '').strip()
+        address = request.POST.get('address', '').strip()
+
+        # Validate amount
+        try:
+            amount = Decimal(raw_amount)
+        except (InvalidOperation, TypeError):
+            amount = Decimal("0.00")
+            message_s = "Please enter a valid withdrawal amount."
+
+        if not message_s:
+
+            with transaction.atomic():
+
+                # Lock the account during the withdrawal check
+                account = Account.objects.select_for_update().get(
+                    user=request.user
+                )
+
+                # ==========================================
+                # WITHDRAWAL ELIGIBILITY
+                # ==========================================
+
+                if not account.withdrawal_enabled:
+
+                    message_s = (
+                        "Withdrawal is currently unavailable for your account. "
+                        "Please complete the required account eligibility steps."
+                    )
+
+                elif amount < Decimal("10.00"):
+
+                    message_s = "Minimum withdrawal amount is $10."
+
+                elif amount > account.account_balance:
+
+                    message_s = "Insufficient funds."
+
+                elif not withdrawal_method:
+
+                    message_s = "Please select a withdrawal method."
+
+                elif not address:
+
+                    message_s = "Please enter your payment address."
+
+                else:
+
+                    # ==========================================
+                    # CREATE WITHDRAWAL
+                    # ==========================================
+
+                    Withdrawal.objects.create(
+                        user=request.user,
+                        amount=amount,
+                        Withdrawal_method=withdrawal_method,
+                        address=address,
+                    )
+
+                    message_s = "Your withdrawal request is in progress."
+
+    withdrawals = Withdrawal.objects.filter(
+        user=request.user
+    ).order_by('-timestamp')
+
+    # context = {
+    #     'account_balance': account.account_balance.quantize(
+    #         Decimal("0.01")
+    #     ),
+    #     'c_paymentgates': clientPaymentgateway.objects.all(),
+    #     'locked_investments': locked_investments,
+    #     'message': message_s,
+    #     'withdrawals': withdrawals,
+    # }
+
+    context = {
+    'account_balance': account.account_balance.quantize(
+        Decimal("0.01")
+    ),
+    'account_level': account.level,
+    'withdrawal_enabled': account.withdrawal_enabled,
+    'is_verified': account.is_verified,
+    'promotional_balance': account.promotional_balance,
+    'c_paymentgates': clientPaymentgateway.objects.all(),
+    'locked_investments': locked_investments,
+    'message': message_s,
+    'withdrawals': withdrawals,
+    }
+
+    return render(
+        request,
+        'client/dashboard/withdraw.html',
+        context
+    )
+
+
 
 
 

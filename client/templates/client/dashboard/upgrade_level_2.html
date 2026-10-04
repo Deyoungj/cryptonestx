@@ -1,0 +1,588 @@
+{% extends "client/dashboard/base.html" %}
+
+{% block title %}Upgrade to Level 2{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --lv2-primary: #7344FF;
+        --lv2-primary-dark: #5f35dc;
+        --lv2-success: #16a34a;
+        --lv2-warning: #f59e0b;
+        --lv2-text: #16161d;
+        --lv2-muted: #73737f;
+        --lv2-border: rgba(15, 23, 42, .08);
+        --lv2-card: rgba(255, 255, 255, .82);
+        --lv2-soft: rgba(115, 68, 255, .07);
+        --lv2-shadow: 0 20px 60px rgba(15, 23, 42, .08);
+    }
+
+    [data-theme="dark"] {
+        --lv2-text: #f5f5f7;
+        --lv2-muted: #a5a5b0;
+        --lv2-border: rgba(255, 255, 255, .08);
+        --lv2-card: rgba(25, 25, 32, .82);
+        --lv2-soft: rgba(115, 68, 255, .12);
+        --lv2-shadow: 0 20px 60px rgba(0, 0, 0, .28);
+    }
+
+    .lv2-page {
+        padding: 28px 0 50px;
+    }
+
+    .lv2-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 26px;
+        padding: 34px;
+        color: #fff;
+        background:
+            radial-gradient(
+                circle at 85% 15%,
+                rgba(255,255,255,.20),
+                transparent 28%
+            ),
+            linear-gradient(
+                135deg,
+                #7344FF 0%,
+                #5c31d8 55%,
+                #392080 100%
+            );
+        box-shadow: 0 24px 70px rgba(115, 68, 255, .25);
+    }
+
+    .lv2-hero::after {
+        content: "";
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        right: -100px;
+        bottom: -130px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.08);
+    }
+
+    .lv2-hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 760px;
+    }
+
+    .lv2-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.16);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    .lv2-hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 850;
+        letter-spacing: -.04em;
+    }
+
+    .lv2-hero p {
+        margin: 0;
+        max-width: 650px;
+        color: rgba(255,255,255,.82);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .lv2-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr);
+        gap: 22px;
+        margin-top: 22px;
+    }
+
+    .lv2-card {
+        background: var(--lv2-card);
+        border: 1px solid var(--lv2-border);
+        border-radius: 22px;
+        box-shadow: var(--lv2-shadow);
+        backdrop-filter: blur(18px);
+    }
+
+    .lv2-main {
+        padding: 26px;
+    }
+
+    .lv2-section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .lv2-section-icon {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        color: var(--lv2-primary);
+        background: var(--lv2-soft);
+        font-size: 1.35rem;
+    }
+
+    .lv2-section-title h2 {
+        margin: 0;
+        color: var(--lv2-text);
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+    .lv2-section-title p {
+        margin: 3px 0 0;
+        color: var(--lv2-muted);
+        font-size: .86rem;
+    }
+
+    .lv2-progress {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--lv2-soft);
+        margin: 20px 0 26px;
+    }
+
+    .lv2-progress span {
+        display: block;
+        width: 50%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #7344FF, #9876ff);
+    }
+
+    .lv2-requirement {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        border: 1px solid var(--lv2-border);
+        border-radius: 17px;
+        margin-bottom: 12px;
+    }
+
+    .lv2-check {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        font-size: 1.15rem;
+    }
+
+    .lv2-check.complete {
+        color: var(--lv2-success);
+        background: rgba(22, 163, 74, .10);
+    }
+
+    .lv2-check.pending {
+        color: var(--lv2-warning);
+        background: rgba(245, 158, 11, .10);
+    }
+
+    .lv2-requirement strong {
+        display: block;
+        color: var(--lv2-text);
+        font-size: .94rem;
+    }
+
+    .lv2-requirement span {
+        display: block;
+        margin-top: 3px;
+        color: var(--lv2-muted);
+        font-size: .82rem;
+    }
+
+    .lv2-summary {
+        padding: 24px;
+    }
+
+    .lv2-summary-label {
+        color: var(--lv2-muted);
+        font-size: .8rem;
+        margin-bottom: 7px;
+    }
+
+    .lv2-amount {
+        color: var(--lv2-text);
+        font-size: 2rem;
+        font-weight: 850;
+        letter-spacing: -.04em;
+    }
+
+    .lv2-summary-box {
+        padding: 17px;
+        border-radius: 17px;
+        background: var(--lv2-soft);
+        margin-top: 20px;
+    }
+
+    .lv2-summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 9px 0;
+        color: var(--lv2-muted);
+        font-size: .87rem;
+    }
+
+    .lv2-summary-row + .lv2-summary-row {
+        border-top: 1px solid var(--lv2-border);
+    }
+
+    .lv2-summary-row strong {
+        color: var(--lv2-text);
+    }
+
+    .lv2-button {
+        width: 100%;
+        border: 0;
+        border-radius: 15px;
+        padding: 14px 18px;
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        color: #fff;
+        background: var(--lv2-primary);
+        font-weight: 800;
+        transition: .2s ease;
+        cursor: pointer;
+    }
+
+    .lv2-button:hover {
+        background: var(--lv2-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .lv2-button:disabled {
+        opacity: .55;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .lv2-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: .88rem;
+        line-height: 1.6;
+    }
+
+    .lv2-alert.success {
+        color: var(--lv2-success);
+        background: rgba(22, 163, 74, .08);
+        border: 1px solid rgba(22, 163, 74, .12);
+    }
+
+    .lv2-alert.warning {
+        color: #b45309;
+        background: rgba(245, 158, 11, .08);
+        border: 1px solid rgba(245, 158, 11, .12);
+    }
+
+    .lv2-note {
+        margin-top: 18px;
+        color: var(--lv2-muted);
+        font-size: .78rem;
+        line-height: 1.65;
+    }
+
+    @media (max-width: 900px) {
+        .lv2-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .lv2-page {
+            padding-top: 16px;
+        }
+
+        .lv2-hero {
+            padding: 25px 20px;
+            border-radius: 21px;
+        }
+
+        .lv2-main,
+        .lv2-summary {
+            padding: 20px;
+        }
+
+        .lv2-hero h1 {
+            font-size: 2rem;
+        }
+
+        .lv2-amount {
+            font-size: 1.75rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .lv2-button {
+            transition: none;
+        }
+    }
+</style>
+
+<div class="container-fluid lv2-page">
+
+    <div class="lv2-hero">
+        <div class="lv2-hero-content">
+
+            <div class="lv2-eyebrow">
+                <i class="ph ph-shield-check"></i>
+                Account Upgrade
+            </div>
+
+            <h1>Upgrade to Level 2</h1>
+
+            <p>
+                Complete the Level 2 eligibility requirement to release
+                your promotional credit into your main account balance.
+            </p>
+
+        </div>
+    </div>
+
+
+    {% if messages %}
+        {% for message in messages %}
+            <div
+                class="lv2-alert {% if message.tags == 'success' %}success{% else %}warning{% endif %}"
+                style="margin-top: 22px;"
+            >
+                <i class="ph {% if message.tags == 'success' %}ph-check-circle{% else %}ph-warning-circle{% endif %}"
+                   style="font-size: 1.25rem;">
+                </i>
+
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    {% if already_upgraded %}
+
+        <div class="lv2-card lv2-main">
+
+            <div class="lv2-alert success">
+                <i class="ph ph-check-circle" style="font-size: 1.3rem;"></i>
+
+                <div>
+                    <strong>Your account is already Level 2.</strong><br>
+                    Your promotional credit has already been processed.
+                </div>
+            </div>
+
+            <a href="{% url 'overview' %}" class="lv2-button">
+                <i class="ph ph-arrow-left"></i>
+                Return to Dashboard
+            </a>
+
+        </div>
+
+    {% else %}
+
+        <div class="lv2-grid">
+
+            <div class="lv2-card lv2-main">
+
+                <div class="lv2-section-title">
+
+                    <div class="lv2-section-icon">
+                        <i class="ph ph-list-checks"></i>
+                    </div>
+
+                    <div>
+                        <h2>Level 2 requirements</h2>
+                        <p>Complete the requirement below to continue.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="lv2-progress">
+                    <span
+                        {% if account.is_verified %}
+                            style="width: 100%;"
+                        {% else %}
+                            style="width: 50%;"
+                        {% endif %}
+                    ></span>
+                </div>
+
+
+                <div class="lv2-requirement">
+
+                    <div class="lv2-check {% if account.is_verified %}complete{% else %}pending{% endif %}">
+                        <i class="ph {% if account.is_verified %}ph-check-circle{% else %}ph-clock{% endif %}"></i>
+                    </div>
+
+                    <div>
+                        <strong>Account verification</strong>
+
+                        {% if account.is_verified %}
+                            <span>
+                                Your account has been verified.
+                            </span>
+                        {% else %}
+                            <span>
+                                Your account must be verified before Level 2 can be activated.
+                            </span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+
+                <div class="lv2-requirement">
+
+                    <div class="lv2-check complete">
+                        <i class="ph ph-gift"></i>
+                    </div>
+
+                    <div>
+                        <strong>Promotional credit</strong>
+
+                        <span>
+                            Promotional credit is released only after Level 2 eligibility is confirmed.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                {% if not account.is_verified %}
+
+                    <div class="lv2-alert warning">
+                        <i class="ph ph-warning-circle" style="font-size: 1.3rem;"></i>
+
+                        <div>
+                            <strong>Verification required.</strong><br>
+                            Your account is currently not eligible for the Level 2 upgrade.
+                        </div>
+                    </div>
+
+                {% else %}
+
+                    <div class="lv2-alert success">
+                        <i class="ph ph-check-circle" style="font-size: 1.3rem;"></i>
+
+                        <div>
+                            <strong>You are eligible.</strong><br>
+                            Your account can now be upgraded to Level 2.
+                        </div>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="lv2-card lv2-summary">
+
+                <div class="lv2-summary-label">
+                    Promotional Credit
+                </div>
+
+                <div class="lv2-amount">
+                    ${{ account.promotional_balance|floatformat:2 }}
+                </div>
+
+
+                <div class="lv2-summary-box">
+
+                    <div class="lv2-summary-row">
+                        <span>Current level</span>
+                        <strong>Level {{ account.level }}</strong>
+                    </div>
+
+                    <div class="lv2-summary-row">
+                        <span>Main balance</span>
+                        <!-- <strong>
+                            ${{ account.account_balance|floatformat:2 }}
+                        </strong> -->
+                        <strong>
+                            ${{ projected_balance|floatformat:2 }}
+                        </strong>
+                    </div>
+
+                    <div class="lv2-summary-row">
+                        <span>After upgrade</span>
+                        <strong>
+                            ${{ account.account_balance|add:account.promotional_balance|floatformat:2 }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                {% if account.is_verified and account.promotional_balance > 0 %}
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="lv2-button"
+                            onclick="return confirm('Upgrade this account to Level 2 and release the eligible promotional credit into the main balance?');"
+                        >
+                            <i class="ph ph-arrow-up-right"></i>
+                            Upgrade to Level 2
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <button
+                        type="button"
+                        class="lv2-button"
+                        disabled
+                    >
+                        <i class="ph ph-lock"></i>
+                        Level 2 Not Available
+                    </button>
+
+                {% endif %}
+
+
+                <div class="lv2-note">
+                    Promotional credit is subject to the promotion's published
+                    eligibility terms. Once legitimately released, it becomes
+                    part of the main account balance and is subject to the
+                    normal withdrawal rules.
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

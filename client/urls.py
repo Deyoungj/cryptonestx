@@ -20,6 +20,11 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
 
     path('withdraw/', views.withdraw, name='withdraw'),
+    path(
+        "upgrade/level-2/",
+        views.upgrade_level_2,
+        name="upgrade_level_2",
+    ),
     # path('mailer/', views.mailer, name='mailer'),
 
     # path('blog/', views.blog, name='blog'),

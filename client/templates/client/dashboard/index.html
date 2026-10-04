@@ -1612,6 +1612,75 @@
 
     </div>
 
+<!-- =====================================================
+     LEVEL 2 UPGRADE
+====================================================== -->
+
+{% if account_level == 1 %}
+
+<div class="cx-promo mb-4">
+
+    <div class="d-flex align-items-start gap-3">
+
+        <div class="cx-promo-icon">
+            <i class="ph ph-arrow-up-circle"></i>
+        </div>
+
+        <div class="flex-grow-1">
+
+            <div class="cx-promo-title">
+                Upgrade to Level 2
+            </div>
+
+            <p class="cx-promo-text">
+                Your promotional credit is currently restricted to Level 1.
+                Complete the Level 2 eligibility requirements to have your
+                eligible promotional credit released into your main account
+                balance.
+            </p>
+
+            <a href="{% url 'upgrade_level_2' %}"
+               class="btn btn-primary mt-2">
+                <i class="ph ph-arrow-up-right me-1"></i>
+                Upgrade to Level 2
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% elif account_level >= 2 %}
+
+<div class="cx-promo mb-4">
+
+    <div class="d-flex align-items-start gap-3">
+
+        <div class="cx-promo-icon">
+            <i class="ph ph-check-circle"></i>
+        </div>
+
+        <div>
+
+            <div class="cx-promo-title">
+                Level 2 Active
+            </div>
+
+            <p class="cx-promo-text">
+                Your account is currently upgraded to Level 2.
+                Your eligible promotional credit has been released
+                according to the promotion terms.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+    
 
     <!-- =====================================================
          INVESTMENTS
