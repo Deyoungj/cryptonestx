@@ -2,222 +2,931 @@
 
 {% load static %}
 
-{% block title %}Cryptonestx | Invest {% endblock title %}
+{% block title %}CryptoNestx | Investment Plans{% endblock title %}
 
-{% block invest_active %}  active {% endblock invest_active %}
+{% block invest_active %}active{% endblock invest_active %}
 
-
- {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
-
- ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+{% block base_acc_balance %}{{ account_balance }}{% endblock base_acc_balance %}
+{% block base_acc_locked %}{{ locked_investments }}{% endblock base_acc_locked %}
 
 
+{% block content %}
+
+<style>
+    :root {
+        --plans-primary: #7344FF;
+        --plans-primary-dark: #5b31d4;
+        --plans-success: #22c55e;
+        --plans-warning: #f59e0b;
+        --plans-text: #171329;
+        --plans-muted: #77728d;
+        --plans-surface: #ffffff;
+        --plans-surface-soft: #f8f7fc;
+        --plans-border: rgba(115, 68, 255, .11);
+        --plans-shadow: 0 18px 50px rgba(35, 20, 80, .08);
+    }
+
+    [data-theme="dark"] {
+        --plans-text: #f5f3ff;
+        --plans-muted: #a7a1bb;
+        --plans-surface: #171522;
+        --plans-surface-soft: #211e2d;
+        --plans-border: rgba(255,255,255,.09);
+        --plans-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
 
 
+    /* =========================================
+       Page
+    ========================================= */
+
+    .plans-page {
+        padding-bottom: 40px;
+    }
 
 
- {% block content %}
+    /* =========================================
+       Hero
+    ========================================= */
+
+    .plans-hero {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 26px;
+        padding: 32px;
+        border-radius: 24px;
+        color: #fff;
+        background:
+            radial-gradient(
+                circle at 88% 15%,
+                rgba(255,255,255,.18),
+                transparent 27%
+            ),
+            radial-gradient(
+                circle at 10% 100%,
+                rgba(255,255,255,.10),
+                transparent 30%
+            ),
+            linear-gradient(
+                135deg,
+                #7344FF,
+                #5126bd
+            );
+        box-shadow: 0 22px 50px rgba(115,68,255,.22);
+    }
+
+    .plans-hero::before {
+        content: "";
+        position: absolute;
+        width: 230px;
+        height: 230px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,.10);
+        right: -90px;
+        top: -100px;
+    }
+
+    .plans-hero::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,.08);
+        left: 42%;
+        bottom: -100px;
+    }
+
+    .plans-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 720px;
+    }
+
+    .plans-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.15);
+        background: rgba(255,255,255,.10);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+    }
+
+    .plans-hero h1 {
+        margin: 15px 0 9px;
+        font-size: clamp(27px, 4vw, 40px);
+        font-weight: 800;
+        letter-spacing: -.045em;
+    }
+
+    .plans-hero p {
+        max-width: 620px;
+        margin: 0;
+        color: rgba(255,255,255,.78);
+        font-size: 14px;
+        line-height: 1.7;
+    }
 
 
- <style>
-  .scroll-container {
-    overflow-x: scroll; /* Enable scrolling */
-    -ms-overflow-style: none;  /* Hide scrollbar for Internet Explorer */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-    display: flex;
-    flex-wrap: nowrap;
-    cursor: grab;
-  }
+    /* =========================================
+       Account Summary
+    ========================================= */
 
-  .scroll-container::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome, Safari, and newer versions of Edge */
-  }
+    .plans-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 26px;
+    }
 
-  .row {
-    display: flex;
-    flex-wrap: nowrap;
-  }
+    .plans-summary-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 20px;
+        border-radius: 18px;
+        background: var(--plans-surface);
+        border: 1px solid var(--plans-border);
+        box-shadow: var(--plans-shadow);
+    }
 
-  .col-sm-4 {
-    flex: 0 0 auto; /* Prevent columns from wrapping */
-  }
+    .plans-summary-left {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-width: 0;
+    }
+
+    .plans-summary-icon {
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: rgba(115,68,255,.10);
+        color: var(--plans-primary);
+        font-size: 21px;
+    }
+
+    .plans-summary-label {
+        color: var(--plans-muted);
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+
+    .plans-summary-value {
+        color: var(--plans-text);
+        font-size: 19px;
+        font-weight: 800;
+        word-break: break-word;
+    }
+
+
+    /* =========================================
+       Section Header
+    ========================================= */
+
+    .plans-section-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 17px;
+    }
+
+    .plans-section-header h2 {
+        margin: 0;
+        color: var(--plans-text);
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: -.02em;
+    }
+
+    .plans-section-header p {
+        margin: 5px 0 0;
+        color: var(--plans-muted);
+        font-size: 12px;
+    }
+
+    .plans-count {
+        flex: 0 0 auto;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: var(--plans-surface);
+        border: 1px solid var(--plans-border);
+        color: var(--plans-muted);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       Plans Grid
+    ========================================= */
+
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+
+    /* =========================================
+       Plan Card
+    ========================================= */
+
+    .plan-card {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 23px;
+        border-radius: 22px;
+        background: var(--plans-surface);
+        border: 1px solid var(--plans-border);
+        box-shadow: var(--plans-shadow);
+        transition:
+            transform .22s ease,
+            box-shadow .22s ease,
+            border-color .22s ease;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(115,68,255,.24);
+        box-shadow: 0 25px 55px rgba(35,20,80,.13);
+    }
+
+    .plan-card.featured {
+        border-color: rgba(115,68,255,.35);
+    }
+
+    .plan-card.featured::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+            90deg,
+            #7344FF,
+            #9b7cff
+        );
+    }
+
+
+    /* =========================================
+       Plan Header
+    ========================================= */
+
+    .plan-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .plan-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .plan-icon {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: linear-gradient(
+            135deg,
+            rgba(115,68,255,.14),
+            rgba(115,68,255,.05)
+        );
+        color: var(--plans-primary);
+        font-size: 22px;
+    }
+
+    .plan-label {
+        color: var(--plans-muted);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+
+    .plan-name {
+        overflow: hidden;
+        color: var(--plans-text);
+        font-size: 17px;
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .plan-status {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 9px;
+        border-radius: 999px;
+        background: rgba(34,197,94,.08);
+        color: var(--plans-success);
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .plan-status i {
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+       Main Return
+    ========================================= */
+
+    .plan-return {
+        padding: 20px;
+        border-radius: 17px;
+        margin-bottom: 18px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(115,68,255,.10),
+                rgba(115,68,255,.025)
+            );
+        border: 1px solid rgba(115,68,255,.10);
+    }
+
+    .plan-return-label {
+        color: var(--plans-muted);
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+
+    .plan-return-value {
+        color: var(--plans-primary);
+        font-size: 31px;
+        font-weight: 850;
+        letter-spacing: -.04em;
+        line-height: 1.1;
+    }
+
+    .plan-return-sub {
+        margin-top: 5px;
+        color: var(--plans-muted);
+        font-size: 11px;
+    }
+
+
+    /* =========================================
+       Stats
+    ========================================= */
+
+    .plan-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .plan-stat {
+        padding: 13px;
+        border-radius: 14px;
+        background: var(--plans-surface-soft);
+        border: 1px solid var(--plans-border);
+    }
+
+    .plan-stat-label {
+        color: var(--plans-muted);
+        font-size: 10px;
+        margin-bottom: 5px;
+    }
+
+    .plan-stat-value {
+        color: var(--plans-text);
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+
+    /* =========================================
+       Range
+    ========================================= */
+
+    .plan-range {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px 0;
+        border-top: 1px solid var(--plans-border);
+        border-bottom: 1px solid var(--plans-border);
+        margin-bottom: 20px;
+    }
+
+    .plan-range-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .plan-range-row span:first-child {
+        color: var(--plans-muted);
+        font-size: 11px;
+    }
+
+    .plan-range-row span:last-child {
+        color: var(--plans-text);
+        font-size: 12px;
+        font-weight: 800;
+        text-align: right;
+    }
+
+
+    /* =========================================
+       Button
+    ========================================= */
+
+    .plan-action {
+        width: 100%;
+        min-height: 49px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: auto;
+        border-radius: 14px;
+        background: linear-gradient(
+            135deg,
+            var(--plans-primary),
+            var(--plans-primary-dark)
+        );
+        color: #fff !important;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none !important;
+        box-shadow: 0 10px 24px rgba(115,68,255,.18);
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .plan-action:hover {
+        transform: translateY(-2px);
+        color: #fff !important;
+        box-shadow: 0 14px 30px rgba(115,68,255,.28);
+    }
+
+    .plan-action i {
+        font-size: 17px;
+        transition: transform .2s ease;
+    }
+
+    .plan-action:hover i {
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================
+       Empty State
+    ========================================= */
+
+    .plans-empty {
+        padding: 55px 25px;
+        border-radius: 22px;
+        text-align: center;
+        background: var(--plans-surface);
+        border: 1px solid var(--plans-border);
+        box-shadow: var(--plans-shadow);
+    }
+
+    .plans-empty-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: rgba(115,68,255,.09);
+        color: var(--plans-primary);
+        font-size: 27px;
+    }
+
+    .plans-empty h3 {
+        margin: 0 0 7px;
+        color: var(--plans-text);
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .plans-empty p {
+        margin: 0;
+        color: var(--plans-muted);
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       Mobile
+    ========================================= */
+
+    @media (max-width: 1100px) {
+        .plans-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 700px) {
+
+        .plans-page {
+            padding-bottom: 25px;
+        }
+
+        .plans-hero {
+            padding: 24px 20px;
+            border-radius: 19px;
+        }
+
+        .plans-hero h1 {
+            font-size: 28px;
+        }
+
+        .plans-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .plans-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .plans-section-header {
+            align-items: flex-start;
+        }
+
+        .plan-card {
+            padding: 20px;
+            border-radius: 19px;
+        }
+
+        .plan-return-value {
+            font-size: 28px;
+        }
+    }
+
+    @media (max-width: 420px) {
+
+        .plans-summary-card {
+            padding: 16px;
+        }
+
+        .plans-summary-value {
+            font-size: 16px;
+        }
+
+        .plan-header {
+            align-items: center;
+        }
+
+        .plan-status {
+            display: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .plan-card,
+        .plan-action,
+        .plan-action i {
+            transition: none;
+        }
+    }
 </style>
 
 
- <div class="page-header">
-  <h2 class="page-title"> Investment Plan  </h2>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-    
-    </ol>
-  </nav>
-</div> 
+<div class="plans-page">
+
+    <!-- =========================================
+         Hero
+    ========================================== -->
+
+    <section class="plans-hero">
+
+        <div class="plans-hero-content">
+
+            <span class="plans-eyebrow">
+                <i class="ph ph-chart-line-up"></i>
+                Investment Center
+            </span>
+
+            <h1>Choose your investment plan.</h1>
+
+            <p>
+                Explore the available plans and choose the option that
+                matches your investment goals, preferred term, and
+                available capital.
+            </p>
+
+        </div>
+
+    </section>
 
 
+    <!-- =========================================
+         Account Summary
+    ========================================== -->
 
- <div class="row  scroll-container">
+    <section class="plans-summary">
 
-              {% for plan in plans %}
-                <div class="col-sm-4 grid-margin  ">
-                <div class="card">
-                    <div class="card-body justify-content-center">
-                    <h3 class="mb-5">{{plan.plan_name|title}}</h3>
-                    <!-- <h3 class="mb-0">$500 - $1000</h3> -->
+        <div class="plans-summary-card">
 
-                    <div class="row mt-3">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="">
-                            <h3 class="mb-2">{{plan.percent}}%</h3>
-                            <h6 class="text-muted font-weight-normal">Daily Intrest</h6>
-                        </div>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                            <h3>{{plan.period_length}}</h3>
-                            <h6 class="text-muted font-weight-normal">Term Days</h6>
-                        </div>
-                    </div>
+            <div class="plans-summary-left">
 
-                    
-
-                    <hr>
-                    <div class="row mt-5">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex   d-md-flex align-items-center">
-                            <h4 class="mb-0">Minimum</h4>
-                        </div>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                            <h5>${{plan.minimum_amount}}</h5>
-                        </div>
-                    </div>
-
-
-                    <div class="row mt-3">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex   d-md-flex align-items-center">
-                            <h4 class="mb-0">Maximum</h4>
-                        </div>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                            <h5>${{plan.maximum_amount}}</h5>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex   d-md-flex align-items-center">
-                            <h4 class="mb-0">ROI</h4>
-                        </div>
-                        </div>
-                        <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                            <h5>{{plan.percent}}%</h5>
-                        </div>
-                    </div>
-
-
-
-                   
-
-                    <div class="d-flex justify-content-center align-items-center mt-5" style="height: 100px;">
-                      <a href="{% url 'invest_form' plan.plan_name %}" class="btn btn-inverse-success btn-fw">Invest</a>
-                    </div>
-                    
-
-
-
-
-                    </div>
-                </div>
+                <div class="plans-summary-icon">
+                    <i class="ph ph-wallet"></i>
                 </div>
 
+                <div>
 
-                {% endfor %}
+                    <div class="plans-summary-label">
+                        Available Balance
+                    </div>
+
+                    <div class="plans-summary-value">
+                        ${{ account_balance|floatformat:2 }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <i
+                class="ph ph-arrow-up-right"
+                style="color:var(--plans-success); font-size:20px;"
+            ></i>
+
+        </div>
 
 
-    <!-- </div> -->
+        <div class="plans-summary-card">
+
+            <div class="plans-summary-left">
+
+                <div class="plans-summary-icon">
+                    <i class="ph ph-lock-key"></i>
+                </div>
+
+                <div>
+
+                    <div class="plans-summary-label">
+                        Locked Investments
+                    </div>
+
+                    <div class="plans-summary-value">
+                        ${{ locked_investments|floatformat:2 }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <i
+                class="ph ph-shield-check"
+                style="color:var(--plans-primary); font-size:20px;"
+            ></i>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         Section Heading
+    ========================================== -->
+
+    <div class="plans-section-header">
+
+        <div>
+
+            <h2>Available plans</h2>
+
+            <p>
+                Select a plan to review its investment details.
+            </p>
+
+        </div>
+
+        <span class="plans-count">
+            {{ plans|length }} Plan{{ plans|length|pluralize }}
+        </span>
+
     </div>
 
-  
+
+    <!-- =========================================
+         Investment Plans
+    ========================================== -->
+
+    {% if plans %}
+
+        <div class="plans-grid">
+
+            {% for plan in plans %}
+
+                <article class="plan-card {% if forloop.first %}featured{% endif %}">
+
+                    <!-- Plan Header -->
+
+                    <div class="plan-header">
+
+                        <div class="plan-title-wrap">
+
+                            <div class="plan-icon">
+
+                                {% if forloop.first %}
+                                    <i class="ph ph-rocket-launch"></i>
+                                {% elif forloop.counter == 2 %}
+                                    <i class="ph ph-chart-line-up"></i>
+                                {% else %}
+                                    <i class="ph ph-circles-three-plus"></i>
+                                {% endif %}
+
+                            </div>
+
+                            <div>
+
+                                <div class="plan-label">
+                                    Investment Plan
+                                </div>
+
+                                <div class="plan-name">
+                                    {{ plan.plan_name|title }}
+                                </div>
+
+                            </div>
+
+                        </div>
 
 
+                        {% if forloop.first %}
+
+                            <span class="plan-status">
+                                <i class="ph ph-star-fill"></i>
+                                Popular
+                            </span>
+
+                        {% else %}
+
+                            <span class="plan-status">
+                                <i class="ph ph-check"></i>
+                                Available
+                            </span>
+
+                        {% endif %}
+
+                    </div>
 
 
-  <script>
-  const scrollContainer = document.querySelector('.scroll-container');
+                    <!-- Main Return -->
 
-  let isMouseDown = false;
-  let startX, scrollLeft;
+                    <div class="plan-return">
 
-  // When mouse is pressed down
-  scrollContainer.addEventListener('mousedown', (e) => {
-    isMouseDown = true;
-    startX = e.pageX - scrollContainer.offsetLeft;
-    scrollLeft = scrollContainer.scrollLeft;
-    scrollContainer.style.cursor = 'grabbing'; // Change cursor to grabbing
-  });
+                        <div class="plan-return-label">
+                            Daily Interest
+                        </div>
 
-  // When mouse moves
-  scrollContainer.addEventListener('mousemove', (e) => {
-    if (!isMouseDown) return;
-    e.preventDefault();
-    const x = e.pageX - scrollContainer.offsetLeft;
-    const walk = (x - startX) * 2; // Adjust scroll speed (larger number = faster scroll)
-    scrollContainer.scrollLeft = scrollLeft - walk;
-  });
+                        <div class="plan-return-value">
+                            {{ plan.percent }}%
+                        </div>
 
-  // When mouse is released
-  scrollContainer.addEventListener('mouseup', () => {
-    isMouseDown = false;
-    scrollContainer.style.cursor = 'grab'; // Revert cursor to grab
-  });
+                        <div class="plan-return-sub">
+                            Based on the plan configuration
+                        </div>
 
-  // When mouse leaves the container
-  scrollContainer.addEventListener('mouseleave', () => {
-    isMouseDown = false;
-    scrollContainer.style.cursor = 'grab'; // Revert cursor to grab
-  });
-</script>
+                    </div>
 
 
-<script>
-  // JavaScript to trigger the file input when the "Browse" button is clicked
-  document.getElementById('browseButton').addEventListener('click', function() {
-    document.getElementById('fileInput').click();  // Trigger the file input click event
-  });
+                    <!-- Stats -->
 
-  // Optional: Show file name in the text input when a file is selected
-  document.getElementById('fileInput').addEventListener('change', function() {
-    var fileName = this.files[0] ? this.files[0].name : '';
-    document.querySelector('.file-upload-info').value = fileName;
-  });
-</script>
+                    <div class="plan-stats">
 
+                        <div class="plan-stat">
 
+                            <div class="plan-stat-label">
+                                Investment Term
+                            </div>
 
+                            <div class="plan-stat-value">
+                                {{ plan.period_length }} days
+                            </div>
 
-    <script>
-    document.getElementById('copyBtn').addEventListener('click', function() {
-      // Get the input field
-      var referralLink = document.getElementById('referralLink');
-
-      // Select the text field
-      referralLink.select();
-      referralLink.setSelectionRange(0, 99999); // For mobile devices
-
-      // Copy the text to the clipboard
-      document.execCommand('copy');
-
-      // Show a message indicating the link was copied
-      var message = document.getElementById('copyMessage');
-      message.style.display = 'block';
-
-      // Hide the message after 2 seconds
-      setTimeout(function() {
-        message.style.display = 'none';
-      }, 2000);
-    });
-  </script>
+                        </div>
 
 
+                        <div class="plan-stat">
 
- {% endblock content %}
+                            <div class="plan-stat-label">
+                                ROI
+                            </div>
+
+                            <div class="plan-stat-value">
+                                {{ plan.percent }}%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Investment Range -->
+
+                    <div class="plan-range">
+
+                        <div class="plan-range-row">
+
+                            <span>
+                                Minimum investment
+                            </span>
+
+                            <span>
+                                ${{ plan.minimum_amount }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="plan-range-row">
+
+                            <span>
+                                Maximum investment
+                            </span>
+
+                            <span>
+                                ${{ plan.maximum_amount }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Action -->
+
+                    <a
+                        href="{% url 'invest_form' plan.plan_name %}"
+                        class="plan-action"
+                    >
+
+                        <i class="ph ph-arrow-right"></i>
+
+                        Choose {{ plan.plan_name|title }}
+
+                    </a>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <!-- Empty State -->
+
+        <div class="plans-empty">
+
+            <div class="plans-empty-icon">
+                <i class="ph ph-chart-line"></i>
+            </div>
+
+            <h3>No investment plans available</h3>
+
+            <p>
+                There are currently no investment plans available.
+                Please check again later.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock content %}
