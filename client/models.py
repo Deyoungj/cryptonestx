@@ -67,15 +67,68 @@ class clientPaymentgateway(models.Model):
     
     
 
-class Account(models.Model):
-   user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-   account_balance = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
-   total_profit = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
-   total_invested = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
-   referral_bonus = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
 
-   def __str__(self):
-      return f'user: {self.user.full_name} | Amount: ${self.account_balance}'
+class Account(models.Model):
+    LEVEL_CHOICES = (
+        (1, "Level 1"),
+        (2, "Level 2"),
+        (3, "Level 3"),
+    )
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+    account_balance = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0.00
+    )
+    
+
+    promotional_balance = models.DecimalField(
+    max_digits=12,
+    decimal_places=2,
+    default=Decimal("0.00")
+    )
+
+    total_profit = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0.00
+    )
+
+    total_invested = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0.00
+    )
+
+    referral_bonus = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0.00
+    )
+
+    level = models.PositiveSmallIntegerField(
+        choices=LEVEL_CHOICES,
+        default=1
+    )
+
+    withdrawal_enabled = models.BooleanField(default=False)
+
+    is_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.email} - Level {self.level} | Amount: ${self.account_balance}"
+
+# class Account(models.Model):
+#    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+#    account_balance = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+#    total_profit = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+#    total_invested = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+#    referral_bonus = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+
+#    def __str__(self):
+#       return f'user: {self.user.full_name} | Amount: ${self.account_balance}'
 
 
 

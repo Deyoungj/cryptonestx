@@ -2,390 +2,2187 @@
 
 {% load static %}
 
-{% block title %}Cryptonestx | Deposit {% endblock title %}
+{% block title %}Cryptonestx | Deposit{% endblock title %}
 
-{% block deposit_active %}  active {% endblock deposit_active %}
+{% block deposit_active %}active{% endblock deposit_active %}
 
+{% block base_acc_balance %}{{ account_balance }}{% endblock base_acc_balance %}
 
- {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
-
- ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
-
-
-
-
+{% block base_acc_locked %}{{ locked_investments }}{% endblock base_acc_locked %}
 
 
 {% block content %}
 
- 
- <div class="page-header">
-  <h2 class="page-title"> Deposit  </h2>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-    
-    </ol>
-  </nav>
-</div>   
+<style>
+    .cx-deposit {
+        --dp-primary: #7344ff;
+        --dp-primary-dark: #5d32df;
+        --dp-success: #22c55e;
+        --dp-warning: #f59e0b;
+        --dp-danger: #ef4444;
+
+        --dp-bg: #f6f7fb;
+        --dp-surface: #ffffff;
+        --dp-soft: #f8f8fc;
+        --dp-text: #171321;
+        --dp-muted: #777386;
+        --dp-border: rgba(20, 16, 35, .08);
+        --dp-shadow: 0 18px 50px rgba(25, 17, 55, .07);
+    }
+
+    [data-theme="dark"] .cx-deposit {
+        --dp-bg: #080711;
+        --dp-surface: #111019;
+        --dp-soft: #171521;
+        --dp-text: #f7f5ff;
+        --dp-muted: #aaa5b8;
+        --dp-border: rgba(255, 255, 255, .08);
+        --dp-shadow: 0 18px 55px rgba(0, 0, 0, .28);
+    }
+
+    .cx-deposit * {
+        box-sizing: border-box;
+    }
+
+    /* ========================================
+       HERO
+    ======================================== */
+
+    .dp-hero {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 24px;
+        padding: 30px;
+        border-radius: 24px;
+        color: #fff;
+
+        background:
+            radial-gradient(
+                circle at 88% 15%,
+                rgba(115, 68, 255, .35),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 10% 110%,
+                rgba(115, 68, 255, .17),
+                transparent 34%
+            ),
+            linear-gradient(
+                135deg,
+                #171125 0%,
+                #0c0a13 100%
+            );
+
+        box-shadow: 0 20px 55px rgba(35, 18, 75, .20);
+    }
+
+    .dp-hero::before {
+        content: "";
+        position: absolute;
+        width: 230px;
+        height: 230px;
+        right: -100px;
+        top: -110px;
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 50%;
+    }
+
+    .dp-hero::after {
+        content: "";
+        position: absolute;
+        width: 330px;
+        height: 330px;
+        right: -30px;
+        bottom: -270px;
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 50%;
+    }
+
+    .dp-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+    }
+
+    .dp-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        padding: 6px 11px;
+        margin-bottom: 12px;
+
+        border: 1px solid rgba(255,255,255,.10);
+        border-radius: 999px;
+
+        background: rgba(255,255,255,.07);
+
+        color: rgba(255,255,255,.75);
+
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .dp-hero h1 {
+        margin: 0 0 8px;
+
+        font-size: clamp(27px, 4vw, 38px);
+        line-height: 1.1;
+        font-weight: 800;
+        letter-spacing: -.035em;
+    }
+
+    .dp-hero p {
+        max-width: 600px;
+
+        margin: 0;
+
+        color: rgba(255,255,255,.65);
+
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .dp-hero-icon {
+        width: 72px;
+        height: 72px;
+        flex: 0 0 72px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(115,68,255,.48),
+                rgba(115,68,255,.10)
+            );
+
+        box-shadow:
+            inset 0 1px rgba(255,255,255,.08);
+    }
+
+    .dp-hero-icon i {
+        font-size: 34px;
+    }
 
 
+    /* ========================================
+       MAIN GRID
+    ======================================== */
 
- <div class="row">
-  <div class="col-sm-12 grid-margin">
-    <div class="card">
-      <div class="card-body">
+    .dp-grid {
+        display: grid;
+        grid-template-columns:
+            minmax(0, 1.55fr)
+            minmax(280px, .75fr);
 
-        <h2>Deposit</h2>
+        gap: 22px;
 
-        {% if message != "" %}
-            <div class="alert alert-success d-flex align-items-center" role="alert">
-                <div>
-                {{message}}
+        align-items: start;
+    }
+
+    .dp-card {
+        overflow: hidden;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 22px;
+
+        background: var(--dp-surface);
+
+        box-shadow: var(--dp-shadow);
+    }
+
+    .dp-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 22px 24px;
+
+        border-bottom: 1px solid var(--dp-border);
+    }
+
+    .dp-card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .dp-title-icon {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background: rgba(115,68,255,.10);
+        color: var(--dp-primary);
+    }
+
+    .dp-title-icon i {
+        font-size: 21px;
+    }
+
+    .dp-card-title h2,
+    .dp-card-title h3 {
+        margin: 0;
+
+        color: var(--dp-text);
+
+        font-size: 16px;
+        font-weight: 750;
+    }
+
+    .dp-card-title span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--dp-muted);
+
+        font-size: 12px;
+    }
+
+    .dp-card-body {
+        padding: 24px;
+    }
+
+
+    /* ========================================
+       BALANCE
+    ======================================== */
+
+    .dp-balance {
+        position: relative;
+        overflow: hidden;
+
+        padding: 20px;
+        margin-bottom: 25px;
+
+        border: 1px solid rgba(115,68,255,.12);
+        border-radius: 17px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(115,68,255,.13),
+                rgba(115,68,255,.035)
+            );
+    }
+
+    .dp-balance::after {
+        content: "";
+
+        position: absolute;
+        right: -35px;
+        top: -45px;
+
+        width: 130px;
+        height: 130px;
+
+        border: 1px solid rgba(115,68,255,.10);
+        border-radius: 50%;
+    }
+
+    .dp-balance-label {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 6px;
+
+        color: var(--dp-muted);
+
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .dp-balance-label i {
+        color: var(--dp-primary);
+    }
+
+    .dp-balance-value {
+        position: relative;
+        z-index: 2;
+
+        color: var(--dp-text);
+
+        font-size: clamp(27px, 4vw, 35px);
+        font-weight: 800;
+
+        letter-spacing: -.035em;
+    }
+
+    .dp-balance-note {
+        position: relative;
+        z-index: 2;
+
+        margin-top: 5px;
+
+        color: var(--dp-muted);
+
+        font-size: 11px;
+    }
+
+
+    /* ========================================
+       FORM
+    ======================================== */
+
+    .dp-field {
+        margin-bottom: 21px;
+    }
+
+    .dp-label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 9px;
+
+        color: var(--dp-text);
+
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .dp-label i {
+        color: var(--dp-primary);
+        font-size: 16px;
+    }
+
+    .dp-input-wrap {
+        position: relative;
+    }
+
+    .dp-input-icon {
+        position: absolute;
+
+        left: 15px;
+        top: 50%;
+
+        z-index: 2;
+
+        transform: translateY(-50%);
+
+        color: var(--dp-muted);
+
+        font-size: 19px;
+
+        pointer-events: none;
+    }
+
+    .dp-input,
+    .dp-select {
+        width: 100%;
+        min-height: 52px;
+
+        padding: 13px 15px 13px 46px;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 13px;
+
+        outline: none;
+
+        background: var(--dp-soft);
+        color: var(--dp-text);
+
+        font-size: 14px;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease,
+            background .2s ease;
+    }
+
+    .dp-input:focus,
+    .dp-select:focus {
+        border-color: rgba(115,68,255,.65);
+
+        background: var(--dp-surface);
+
+        box-shadow:
+            0 0 0 4px rgba(115,68,255,.10);
+    }
+
+    .dp-input::placeholder {
+        color: var(--dp-muted);
+        opacity: .75;
+    }
+
+    .dp-select {
+        cursor: pointer;
+    }
+
+    .dp-help {
+        margin-top: 7px;
+
+        color: var(--dp-muted);
+
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .dp-minimum {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        padding: 11px 13px;
+        margin-top: 8px;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 10px;
+
+        background: var(--dp-soft);
+
+        font-size: 11px;
+    }
+
+    .dp-minimum span {
+        color: var(--dp-muted);
+    }
+
+    .dp-minimum strong {
+        color: var(--dp-text);
+    }
+
+
+    /* ========================================
+       PROCEED BUTTON
+    ======================================== */
+
+    .dp-proceed {
+        width: 100%;
+        min-height: 54px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+
+        margin-top: 5px;
+
+        border: 0;
+        border-radius: 13px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--dp-primary),
+                #8c63ff
+            );
+
+        color: #fff;
+
+        font-size: 14px;
+        font-weight: 750;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 12px 25px rgba(115,68,255,.22);
+
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            filter .2s ease;
+    }
+
+    .dp-proceed:hover {
+        transform: translateY(-2px);
+
+        filter: brightness(1.04);
+
+        box-shadow:
+            0 16px 30px rgba(115,68,255,.30);
+    }
+
+
+    /* ========================================
+       SUCCESS MESSAGE
+    ======================================== */
+
+    .dp-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        padding: 14px 16px;
+        margin-bottom: 22px;
+
+        border: 1px solid rgba(34,197,94,.18);
+        border-radius: 13px;
+
+        background: rgba(34,197,94,.09);
+
+        color: var(--dp-text);
+
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .dp-alert i {
+        flex: 0 0 auto;
+
+        color: var(--dp-success);
+
+        font-size: 20px;
+    }
+
+
+    /* ========================================
+       SIDE INFORMATION
+    ======================================== */
+
+    .dp-side {
+        padding: 22px;
+    }
+
+    .dp-side-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin-bottom: 18px;
+    }
+
+    .dp-side-heading i {
+        color: var(--dp-primary);
+        font-size: 21px;
+    }
+
+    .dp-side-heading h3 {
+        margin: 0;
+
+        color: var(--dp-text);
+
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .dp-info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .dp-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        padding: 13px;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 12px;
+
+        background: var(--dp-soft);
+    }
+
+    .dp-info > i {
+        margin-top: 1px;
+
+        color: var(--dp-primary);
+
+        font-size: 18px;
+    }
+
+    .dp-info strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--dp-text);
+
+        font-size: 12px;
+    }
+
+    .dp-info span {
+        display: block;
+
+        color: var(--dp-muted);
+
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+
+    /* ========================================
+       SECURITY
+    ======================================== */
+
+    .dp-security {
+        margin-top: 18px;
+        padding: 15px;
+
+        border: 1px solid rgba(115,68,255,.11);
+        border-radius: 13px;
+
+        background: rgba(115,68,255,.07);
+    }
+
+    .dp-security-heading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        margin-bottom: 6px;
+    }
+
+    .dp-security-heading i {
+        color: var(--dp-primary);
+        font-size: 18px;
+    }
+
+    .dp-security-heading strong {
+        color: var(--dp-text);
+        font-size: 12px;
+    }
+
+    .dp-security p {
+        margin: 0;
+
+        color: var(--dp-muted);
+
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+
+    /* ========================================
+       HISTORY
+    ======================================== */
+
+    .dp-history {
+        margin-top: 22px;
+    }
+
+    .dp-table-wrap {
+        overflow-x: auto;
+    }
+
+    .dp-table {
+        width: 100%;
+        min-width: 700px;
+
+        border-collapse: collapse;
+    }
+
+    .dp-table th {
+        padding: 15px 20px;
+
+        border-bottom: 1px solid var(--dp-border);
+
+        color: var(--dp-muted);
+
+        font-size: 10px;
+        font-weight: 750;
+
+        letter-spacing: .06em;
+        text-transform: uppercase;
+
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .dp-table td {
+        padding: 17px 20px;
+
+        border-bottom: 1px solid var(--dp-border);
+
+        color: var(--dp-text);
+
+        font-size: 12px;
+
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .dp-table tbody tr {
+        transition: background .2s ease;
+    }
+
+    .dp-table tbody tr:hover {
+        background: var(--dp-soft);
+    }
+
+    .dp-reference {
+        font-weight: 700;
+    }
+
+    .dp-amount {
+        font-weight: 750;
+    }
+
+    .dp-method {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .dp-method i {
+        color: var(--dp-primary);
+        font-size: 17px;
+    }
+
+    .dp-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 10px;
+
+        border-radius: 999px;
+
+        font-size: 10px;
+        font-weight: 750;
+
+        text-transform: capitalize;
+    }
+
+    .dp-status::before {
+        content: "";
+
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: currentColor;
+    }
+
+    .dp-success {
+        color: var(--dp-success);
+        background: rgba(34,197,94,.10);
+    }
+
+    .dp-pending {
+        color: var(--dp-warning);
+        background: rgba(245,158,11,.11);
+    }
+
+    .dp-failed {
+        color: var(--dp-danger);
+        background: rgba(239,68,68,.10);
+    }
+
+    .dp-empty {
+        padding: 55px 20px !important;
+
+        color: var(--dp-muted) !important;
+
+        text-align: center;
+    }
+
+    .dp-empty-icon {
+        width: 50px;
+        height: 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 12px;
+
+        border-radius: 15px;
+
+        background: var(--dp-soft);
+        color: var(--dp-muted);
+    }
+
+    .dp-empty-icon i {
+        font-size: 24px;
+    }
+
+
+    /* ========================================
+       DEPOSIT MODAL
+    ======================================== */
+
+    .dp-modal .modal-dialog {
+        max-width: 560px;
+    }
+
+    .dp-modal .modal-content {
+        overflow: hidden;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 22px;
+
+        background: var(--dp-surface);
+        color: var(--dp-text);
+
+        box-shadow:
+            0 30px 90px rgba(0,0,0,.30);
+    }
+
+    .dp-modal-header {
+        position: relative;
+
+        padding: 24px;
+
+        background:
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(115,68,255,.25),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #171125,
+                #0d0b15
+            );
+
+        color: #fff;
+    }
+
+    .dp-modal-icon {
+        width: 45px;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 13px;
+
+        border: 1px solid rgba(255,255,255,.10);
+        border-radius: 13px;
+
+        background: rgba(255,255,255,.08);
+    }
+
+    .dp-modal-icon i {
+        font-size: 22px;
+    }
+
+    .dp-modal-header h4 {
+        margin: 0 0 5px;
+
+        color: #fff;
+
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .dp-modal-header p {
+        margin: 0;
+
+        color: rgba(255,255,255,.60);
+
+        font-size: 12px;
+    }
+
+    .dp-modal-body {
+        padding: 22px;
+    }
+
+    .dp-payment-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+
+        margin-bottom: 20px;
+    }
+
+    .dp-summary-item {
+        padding: 13px;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 12px;
+
+        background: var(--dp-soft);
+    }
+
+    .dp-summary-label {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: var(--dp-muted);
+
+        font-size: 10px;
+        font-weight: 650;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+    .dp-summary-value {
+        display: block;
+
+        overflow: hidden;
+
+        color: var(--dp-text);
+
+        font-size: 13px;
+        font-weight: 750;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dp-instruction {
+        padding: 15px;
+
+        margin-bottom: 20px;
+
+        border: 1px solid rgba(115,68,255,.12);
+        border-radius: 13px;
+
+        background: rgba(115,68,255,.06);
+
+        color: var(--dp-muted);
+
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .dp-instruction strong {
+        color: var(--dp-text);
+    }
+
+    .dp-address-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 8px;
+    }
+
+    .dp-address-label span {
+        color: var(--dp-text);
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .dp-copy-status {
+        color: var(--dp-success);
+
+        font-size: 10px;
+        font-weight: 650;
+    }
+
+    .dp-address-box {
+        display: flex;
+        gap: 8px;
+
+        padding: 6px;
+
+        border: 1px solid var(--dp-border);
+        border-radius: 13px;
+
+        background: var(--dp-soft);
+    }
+
+    .dp-address-box input {
+        min-width: 0;
+        flex: 1;
+
+        border: 0;
+        outline: 0;
+
+        padding: 9px;
+
+        background: transparent;
+        color: var(--dp-text);
+
+        font-size: 12px;
+    }
+
+    .dp-copy {
+        flex: 0 0 auto;
+
+        padding: 9px 13px;
+
+        border: 0;
+        border-radius: 9px;
+
+        background: rgba(115,68,255,.12);
+        color: var(--dp-primary);
+
+        font-size: 11px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    .dp-upload {
+        margin-top: 20px;
+    }
+
+    .dp-upload-label {
+        display: block;
+
+        margin-bottom: 8px;
+
+        color: var(--dp-text);
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .dp-upload-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 14px;
+
+        border: 1px dashed rgba(115,68,255,.30);
+        border-radius: 13px;
+
+        background: rgba(115,68,255,.04);
+
+        cursor: pointer;
+
+        transition:
+            background .2s ease,
+            border-color .2s ease;
+    }
+
+    .dp-upload-box:hover {
+        border-color: var(--dp-primary);
+        background: rgba(115,68,255,.08);
+    }
+
+    .dp-upload-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 42px;
+
+        border-radius: 11px;
+
+        background: rgba(115,68,255,.10);
+        color: var(--dp-primary);
+    }
+
+    .dp-upload-icon i {
+        font-size: 20px;
+    }
+
+    .dp-upload-text {
+        min-width: 0;
+    }
+
+    .dp-upload-text strong {
+        display: block;
+
+        overflow: hidden;
+
+        color: var(--dp-text);
+
+        font-size: 12px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dp-upload-text span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--dp-muted);
+
+        font-size: 10px;
+    }
+
+    #paymentp {
+        display: none;
+    }
+
+    .dp-modal-actions {
+        display: flex;
+        gap: 10px;
+
+        margin-top: 22px;
+    }
+
+    .dp-cancel,
+    .dp-complete {
+        min-height: 48px;
+
+        border-radius: 12px;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+    .dp-cancel {
+        flex: .75;
+
+        border: 1px solid var(--dp-border);
+
+        background: var(--dp-soft);
+        color: var(--dp-text);
+    }
+
+    .dp-complete {
+        flex: 1.5;
+
+        border: 0;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--dp-primary),
+                #8c63ff
+            );
+
+        color: #fff;
+
+        box-shadow:
+            0 10px 22px rgba(115,68,255,.20);
+    }
+
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+
+    @media (max-width: 991px) {
+        .dp-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        .dp-hero {
+            padding: 22px;
+            border-radius: 20px;
+        }
+
+        .dp-hero-content {
+            align-items: flex-start;
+        }
+
+        .dp-hero-icon {
+            width: 55px;
+            height: 55px;
+            flex-basis: 55px;
+            border-radius: 16px;
+        }
+
+        .dp-hero-icon i {
+            font-size: 27px;
+        }
+
+        .dp-card {
+            border-radius: 18px;
+        }
+
+        .dp-card-header {
+            padding: 18px;
+        }
+
+        .dp-card-body {
+            padding: 18px;
+        }
+
+        .dp-side {
+            padding: 18px;
+        }
+
+        .dp-table th,
+        .dp-table td {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .dp-modal-body {
+            padding: 18px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .dp-hero-content {
+            display: block;
+        }
+
+        .dp-hero-icon {
+            display: none;
+        }
+
+        .dp-hero h1 {
+            font-size: 27px;
+        }
+
+        .dp-payment-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .dp-modal-actions {
+            flex-direction: column-reverse;
+        }
+
+        .dp-cancel,
+        .dp-complete {
+            width: 100%;
+            flex: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .dp-proceed,
+        .dp-upload-box,
+        .dp-input,
+        .dp-select {
+            transition: none;
+        }
+    }
+
+    /* Remove number input spinner buttons */
+    .dp-input::-webkit-outer-spin-button,
+    .dp-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .dp-input {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+</style>
+
+
+<div class="cx-deposit">
+
+    <!-- =====================================
+         HERO
+    ====================================== -->
+
+    <section class="dp-hero">
+
+        <div class="dp-hero-content">
+
+            <div>
+
+                <div class="dp-kicker">
+                    <i class="ph ph-plus-circle"></i>
+                    Fund Account
                 </div>
-            </div> 
-        {% endif %}
 
-        <form class="mt-5" action="" method="post" enctype='multipart/form-data'>
-             {% csrf_token %}
+                <h1>Deposit funds securely.</h1>
 
-            <div class="form-group">
-                <label>Enter Amount</label>
-                <input type="number" class="form-control form-control-lg" name="amount" min="75" required placeholder="Amount" aria-label="amount">
-                <h6 class="text-muted font-weight-normal mt-2">Note: minimum Deposit $ 75</h6>
+                <p>
+                    Add funds to your Cryptonestx account using one of the
+                    available payment methods below.
+                </p>
+
+            </div>
+
+            <div class="dp-hero-icon">
+                <i class="ph ph-wallet"></i>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         MAIN AREA
+    ====================================== -->
+
+    <div class="dp-grid">
+
+        <!-- =================================
+             DEPOSIT FORM
+        ================================== -->
+
+        <section class="dp-card">
+
+            <div class="dp-card-header">
+
+                <div class="dp-card-title">
+
+                    <div class="dp-title-icon">
+                        <i class="ph ph-wallet"></i>
+                    </div>
+
+                    <div>
+                        <h2>Make a Deposit</h2>
+                        <span>Choose an amount and payment method</span>
+                    </div>
+
+                </div>
+
             </div>
 
 
-            <div class="form-group">
-                <label>Choose Payment Method</label>
-                <select class="form-select form-select-lg" required name="payment_method" id="payment_g">
+            <div class="dp-card-body">
+
+                {% if message != "" %}
+
+                    <div class="dp-alert" role="alert">
+
+                        <i class="ph ph-check-circle"></i>
+
+                        <div>
+                            {{ message }}
+                        </div>
+
+                    </div>
+
+                {% endif %}
 
 
-                    {% for payment_gate in payment_gates %}
-                        <option {% if forloop.first %} selected {% endif %}>
-                            {{ payment_gate.name }} | {{ payment_gate.address }}
-                        </option>
+                <!-- CURRENT BALANCE -->
+
+                <div class="dp-balance">
+
+                    <div class="dp-balance-label">
+
+                        <i class="ph ph-wallet"></i>
+
+                        Current Account Balance
+
+                    </div>
+
+                    <div class="dp-balance-value">
+                        ${{ account_balance }}
+                    </div>
+
+                    <div class="dp-balance-note">
+                        Your current available account balance.
+                    </div>
+
+                </div>
+
+
+                <form
+                    action=""
+                    method="post"
+                    enctype="multipart/form-data"
+                    id="depositForm"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- AMOUNT -->
+
+                    <div class="dp-field">
+
+                        <label
+                            class="dp-label"
+                            for="depositAmount"
+                        >
+                            <i class="ph ph-currency-dollar"></i>
+                            Deposit Amount
+                        </label>
+
+                        <div class="dp-input-wrap">
+
+                            <i class="ph ph-currency-dollar dp-input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="depositAmount"
+                                class="dp-input"
+                                name="amount"
+                                min="75"
+                                required
+                                placeholder="0.00"
+                                inputmode="decimal"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                        <div class="dp-minimum">
+
+                            <span>
+                                Minimum deposit
+                            </span>
+
+                            <strong>
+                                $75.00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PAYMENT METHOD -->
+
+                    <div class="dp-field">
+
+                        <label
+                            class="dp-label"
+                            for="paymentMethod"
+                        >
+                            <i class="ph ph-coins"></i>
+                            Payment Method
+                        </label>
+
+                        <div class="dp-input-wrap">
+
+                            <i class="ph ph-wallet dp-input-icon"></i>
+
+                            <select
+                                class="dp-select"
+                                required
+                                name="payment_method"
+                                id="paymentMethod"
+                            >
+
+                                {% for payment_gate in payment_gates %}
+
+                                    <option
+                                        {% if forloop.first %}selected{% endif %}
+                                    >
+                                        {{ payment_gate.name }} | {{ payment_gate.address }}
+                                    </option>
+
+                                {% empty %}
+
+                                    <option disabled selected>
+                                        No payment methods available
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="dp-help">
+                            Select the payment network or asset you want to use.
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROCEED -->
+
+                    <button
+                        type="button"
+                        class="dp-proceed"
+                        id="proceedDeposit"
+                        data-bs-toggle="modal"
+                        data-bs-target="#depositModal"
+                    >
+
+                        <i class="ph ph-arrow-right"></i>
+
+                        Review Deposit
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             INFORMATION
+        ================================== -->
+
+        <aside>
+
+            <section class="dp-card dp-side">
+
+                <div class="dp-side-heading">
+
+                    <i class="ph ph-info"></i>
+
+                    <h3>Deposit Information</h3>
+
+                </div>
+
+
+                <div class="dp-info-list">
+
+                    <div class="dp-info">
+
+                        <i class="ph ph-currency-circle-dollar"></i>
+
+                        <div>
+
+                            <strong>
+                                Minimum Deposit
+                            </strong>
+
+                            <span>
+                                The minimum amount you can deposit is $75.00.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dp-info">
+
+                        <i class="ph ph-list-checks"></i>
+
+                        <div>
+
+                            <strong>
+                                Verify Details
+                            </strong>
+
+                            <span>
+                                Always confirm the payment address and network before sending funds.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dp-info">
+
+                        <i class="ph ph-image"></i>
+
+                        <div>
+
+                            <strong>
+                                Payment Proof
+                            </strong>
+
+                            <span>
+                                Upload a clear screenshot of your completed payment.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dp-info">
+
+                        <i class="ph ph-clock"></i>
+
+                        <div>
+
+                            <strong>
+                                Processing
+                            </strong>
+
+                            <span>
+                                Deposits may remain pending while payment verification is completed.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dp-security">
+
+                    <div class="dp-security-heading">
+
+                        <i class="ph ph-shield-check"></i>
+
+                        <strong>
+                            Deposit securely
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        Only send funds to the payment address displayed
+                        during the payment confirmation step.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+    </div>
+
+
+    <!-- =====================================
+         DEPOSIT HISTORY
+    ====================================== -->
+
+    <section class="dp-card dp-history">
+
+        <div class="dp-card-header">
+
+            <div class="dp-card-title">
+
+                <div class="dp-title-icon">
+                    <i class="ph ph-clock-counter-clockwise"></i>
+                </div>
+
+                <div>
+                    <h3>Deposit History</h3>
+                    <span>Your recent account funding activity</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="dp-table-wrap">
+
+            <table class="dp-table">
+
+                <thead>
+
+                    <tr>
+                        <th>#</th>
+                        <th>Reference</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for deposit in deposits %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+                                <span class="dp-reference">
+                                    {{ deposit.reference }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="dp-amount">
+                                    ${{ deposit.amount }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <span class="dp-method">
+
+                                    <i class="ph ph-coins"></i>
+
+                                    {{ deposit.payment_method }}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+                                {{ deposit.timestamp|date:"M d, Y H:i A" }}
+                            </td>
+
+                            <td>
+
+                                <span class="dp-status
+                                    {% if deposit.status == 'successful' %}
+                                        dp-success
+                                    {% elif deposit.status == 'pending' %}
+                                        dp-pending
+                                    {% else %}
+                                        dp-failed
+                                    {% endif %}
+                                ">
+
+                                    {{ deposit.status|title }}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="dp-empty"
+                            >
+
+                                <div class="dp-empty-icon">
+                                    <i class="ph ph-receipt"></i>
+                                </div>
+
+                                No deposit history yet.
+
+                            </td>
+
+                        </tr>
+
                     {% endfor %}
 
-                </select>
+                </tbody>
 
-            </div>
+            </table>
+
+        </div>
+
+    </section>
 
 
+    <!-- =====================================
+         PAYMENT CONFIRMATION MODAL
+    ====================================== -->
+
+    <div
+        class="modal fade dp-modal"
+        id="depositModal"
+        tabindex="-1"
+        aria-labelledby="depositModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
 
 
+                <!-- MODAL HEADER -->
 
+                <div class="dp-modal-header">
 
-            <div class="modal fade" id="modernModal" tabindex="-1" aria-labelledby="modernModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-md bg-gray-dark">
-                    <div class="modal-content shadow-lg rounded-4">
-                    <!-- <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title" id="modernModalLabel">Modern Pop-up</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div> -->
-                    <div class="modal-body  d-flex justify-content-center align-items-center">
-                        <h4>Complete Your Payment</h4>
-
-                        
+                    <div class="dp-modal-icon">
+                        <i class="ph ph-paper-plane-tilt"></i>
                     </div>
 
-                    <div class=" text-center p-2">
-                       <p> <b>Instructions: </b> To complete your payment of <strong id="m"></strong> 
-                        using <strong id="w"></strong>. Please copy the address below and make your payment. 
-                        When you have made your payment submit a screenshot of it for verification.</p>
+                    <h4 id="depositModalLabel">
+                        Complete Your Payment
+                    </h4>
 
+                    <p>
+                        Review the payment information before sending your funds.
+                    </p>
 
-                        <div class="p-3 ">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="referralLink" value="" readonly>
-                                <button class="btn btn-outline-secondary" id="copyBtn" type="button">
-                                Copy
-                                </button>
-                            </div>
-                            <div id="copyMessage" class="mt-2 text-success" style="display: none;">
-                                Link copied to clipboard!
-                            </div>
-                        </div>
-
-
-                        <div class="p-3">
-
-                            
-                            <div class="form-group">
-                                <label>Submit payment proof</label>
-                                <div class="input-group col-xs-12">
-                                    <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
-                                    <input type="file" class="file-upload-default" required name="paymentp" accept="image/*" id="fileInput">
-                                    <span class="input-group-append ms-2">
-                                    <button class="file-upload-browse btn btn-primary" type="button" id="browseButton">Browse</button>
-                                    </span>
-                                </div>
-                                </div>
-                        </div>
-
-                        <div class="">
-                            <button type="submit" class="btn btn-success">Complete Payment</button>
-                        </div>
-                        <p class="mt-2">This transaction will appear on your wallet
-                                                    statement as Deposit {{plan.plan_name}}.</p>
-                        
-                        <div class="mt-3 mb-3">
-                            <button type="button" class="btn btn-outline-light btn-fw"data-bs-dismiss="modal">Cancle</button>
-                        </div>
-                    </div>
-                    
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cancle</button>
-                        <button type="submit" class="btn btn-success">complete</button>
-                    </div> -->
-                    </div>
                 </div>
+
+
+                <!-- MODAL BODY -->
+
+                <div class="dp-modal-body">
+
+                    <div class="dp-payment-summary">
+
+                        <div class="dp-summary-item">
+
+                            <span class="dp-summary-label">
+                                Amount
+                            </span>
+
+                            <span
+                                class="dp-summary-value"
+                                id="depositAmountPreview"
+                            >
+                                $0.00
+                            </span>
+
+                        </div>
+
+
+                        <div class="dp-summary-item">
+
+                            <span class="dp-summary-label">
+                                Payment Method
+                            </span>
+
+                            <span
+                                class="dp-summary-value"
+                                id="depositMethodPreview"
+                            >
+                                —
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dp-instruction">
+
+                        <strong>Payment instructions:</strong>
+
+                        Send the exact amount shown above to the
+                        payment address below. After completing the
+                        payment, upload a clear screenshot or proof
+                        of the transaction.
+
+                    </div>
+
+
+                    <!-- PAYMENT ADDRESS -->
+
+                    <div>
+
+                        <div class="dp-address-label">
+
+                            <span>
+                                Payment Address
+                            </span>
+
+                            <span
+                                class="dp-copy-status"
+                                id="copyMessage"
+                                style="display:none;"
+                            >
+                                Address copied
+                            </span>
+
+                        </div>
+
+
+                        <div class="dp-address-box">
+
+                            <input
+                                type="text"
+                                id="referralLink"
+                                value=""
+                                readonly
+                                aria-label="Payment address"
+                            >
+
+                            <button
+                                type="button"
+                                class="dp-copy"
+                                id="copyBtn"
+                            >
+                                <i class="ph ph-copy"></i>
+                                Copy
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PAYMENT PROOF -->
+
+                    <div class="dp-upload">
+
+                        <label
+                            class="dp-upload-label"
+                            for="paymentp"
+                        >
+                            Payment Proof
+                        </label>
+
+
+                        <label
+                            class="dp-upload-box"
+                            for="paymentp"
+                        >
+
+                            <div class="dp-upload-icon">
+
+                                <i class="ph ph-upload-simple"></i>
+
+                            </div>
+
+
+                            <div class="dp-upload-text">
+
+                                <strong id="paymentFileName">
+                                    Choose payment screenshot
+                                </strong>
+
+                                <span>
+                                    PNG, JPG or JPEG image
+                                </span>
+
+                            </div>
+
+                        </label>
+
+
+                        <input
+                            type="file"
+                            id="paymentp"
+                            name="paymentp"
+                            accept="image/png,image/jpeg,image/jpg"
+                            required
+                            form="depositForm"
+                        >
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="dp-modal-actions">
+
+                        <button
+                            type="button"
+                            class="dp-cancel"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+
+
+                        <button
+                            type="submit"
+                            class="dp-complete"
+                            form="depositForm"
+                        >
+
+                            <i class="ph ph-check-circle"></i>
+
+                            Complete Deposit
+
+                        </button>
+
+                    </div>
+
+
+                </div>
+
             </div>
 
-        
+        </div>
 
-
-            <button type="button" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
-                Confirm & Proceed</button>
-        </form>
-
-
-      </div>
     </div>
-  </div>
-
-
 
 </div>
 
 
-
-
-
-
- <div class="row ">
-              <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Deposit History</h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              #
-                            </th>
-                            
-                            <th> Reference </th>
-                            <th> Amount </th>
-                            <th> Payment Method</th>
-                            <!-- <th> withdrawal_type" </th> -->
-                            <th> Date </th>
-                            <th> Status </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-
-
-                        {% for deposit in deposits %}
-
-                             <tr>
-
-                            </td> 
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ deposit.reference }}</td>
-                            <td>${{ deposit.amount }}</td>
-                            <td>{{ deposit.payment_method }}</td>
-                            <!-- <td>{{ withdrawal.withdrawal_type }}</td> -->
-
-                            <td>{{ deposit.timestamp|date:"M d, Y H:i A" }}</td>
-                            
-
-                                <td>
-                                <span class="badge {% if deposit.status == 'successful' %}badge-outline-success{% elif deposit.status == 'pending' %}badge-outline-warning{% else %}badge-outline-danger{% endif %}">
-                                    {{ deposit.status|title }}
-                                </span>
-                            </td>
-
-                              
-                          </tr>
-                          <tr>
-                          {% empty %}
-                          <tr>
-                              <td colspan="7" class="text-center text-muted">No Withdrawal Yet.</td>
-                          </tr>
-                        {% endfor %}
-                         
-                       
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-
-
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    // Get the input field and the output text element
-    // var inputField = document.getElementById("inputField");
-    // var outputText = document.getElementById("outputText");
+document.addEventListener("DOMContentLoaded", function () {
+
+    const amountInput = document.getElementById("depositAmount");
+    const paymentMethod = document.getElementById("paymentMethod");
+
+    const amountPreview = document.getElementById("depositAmountPreview");
+    const methodPreview = document.getElementById("depositMethodPreview");
+    const addressInput = document.getElementById("referralLink");
+
+    const copyButton = document.getElementById("copyBtn");
+    const copyMessage = document.getElementById("copyMessage");
+
+    const fileInput = document.getElementById("paymentp");
+    const fileName = document.getElementById("paymentFileName");
+
+    const depositAmount = document.getElementById("depositAmount");
 
 
-    var custom_amount = document.getElementById("custom-amount");
-    var invest_amount = document.getElementById("invest_amount");
 
+    depositAmount.addEventListener("input", function () {
+        let value = this.value.replace(/,/g, "");
 
-    var payment_g = document.getElementById("payment_g");
-    //var payment_m = document.getElementById("payment_m");
-    g = payment_g.options[payment_g.selectedIndex].text
-    console.log(g)
-    //refUrl.value = g.split('|')[1]
+        // Allow only numbers and decimal point
+        value = value.replace(/[^\d.]/g, "");
 
+        // Prevent multiple decimal points
+        const parts = value.split(".");
+        if (parts.length > 2) {
+            value = parts[0] + "." + parts.slice(1).join("");
+        }
 
-    var m = document.getElementById("m");
-    var w = document.getElementById("w");
-    
+        if (value) {
+            const [integerPart, decimalPart] = value.split(".");
 
-    var tr = document.getElementById("tr");
+            const formattedInteger = Number(integerPart || 0).toLocaleString("en-US");
 
-    var refUrl = document.getElementById("referralLink");
-
-
-    payment_g.addEventListener("change", function() {
-        // Update the text content of the output text element
-
-        console.log('hello')
-        //payment_m.textContent = payment_g.options[payment_g.selectedIndex].text.split('|')[0];
-
-        w.textContent = payment_g.options[payment_g.selectedIndex].text;
-
-        g = payment_g.options[payment_g.selectedIndex].text
-        refUrl.value = g.split('|')[1]
-       
-        
-            
+            this.value = decimalPart !== undefined
+                ? `${formattedInteger}.${decimalPart}`
+                : formattedInteger;
+        } else {
+            this.value = "";
+        }
     });
 
-    // Add an event listener to the input field for "input" event
-    // inputField.addEventListener("input", function() {
-        // Update the text content of the output text element
-        // outputText.textContent = "You typed: " + inputField.value;
-    // });
+
+    /*
+     * Update the payment preview whenever
+     * the user changes the amount.
+     */
+    function updateAmountPreview() {
+
+        const amount = parseFloat(amountInput.value);
+
+        if (!isNaN(amount) && amount > 0) {
+            amountPreview.textContent = "$" + amount.toFixed(2);
+        } else {
+            amountPreview.textContent = "$0.00";
+        }
+
+    }
 
 
+    /*
+     * Extract the payment method and address.
+     *
+     * Existing backend/template format:
+     *
+     * Payment Name | Payment Address
+     */
+    function updatePaymentPreview() {
+
+        if (!paymentMethod || paymentMethod.selectedIndex < 0) {
+            return;
+        }
+
+        const selectedText =
+            paymentMethod.options[paymentMethod.selectedIndex].text.trim();
+
+        const parts = selectedText.split("|");
+
+        const methodName = parts[0]
+            ? parts[0].trim()
+            : selectedText;
+
+        const address = parts.length > 1
+            ? parts.slice(1).join("|").trim()
+            : "";
+
+        methodPreview.textContent = methodName;
+
+        addressInput.value = address;
+
+    }
 
 
-    
+    amountInput.addEventListener(
+        "input",
+        updateAmountPreview
+    );
+
+
+    paymentMethod.addEventListener(
+        "change",
+        updatePaymentPreview
+    );
+
+
+    /*
+     * Update preview when modal opens.
+     */
+    const depositModal =
+        document.getElementById("depositModal");
+
+    if (depositModal) {
+
+        depositModal.addEventListener(
+            "show.bs.modal",
+            function () {
+
+                updateAmountPreview();
+                updatePaymentPreview();
+
+            }
+        );
+
+    }
+
+
+    /*
+     * Copy payment address.
+     */
+    copyButton.addEventListener(
+        "click",
+        async function () {
+
+            const address = addressInput.value;
+
+            if (!address) {
+                return;
+            }
+
+            try {
+
+                await navigator.clipboard.writeText(address);
+
+            } catch (error) {
+
+                addressInput.select();
+                addressInput.setSelectionRange(0, 99999);
+
+                document.execCommand("copy");
+
+            }
+
+            copyMessage.style.display = "inline";
+
+            setTimeout(function () {
+                copyMessage.style.display = "none";
+            }, 2000);
+
+        }
+    );
+
+
+    /*
+     * Display selected file name.
+     */
+    fileInput.addEventListener(
+        "change",
+        function () {
+
+            if (this.files && this.files.length > 0) {
+
+                fileName.textContent =
+                    this.files[0].name;
+
+            } else {
+
+                fileName.textContent =
+                    "Choose payment screenshot";
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Initial state.
+     */
+    updateAmountPreview();
+    updatePaymentPreview();
+
 });
 
 
-</script>
-
-
-
-
-<script>
-  // JavaScript to trigger the file input when the "Browse" button is clicked
-  document.getElementById('browseButton').addEventListener('click', function() {
-    document.getElementById('fileInput').click();  // Trigger the file input click event
-  });
-
-  // Optional: Show file name in the text input when a file is selected
-  document.getElementById('fileInput').addEventListener('change', function() {
-    var fileName = this.files[0] ? this.files[0].name : '';
-    document.querySelector('.file-upload-info').value = fileName;
-  });
-</script>
-
-
-
-
-    <script>
-    document.getElementById('copyBtn').addEventListener('click', function() {
-      // Get the input field
-      var referralLink = document.getElementById('referralLink');
-
-      // Select the text field
-      referralLink.select();
-      referralLink.setSelectionRange(0, 99999); // For mobile devices
-
-      // Copy the text to the clipboard
-      document.execCommand('copy');
-
-      // Show a message indicating the link was copied
-      var message = document.getElementById('copyMessage');
-      message.style.display = 'block';
-
-      // Hide the message after 2 seconds
-      setTimeout(function() {
-        message.style.display = 'none';
-      }, 2000);
-    });
-  </script>
-
-
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-    // Get the input field and the output text element
-    // var inputField = document.getElementById("inputField");
-    // var outputText = document.getElementById("outputText");
-
-
-    var custom_amount = document.getElementById("custom-amount");
-    var invest_amount = document.getElementById("invest_amount");
-
-
-    var payment_g = document.getElementById("payment_g");
-    //var payment_m = document.getElementById("payment_m");
-    g = payment_g.options[payment_g.selectedIndex].text
-    console.log(g)
-    //refUrl.value = g.split('|')[1]
-
-
-    var m = document.getElementById("m");
-    var w = document.getElementById("w");
-    
-
-    var tr = document.getElementById("tr");
-
-    var refUrl = document.getElementById("refUrl");
-
-
-    payment_g.addEventListener("change", function() {
-        // Update the text content of the output text element
-
-        console.log('hello')
-        //payment_m.textContent = payment_g.options[payment_g.selectedIndex].text.split('|')[0];
-
-        w.textContent = payment_g.options[payment_g.selectedIndex].text;
-
-        g = payment_g.options[payment_g.selectedIndex].text
-        refUrl.value = g.split('|')[1]
-       
-        
-        
-    });
-
-    // Add an event listener to the input field for "input" event
-    // inputField.addEventListener("input", function() {
-        // Update the text content of the output text element
-        // outputText.textContent = "You typed: " + inputField.value;
-    // });
-
-
-
-
-    
-});
-
 
 </script>
 
 
-    {% endblock content %}
+{% endblock content %}

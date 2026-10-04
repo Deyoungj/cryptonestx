@@ -1,167 +1,1133 @@
 {% extends 'client/dashboard/base.html' %}
 {% load static %}
 
-{% block title %}Cryptonestx | Profile {% endblock title %}
+{% block title %}Cryptonestx | Profile{% endblock title %}
 
-{% block profile_active %}  active current-page {% endblock profile_active %}
+{% block profile_active %}active current-page{% endblock profile_active %}
 
- {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+{% block base_acc_balance %}{{ account_balance }}{% endblock base_acc_balance %}
 
- ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+{% block base_acc_locked %}{{ locked_investments }}{% endblock base_acc_locked %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   CRYPTONESTX PROFILE
+   ========================================================= */
+
+.cx-profile {
+    --profile-primary: #7344ff;
+    --profile-primary-dark: #5d32dc;
+    --profile-primary-soft: rgba(115, 68, 255, .10);
+
+    --profile-bg: #f6f7fb;
+    --profile-surface: #ffffff;
+    --profile-surface-2: #fafaff;
+    --profile-text: #181620;
+    --profile-muted: #7c7888;
+    --profile-border: rgba(20, 17, 30, .08);
+
+    color: var(--profile-text);
+    padding-bottom: 45px;
+}
+
+/* Dark theme */
+
+[data-theme="dark"] .cx-profile {
+    --profile-bg: #08070d;
+    --profile-surface: #111019;
+    --profile-surface-2: #171520;
+    --profile-text: #f7f5ff;
+    --profile-muted: #a7a2b5;
+    --profile-border: rgba(255,255,255,.08);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.cx-profile-header {
+    position: relative;
+    overflow: hidden;
+    padding: 28px;
+    margin-bottom: 22px;
+    border-radius: 24px;
+    color: #fff;
+    background:
+        radial-gradient(
+            circle at 90% 0%,
+            rgba(255,255,255,.17),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 10% 100%,
+            rgba(58,31,155,.4),
+            transparent 34%
+        ),
+        linear-gradient(
+            135deg,
+            #8258ff 0%,
+            #7344ff 45%,
+            #4e2ab7 100%
+        );
+    box-shadow: 0 20px 50px rgba(115,68,255,.20);
+    animation: cxProfileFade .55s ease both;
+}
+
+.cx-profile-header::before {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    right: -100px;
+    top: -145px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow:
+        0 0 0 30px rgba(255,255,255,.025),
+        0 0 0 60px rgba(255,255,255,.018);
+}
+
+.cx-profile-header::after {
+    content: "";
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    right: 22%;
+    bottom: -105px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+}
+
+.cx-profile-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cx-profile-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 7px;
+    color: rgba(255,255,255,.7);
+    font-size: .68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.cx-profile-kicker i {
+    font-size: 15px;
+}
+
+.cx-profile-title {
+    margin: 0;
+    color: #fff !important;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -.035em;
+}
+
+.cx-profile-description {
+    max-width: 650px;
+    margin: 7px 0 0;
+    color: rgba(255,255,255,.72);
+    font-size: .82rem;
+    line-height: 1.65;
+}
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.cx-profile-grid {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 20px;
+}
+
+/* =========================================================
+   PROFILE CARD
+   ========================================================= */
+
+.cx-profile-card {
+    height: fit-content;
+    overflow: hidden;
+    border: 1px solid var(--profile-border);
+    border-radius: 22px;
+    background: var(--profile-surface);
+    animation: cxProfileFade .6s ease both;
+}
+
+.cx-profile-card-inner {
+    padding: 25px;
+}
+
+.cx-avatar-section {
+    text-align: center;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--profile-border);
+}
+
+.cx-avatar-wrapper {
+    position: relative;
+    width: 105px;
+    height: 105px;
+    margin: 0 auto 16px;
+}
+
+.cx-avatar {
+    width: 105px;
+    height: 105px;
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--profile-surface);
+    outline: 3px solid rgba(115,68,255,.25);
+    box-shadow: 0 12px 35px rgba(115,68,255,.18);
+    background: var(--profile-surface-2);
+}
+
+.cx-avatar-status {
+    position: absolute;
+    right: 3px;
+    bottom: 5px;
+    width: 20px;
+    height: 20px;
+    border: 4px solid var(--profile-surface);
+    border-radius: 50%;
+    background: #20c997;
+}
+
+.cx-profile-name {
+    margin: 0;
+    color: var(--profile-text);
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.cx-profile-email {
+    margin: 5px 0 0;
+    color: var(--profile-muted);
+    font-size: .72rem;
+    word-break: break-word;
+}
+
+.cx-profile-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--profile-primary-soft);
+    color: var(--profile-primary);
+    font-size: .65rem;
+    font-weight: 800;
+}
+
+.cx-upload {
+    position: relative;
+    display: block;
+    margin-top: 20px;
+    padding: 11px 13px;
+    border: 1px dashed rgba(115,68,255,.28);
+    border-radius: 12px;
+    background: var(--profile-primary-soft);
+    color: var(--profile-primary);
+    cursor: pointer;
+    font-size: .7rem;
+    font-weight: 800;
+    transition: all .2s ease;
+}
+
+.cx-upload:hover {
+    border-color: var(--profile-primary);
+    background: rgba(115,68,255,.15);
+}
+
+.cx-upload i {
+    margin-right: 5px;
+    font-size: 17px;
+    vertical-align: middle;
+}
+
+.cx-upload input {
+    display: none;
+}
+
+/* Account mini info */
+
+.cx-account-info {
+    padding-top: 20px;
+}
+
+.cx-account-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.cx-account-info-label {
+    color: var(--profile-muted);
+    font-size: .68rem;
+}
+
+.cx-account-info-value {
+    color: var(--profile-text);
+    font-size: .7rem;
+    font-weight: 800;
+}
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.cx-form-card {
+    overflow: hidden;
+    border: 1px solid var(--profile-border);
+    border-radius: 22px;
+    background: var(--profile-surface);
+    animation: cxProfileFade .65s ease both;
+}
+
+.cx-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 21px 24px;
+    border-bottom: 1px solid var(--profile-border);
+}
+
+.cx-form-title {
+    margin: 0;
+    color: var(--profile-text);
+    font-size: .95rem;
+    font-weight: 800;
+}
+
+.cx-form-subtitle {
+    margin: 4px 0 0;
+    color: var(--profile-muted);
+    font-size: .7rem;
+}
+
+.cx-form-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--profile-primary-soft);
+    color: var(--profile-primary);
+    font-size: 20px;
+}
+
+.cx-form-body {
+    padding: 25px;
+}
+
+/* =========================================================
+   FORM FIELDS
+   ========================================================= */
+
+.cx-field {
+    margin-bottom: 19px;
+}
+
+.cx-field:last-child {
+    margin-bottom: 0;
+}
+
+.cx-field-label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--profile-text);
+    font-size: .69rem;
+    font-weight: 800;
+}
+
+.cx-field-label span {
+    color: var(--profile-muted);
+    font-weight: 500;
+}
+
+.cx-field-wrapper {
+    position: relative;
+}
+
+.cx-field-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--profile-muted);
+    font-size: 17px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.cx-input,
+.cx-select {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 13px 0 40px;
+    border: 1px solid var(--profile-border);
+    border-radius: 12px;
+    outline: none;
+    background: var(--profile-surface-2);
+    color: var(--profile-text);
+    font-size: .76rem;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.cx-input::placeholder {
+    color: var(--profile-muted);
+}
+
+.cx-input:focus,
+.cx-select:focus {
+    border-color: rgba(115,68,255,.55);
+    background: var(--profile-surface);
+    box-shadow: 0 0 0 4px rgba(115,68,255,.08);
+}
+
+.cx-input[readonly] {
+    cursor: not-allowed;
+    opacity: .72;
+}
+
+/* Select arrow compatibility */
+
+.cx-select {
+    appearance: auto;
+}
+
+/* =========================================================
+   EMAIL FIELD
+   ========================================================= */
+
+.cx-email-notice {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 7px;
+    color: var(--profile-muted);
+    font-size: .63rem;
+}
+
+.cx-email-notice i {
+    color: var(--profile-primary);
+}
+
+/* =========================================================
+   SAVE AREA
+   ========================================================= */
+
+.cx-save-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 7px;
+    padding-top: 22px;
+    border-top: 1px solid var(--profile-border);
+}
+
+.cx-save-note {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--profile-muted);
+    font-size: .66rem;
+}
+
+.cx-save-note i {
+    color: #20c997;
+    font-size: 17px;
+}
+
+.cx-save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 0 19px;
+    border: 0;
+    border-radius: 11px;
+    background: var(--profile-primary);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all .22s ease;
+}
+
+.cx-save-btn:hover {
+    background: var(--profile-primary-dark);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 9px 22px rgba(115,68,255,.22);
+}
+
+.cx-save-btn i {
+    font-size: 17px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .cx-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cx-profile-card {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .cx-avatar-section {
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+}
+
+@media (max-width: 767.98px) {
+
+    .cx-profile {
+        padding-bottom: 25px;
+    }
+
+    .cx-profile-header {
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    .cx-profile-title {
+        font-size: 1.4rem;
+    }
+
+    .cx-profile-description {
+        font-size: .75rem;
+    }
+
+    .cx-profile-card,
+    .cx-form-card {
+        border-radius: 18px;
+    }
+
+    .cx-profile-card-inner,
+    .cx-form-body {
+        padding: 20px;
+    }
+
+    .cx-form-header {
+        padding: 18px 20px;
+    }
+
+    .cx-save-area {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .cx-save-btn {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 420px) {
+
+    .cx-profile-header {
+        padding: 19px;
+    }
+
+    .cx-profile-title {
+        font-size: 1.25rem;
+    }
+
+    .cx-input,
+    .cx-select {
+        min-height: 44px;
+    }
+
+}
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes cxProfileFade {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .cx-profile *,
+    .cx-profile *::before,
+    .cx-profile *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+}
+</style>
 
 
+<div class="container-fluid cx-profile">
 
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
 
+    <div class="cx-profile-header">
 
- {% block content %}
+        <div class="cx-profile-header-content">
 
-<div class="row">
-      <div class="col-sm-12 grid-margin">
-        <div class="card">
-          <div class="card-body">
+            <div class="cx-profile-kicker">
+                <i class="ph ph-user-circle"></i>
+                Account Center
+            </div>
 
-            <h2>profile</h2>
+            <h1 class="cx-profile-title">
+                Profile & Personal Information
+            </h1>
 
-            <form class="mt-5 form-sample" action="" method="post" enctype='multipart/form-data'>
-              {% csrf_token %}
+            <p class="cx-profile-description">
+                Manage your personal information, contact details and
+                profile picture from your Cryptonestx account.
+            </p>
 
-                <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Full Name</label>
-                    <div class="col-sm-9">
-                      <input type="text" name="full_name" value="{{user.full_name}}" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Email</label>
-                    <div class="col-sm-9">
-                      <input type="email" value="{{user.email}}" readonly class="form-control" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-               <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Phone</label>
-                    <div class="col-sm-9">
-                      <input type="text" value="{{user.profile.phone}}" name="phone"  placeholder="Phone number" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Gender</label>
-                    <div class="col-sm-9">
-                      <select class="form-select form-select-lg"  id="payment_g" name="gender"> 
-                            {% if user.profile.gender == "female" %}
-                     <option>Male</option>
-                     <option selected>Female</option>
-                     {% elif user.profile.gender == "female" %}
-                     <option selected>Male</option>
-                     <option >Female</option>
-                     {% else %}
-
-                     <option>Male</option>
-                     <option>Female</option>
-                     {% endif %}
-                        </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Address</label>
-                    <div class="col-sm-9">
-                      <input type="text" name="address" value="{{user.profile.address}}" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Zipcode</label>
-                    <div class="col-sm-9">
-                      <input type="text" name="zipcode" value="{{user.profile.zip_code}}" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">State</label>
-                    <div class="col-sm-9">
-                      <input type="text" name="state" id="address-st" value="{{user.profile.state}}" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Country</label>
-                    <div class="col-sm-9">
-                      <input type="text" name="country" id="address-st" value="{{user.profile.country}}" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              
-
-              <div class="col-12 flex mb-4">
-                        <div class="user-avatar md"> <img class="img-xs rounded-circle" src="{{ request.user.profile.profile_picture.url }}" id="currentProfilePicture" name="profile_picture"  alt="Profile Picture"> </div>
-                        <br />
-                        <input type="file" class="btn btn-outline-success btn-fw"  id="profile_picture" name="profile_picture" accept="image/*" onchange="previewImage(event)">
-                    </div>
-
-
-                <!-- <div class="form-group">
-                    <label>Enter Amount</label>
-                    <input type="number" class="form-control form-control-lg" placeholder="Amount" aria-label="amount">
-                    <h6 class="text-muted font-weight-normal mt-2">Note: minimum Deposit $ 500</h6>
-                </div> -->
-
-
-                <button type="submit" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
-                    Update Profile</button>
-            </form>
-
-
-          </div>
         </div>
-      </div>
-
-
 
     </div>
 
 
+    <!-- =====================================================
+         PROFILE LAYOUT
+    ====================================================== -->
+
+    <div class="cx-profile-grid">
+
+
+        <!-- =================================================
+             PROFILE SUMMARY
+        ================================================== -->
+
+        <div class="cx-profile-card">
+
+            <div class="cx-profile-card-inner">
+
+                <div class="cx-avatar-section">
+
+                    <div class="cx-avatar-wrapper">
+
+                        <img
+                            class="cx-avatar"
+                            src="{{ request.user.profile.profile_picture.url }}"
+                            id="currentProfilePicture"
+                            alt="Profile Picture"
+                        >
+
+                        <span class="cx-avatar-status"></span>
+
+                    </div>
+
+
+                    <h2 class="cx-profile-name">
+                        {{ user.full_name|default:"Account Holder" }}
+                    </h2>
+
+                    <p class="cx-profile-email">
+                        {{ user.email }}
+                    </p>
+
+
+                    <div class="cx-profile-level">
+
+                        <i class="ph ph-ranking"></i>
+
+                        Level {{ account_level|default:"1" }}
+
+                    </div>
+
+
+                    <label class="cx-upload">
+
+                        <i class="ph ph-camera"></i>
+
+                        Change profile picture
+
+                        <input
+                            type="file"
+                            id="profile_picture"
+                            name="profile_picture"
+                            accept="image/*"
+                            form="profileForm"
+                            onchange="previewImage(event)"
+                        >
+
+                    </label>
+
+                </div>
+
+
+                <!-- Account information -->
+
+                <div class="cx-account-info">
+
+                    <div class="cx-account-info-row">
+
+                        <span class="cx-account-info-label">
+                            Available Balance
+                        </span>
+
+                        <span class="cx-account-info-value">
+                            ${{ account_balance|floatformat:2 }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="cx-account-info-row">
+
+                        <span class="cx-account-info-label">
+                            Locked Investments
+                        </span>
+
+                        <span class="cx-account-info-value">
+                            ${{ locked_investments|floatformat:2 }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="cx-account-info-row">
+
+                        <span class="cx-account-info-label">
+                            Email
+                        </span>
+
+                        <span class="cx-account-info-value">
+                            Verified account
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PROFILE FORM
+        ================================================== -->
+
+        <div class="cx-form-card">
+
+            <div class="cx-form-header">
+
+                <div>
+
+                    <h2 class="cx-form-title">
+                        Personal Information
+                    </h2>
+
+                    <p class="cx-form-subtitle">
+                        Update your account information below.
+                    </p>
+
+                </div>
+
+                <div class="cx-form-icon">
+                    <i class="ph ph-user-gear"></i>
+                </div>
+
+            </div>
+
+
+            <div class="cx-form-body">
+
+                <form
+                    id="profileForm"
+                    action=""
+                    method="post"
+                    enctype="multipart/form-data"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- =====================================
+                         FULL NAME + EMAIL
+                    ====================================== -->
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Full Name
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-user cx-field-icon"></i>
+
+                                    <input
+                                        type="text"
+                                        name="full_name"
+                                        value="{{ user.full_name }}"
+                                        class="cx-input"
+                                        placeholder="Enter your full name"
+                                        autocomplete="name"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Email Address
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-envelope cx-field-icon"></i>
+
+                                    <input
+                                        type="email"
+                                        value="{{ user.email }}"
+                                        readonly
+                                        class="cx-input"
+                                    >
+
+                                </div>
+
+                                <div class="cx-email-notice">
+
+                                    <i class="ph ph-lock-key"></i>
+
+                                    Your email address cannot be changed here.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         PHONE + GENDER
+                    ====================================== -->
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Phone Number
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-phone cx-field-icon"></i>
+
+                                    <input
+                                        type="text"
+                                        value="{{ user.profile.phone }}"
+                                        name="phone"
+                                        placeholder="Enter your phone number"
+                                        class="cx-input"
+                                        autocomplete="tel"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Gender
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-gender-intersex cx-field-icon"></i>
+
+                                    <select
+                                        class="cx-select"
+                                        name="gender"
+                                    >
+
+                                        {% if user.profile.gender == "Male" or user.profile.gender == "male" %}
+
+                                            <option selected>Male</option>
+                                            <option>Female</option>
+
+                                        {% elif user.profile.gender == "Female" or user.profile.gender == "female" %}
+
+                                            <option>Male</option>
+                                            <option selected>Female</option>
+
+                                        {% else %}
+
+                                            <option selected disabled>
+                                                Select gender
+                                            </option>
+
+                                            <option>Male</option>
+                                            <option>Female</option>
+
+                                        {% endif %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         ADDRESS + ZIP
+                    ====================================== -->
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-8">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Address
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-map-pin cx-field-icon"></i>
+
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value="{{ user.profile.address }}"
+                                        class="cx-input"
+                                        placeholder="Enter your address"
+                                        autocomplete="street-address"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-4">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Zipcode
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-map-pin-line cx-field-icon"></i>
+
+                                    <input
+                                        type="text"
+                                        name="zipcode"
+                                        value="{{ user.profile.zip_code }}"
+                                        class="cx-input"
+                                        placeholder="Zip code"
+                                        autocomplete="postal-code"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         STATE + COUNTRY
+                    ====================================== -->
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    State
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-buildings cx-field-icon"></i>
+
+                                    <input
+                                        type="text"
+                                        name="state"
+                                        value="{{ user.profile.state }}"
+                                        class="cx-input"
+                                        placeholder="State / Province"
+                                        autocomplete="address-level1"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="cx-field">
+
+                                <label class="cx-field-label">
+                                    Country
+                                </label>
+
+                                <div class="cx-field-wrapper">
+
+                                    <i class="ph ph-globe cx-field-icon"></i>
+
+                                    <input
+                                        type="text"
+                                        name="country"
+                                        value="{{ user.profile.country }}"
+                                        class="cx-input"
+                                        placeholder="Country"
+                                        autocomplete="country-name"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         SAVE
+                    ====================================== -->
+
+                    <div class="cx-save-area">
+
+                        <div class="cx-save-note">
+
+                            <i class="ph ph-shield-check"></i>
+
+                            Your profile information is securely stored.
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="cx-save-btn"
+                        >
+
+                            <i class="ph ph-check"></i>
+
+                            Save Changes
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 <script>
-    // JavaScript for live image preview
-    function previewImage(event) {
-        const currentProfilePicture = document.getElementById('currentProfilePicture');
-        const file = event.target.files[0];
+function previewImage(event) {
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentProfilePicture.src = e.target.result; // Update image source
-            };
-            reader.readAsDataURL(file);
-        }
+    const currentProfilePicture =
+        document.getElementById("currentProfilePicture");
+
+    const file = event.target.files[0];
+
+    if (!file || !currentProfilePicture) {
+        return;
     }
+
+    if (!file.type.startsWith("image/")) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        currentProfilePicture.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
 </script>
+
 {% endblock content %}

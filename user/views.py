@@ -47,8 +47,8 @@ def register(request):
         password = request.POST.get('password', '')
         password2 = request.POST.get('password1', '')
 
-        id_front = request.FILES.get("id_front")
-        id_back = request.FILES.get("id_back")
+        # id_front = request.FILES.get("id_front")
+        # id_back = request.FILES.get("id_back")
         ssn = request.POST.get("ssn")
 
         # Input Validation
@@ -62,100 +62,35 @@ def register(request):
             return render(request, "user/signup.html", {'message': "Passwords didn't match"})
 
 
-        # try:
-        #     # a_subject = "Welcome"
-
-        #     html_content = render_to_string('user/email_temp/welcome.html',{
-        #         'user':full_name,
-                  
-        #     }
-        #     )
-
-
-        #     a_html_content = render_to_string('user/email_temp/welcome_admin.html',{
-        #         'user':full_name,
-        #         'email':email,
-                  
-        #     }
-        #     )
-
-        #     email_msg = EmailMultiAlternatives(
-        #             subject="Welcome to Cardone Mining Capital",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[email],
-        #             )   
-            
-
-        #     a_email_msg = EmailMultiAlternatives(
-        #             subject="New Account Signup Alert",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[settings.ADMIN_EMAIL_CUSTOM],
-        #             )   
-
-
-
-  
-
-
-
-        #     email_msg.attach_alternative(html_content, "text/html")
-        #     a_email_msg.attach_alternative(a_html_content, "text/html")
-
-
-
-        #     # logo_path = os.path.join(
-        #     #     settings.BASE_DIR,
-        #     #     "client/static/client/images/logo1.png"
-        #     # )
-
-
-
-        #     # with open(logo_path, "rb") as f:
-        #     #     logo = MIMEImage(f.read())
-        #     #     logo.add_header("Content-ID", "<logo>")
-        #     #     logo.add_header("Content-Disposition", "inline", filename="logo.png")
-        #     #     email_msg.attach(logo)
-
-        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[email])
-        #     # a_email_msg.content_subtype = 'html'
-            
-        #     # # email_msg = send_mail(subject, 'message', to=[email])
-
-        #     # email_msg.send()
-        #     email_msg.send()
-        #     a_email_msg.send()
-
-
-        # except Exception as e:
-        #     print(e)
-
-
-            
-
+ 
+        user = CustomUser.objects.create_user(
+        email=email,
+        password=password,
+        full_name=full_name,
+        is_active=True,
+        )
         # # Create User
-        user = CustomUser.objects.create(full_name=full_name, email=email)
-        user.set_password(password)
-        user.user_password = password
-        user.is_active = False
-        user.save()
+        # user = CustomUser.objects.create(full_name=full_name, email=email)
+        # user.set_password(password)
+        # user.user_password = password
+        # user.is_active = False
+        # user.save()
 
         # Create KYC record for the user
-        KYC.objects.create(
-            user=user,
-            id_front=id_front,
-            id_back=id_back,
-            ssn=ssn
-        )
+        # KYC.objects.create(
+        #     user=user,
+        #     id_front=id_front,
+        #     id_back=id_back,
+        #     ssn=ssn
+        # )
 
         # Authenticate and Login
-        # auth_user = authenticate(request, email=email, password=password)
-        # if auth_user:
-        #     auth_login(request, auth_user)
-        #     return redirect('overview')
+        auth_user = authenticate(request, email=email, password=password)
+        if auth_user:
+            auth_login(request, auth_user)
+            return redirect('overview')
 
-        return redirect("kyc_review")
+        # return redirect("kyc_review")
 
         # try:
         #     pass
@@ -432,93 +367,7 @@ def referral_signup(request, referral_code):
             return render(request, "user/signup.html", {'message': "Invalid referral code"})
 
 
-        
-        # try:
-        #     # a_subject = "Welcome"
 
-        #     html_content = render_to_string('user/email_temp/welcome.html',{
-        #         'user':full_name,
-                  
-        #     }
-        #     )
-
-        #     b_html_content = render_to_string('user/email_temp/welcome.html',{
-        #         'user':full_name,
-                  
-        #     }
-        #     )
-
-
-        #     a_html_content = render_to_string('user/email_temp/welcome_admin.html',{
-        #         'user':full_name,
-        #         'email':email,
-                  
-        #     }
-        #     )
-
-        #     email_msg = EmailMultiAlternatives(
-        #             subject="Welcome to Cardone Mining Capital",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[email],
-        #             )   
-            
-
-        #     a_email_msg = EmailMultiAlternatives(
-        #             subject="New referal Signup Alert",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[settings.ADMIN_EMAIL_CUSTOM],
-        #             ) 
-
-
-        #     b_email_msg = EmailMultiAlternatives(
-        #             subject="referal Signup Alert",
-        #             body="",
-        #             from_email=settings.DEFAULT_FROM_EMAIL,
-        #             to=[ref_user.email],
-        #             )   
-
-
-
-  
-
-
-
-        #     email_msg.attach_alternative(html_content, "text/html")
-        #     a_email_msg.attach_alternative(a_html_content, "text/html")
-        #     b_email_msg.attach_alternative(b_html_content, "text/html")
-
-
-
-        #     # logo_path = os.path.join(
-        #     #     settings.BASE_DIR,
-        #     #     "client/static/client/images/logo1.png"
-        #     # )
-
-
-
-        #     # with open(logo_path, "rb") as f:
-        #     #     logo = MIMEImage(f.read())
-        #     #     logo.add_header("Content-ID", "<logo>")
-        #     #     logo.add_header("Content-Disposition", "inline", filename="logo.png")
-        #     #     email_msg.attach(logo)
-
-        #     # a_email_msg = EmailMessage(a_subject, a_message, to=[email])
-        #     # a_email_msg.content_subtype = 'html'
-            
-        #     # # email_msg = send_mail(subject, 'message', to=[email])
-
-        #     # email_msg.send()
-        #     email_msg.send()
-        #     a_email_msg.send()
-        #     b_email_msg.send()
-
-
-        # except Exception as e:
-        #     print(e)
-
-            
 
         
         user = CustomUser.objects.create(full_name=full_name, email=email,referrer=ref_user)

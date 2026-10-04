@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'client',
     'user',
+    'django.contrib.humanize',
     # 'django_recaptcha',
 ]
 

@@ -1,465 +1,2017 @@
 {% extends 'client/dashboard/base.html' %}
-
 {% load static %}
+{% load humanize %}
 
-{% block title %}Cryptonestx | Overview {% endblock title %}
+{% block title %}Cryptonestx | Overview{% endblock title %}
 
-{% block dash_active %}  active {% endblock dash_active %}
+{% block dash_active %}active{% endblock dash_active %}
+
+{% block base_acc_balance %}
+    {{ account_balance|floatformat:2|intcomma }}
+{% endblock base_acc_balance %}
+
+{% block base_acc_locked %}
+    {{ locked_investments|floatformat:2|intcomma }}
+{% endblock base_acc_locked %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   CRYPTONESTX — PREMIUM OVERVIEW
+   ========================================================= */
+
+.cx-overview {
+    --cx-purple: #7344ff;
+    --cx-purple-dark: #5d32dc;
+    --cx-purple-light: rgba(115, 68, 255, .10);
+
+    --cx-success: #20c997;
+    --cx-warning: #f5b942;
+    --cx-danger: #ef5b68;
+
+    --cx-page: #f6f7fb;
+    --cx-surface: #ffffff;
+    --cx-surface-2: #f9f9fc;
+    --cx-text: #17151f;
+    --cx-muted: #777384;
+    --cx-border: rgba(20, 17, 30, .075);
+
+    color: var(--cx-text);
+    padding-bottom: 40px;
+}
+
+/* DARK MODE
+   Works with the data-theme system from base.html.
+--------------------------------------------------------- */
+
+[data-theme="dark"] .cx-overview {
+    --cx-page: #08070d;
+    --cx-surface: #111019;
+    --cx-surface-2: #171520;
+    --cx-text: #f7f5ff;
+    --cx-muted: #a7a2b5;
+    --cx-border: rgba(255,255,255,.08);
+}
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+.cx-overview * {
+    box-sizing: border-box;
+}
+
+.cx-card {
+    background: var(--cx-surface);
+    border: 1px solid var(--cx-border);
+    border-radius: 22px;
+    color: var(--cx-text);
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+}
+
+.cx-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 45px rgba(20, 15, 40, .08);
+}
+
+[data-theme="dark"] .cx-card:hover {
+    box-shadow: 0 18px 45px rgba(0,0,0,.28);
+}
+
+/* =========================================================
+   PAGE INTRO
+   ========================================================= */
+
+.cx-page-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+    animation: cxFadeUp .55s ease both;
+}
+
+.cx-page-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--cx-purple);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+}
+
+.cx-page-kicker::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--cx-purple);
+    box-shadow: 0 0 0 5px rgba(115,68,255,.10);
+}
+
+.cx-page-title {
+    margin: 0;
+    color: var(--cx-text);
+    font-size: clamp(1.55rem, 3vw, 2.15rem);
+    font-weight: 800;
+    letter-spacing: -.035em;
+}
+
+.cx-page-subtitle {
+    margin: 7px 0 0;
+    color: var(--cx-muted);
+    font-size: .88rem;
+}
+
+/* =========================================================
+   HERO / PORTFOLIO CARD
+   ========================================================= */
+
+.cx-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 265px;
+    padding: 30px;
+    border-radius: 25px;
+    color: #fff;
+    background:
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(255,255,255,.20),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 70% 100%,
+            rgba(70, 39, 190, .45),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #8258ff 0%,
+            #7344ff 42%,
+            #4e2ab7 100%
+        );
+    box-shadow: 0 22px 55px rgba(115,68,255,.22);
+    animation: cxFadeUp .6s ease both;
+}
+
+.cx-hero::before,
+.cx-hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.cx-hero::before {
+    width: 280px;
+    height: 280px;
+    right: -80px;
+    top: -145px;
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow:
+        0 0 0 35px rgba(255,255,255,.025),
+        0 0 0 70px rgba(255,255,255,.018);
+}
+
+.cx-hero::after {
+    width: 180px;
+    height: 180px;
+    right: 15%;
+    bottom: -135px;
+    background: rgba(255,255,255,.055);
+}
+
+.cx-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cx-hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.cx-welcome {
+    font-size: .78rem;
+    font-weight: 600;
+    color: rgba(255,255,255,.72);
+    margin-bottom: 5px;
+}
+
+.cx-hero-title {
+    margin: 0;
+    color: #fff !important;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    font-weight: 800;
+    letter-spacing: -.035em;
+}
+
+.cx-hero-subtitle {
+    margin: 7px 0 0;
+    max-width: 560px;
+    color: rgba(255,255,255,.72);
+    font-size: .84rem;
+    line-height: 1.65;
+}
+
+.cx-level {
+    min-width: 105px;
+    padding: 12px 15px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 15px;
+    background: rgba(255,255,255,.09);
+    backdrop-filter: blur(14px);
+    text-align: center;
+}
+
+.cx-level-label {
+    display: block;
+    color: rgba(255,255,255,.62);
+    font-size: .64rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 700;
+}
+
+.cx-level-value {
+    display: block;
+    margin-top: 2px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.cx-balance-area {
+    margin-top: 34px;
+}
+
+.cx-balance-label {
+    color: rgba(255,255,255,.68);
+    font-size: .72rem;
+    font-weight: 600;
+}
+
+.cx-main-balance {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+    color: #fff;
+    font-size: clamp(2rem, 5vw, 3.15rem);
+    font-weight: 800;
+    letter-spacing: -.05em;
+}
+
+.cx-main-balance-symbol {
+    font-size: 1.3rem;
+    opacity: .75;
+    font-weight: 600;
+}
+
+.cx-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 999px;
+    background: rgba(255,255,255,.09);
+    color: rgba(255,255,255,.88);
+    font-size: .7rem;
+    font-weight: 700;
+}
+
+.cx-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #66f2bd;
+    box-shadow: 0 0 12px rgba(102,242,189,.8);
+    animation: cxPulse 2s infinite;
+}
+
+/* Floating crypto coin */
+.cx-hero-coin {
+    position: absolute;
+    right: 8%;
+    bottom: 20px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,.17);
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 35px;
+    z-index: 1;
+    animation: cxFloat 5s ease-in-out infinite;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.cx-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.cx-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 43px;
+    border-radius: 12px;
+    border: 1px solid var(--cx-border);
+    background: var(--cx-surface);
+    color: var(--cx-text);
+    text-decoration: none;
+    font-size: .76rem;
+    font-weight: 700;
+    transition: all .25s ease;
+}
+
+.cx-action:hover {
+    color: var(--cx-purple);
+    border-color: rgba(115,68,255,.25);
+    transform: translateY(-2px);
+}
+
+.cx-action-primary {
+    background: var(--cx-purple);
+    color: #fff !important;
+    border-color: var(--cx-purple);
+}
+
+.cx-action-primary:hover {
+    background: var(--cx-purple-dark);
+}
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.cx-stat {
+    position: relative;
+    height: 100%;
+    padding: 21px;
+    overflow: hidden;
+    animation: cxFadeUp .55s ease both;
+}
+
+.cx-stat:nth-child(2) {
+    animation-delay: .05s;
+}
+
+.cx-stat:nth-child(3) {
+    animation-delay: .1s;
+}
+
+.cx-stat:nth-child(4) {
+    animation-delay: .15s;
+}
+
+.cx-stat::after {
+    content: "";
+    position: absolute;
+    right: -30px;
+    bottom: -35px;
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    background: var(--cx-purple-light);
+}
+
+.cx-stat-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cx-stat-icon {
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: var(--cx-purple-light);
+    color: var(--cx-purple);
+    font-size: 20px;
+}
+
+.cx-stat-label {
+    color: var(--cx-muted);
+    font-size: .69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.cx-stat-value {
+    margin: 7px 0 0;
+    color: var(--cx-text);
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    font-weight: 800;
+    letter-spacing: -.025em;
+    word-break: break-word;
+}
+
+.cx-stat-description {
+    position: relative;
+    z-index: 2;
+    margin: 17px 0 0;
+    color: var(--cx-muted);
+    font-size: .7rem;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   PROMOTIONAL CREDIT
+   ========================================================= */
+
+.cx-promo {
+    position: relative;
+    overflow: hidden;
+    padding: 21px;
+    border: 1px solid rgba(115,68,255,.15);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(115,68,255,.09),
+            rgba(115,68,255,.025)
+        );
+}
+
+[data-theme="dark"] .cx-promo {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(115,68,255,.13),
+            rgba(115,68,255,.035)
+        );
+}
+
+.cx-promo::after {
+    content: "";
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    right: -70px;
+    top: -75px;
+    border-radius: 50%;
+    border: 1px solid rgba(115,68,255,.14);
+}
+
+.cx-promo-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(115,68,255,.12);
+    color: var(--cx-purple);
+    font-size: 23px;
+}
+
+.cx-promo-title {
+    color: var(--cx-text);
+    font-size: .95rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.cx-promo-text {
+    color: var(--cx-muted);
+    font-size: .76rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+.cx-promo-amount {
+    color: var(--cx-purple);
+    font-weight: 800;
+}
+
+/* =========================================================
+   SECTION HEADERS
+   ========================================================= */
+
+.cx-section {
+    overflow: hidden;
+    animation: cxFadeUp .6s ease both;
+}
+
+.cx-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--cx-border);
+}
+
+.cx-section-title {
+    margin: 0;
+    color: var(--cx-text);
+    font-size: .94rem;
+    font-weight: 800;
+}
+
+.cx-section-subtitle {
+    margin: 4px 0 0;
+    color: var(--cx-muted);
+    font-size: .7rem;
+}
+
+.cx-section-icon {
+    color: var(--cx-purple);
+    font-size: 22px;
+}
+
+/* =========================================================
+   ACCOUNT STATUS
+   ========================================================= */
+
+.cx-status-card {
+    overflow: hidden;
+    height: 100%;
+}
+
+.cx-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--cx-border);
+}
+
+.cx-status-row:last-child {
+    border-bottom: 0;
+}
+
+.cx-status-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cx-text);
+    font-size: .76rem;
+    font-weight: 700;
+}
+
+.cx-status-label i {
+    color: var(--cx-purple);
+    font-size: 18px;
+}
+
+.cx-status-value {
+    color: var(--cx-text);
+    font-size: .73rem;
+    font-weight: 800;
+}
+
+.cx-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 8px;
+    font-size: .65rem;
+    font-weight: 800;
+}
+
+.cx-badge-success {
+    background: rgba(32,201,151,.11);
+    color: var(--cx-success);
+}
+
+.cx-badge-warning {
+    background: rgba(245,185,66,.12);
+    color: var(--cx-warning);
+}
+
+.cx-badge-danger {
+    background: rgba(239,91,104,.11);
+    color: var(--cx-danger);
+}
+
+/* =========================================================
+   REFERRAL CARD
+   ========================================================= */
+
+.cx-referral {
+    height: 100%;
+    padding: 22px;
+    border: 1px solid rgba(115,68,255,.13);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(115,68,255,.09),
+            rgba(115,68,255,.025)
+        );
+}
+
+[data-theme="dark"] .cx-referral {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(115,68,255,.13),
+            rgba(115,68,255,.025)
+        );
+}
+
+.cx-referral-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.cx-referral-title {
+    margin: 0;
+    color: var(--cx-text);
+    font-size: .94rem;
+    font-weight: 800;
+}
+
+.cx-referral-description {
+    margin: 4px 0 0;
+    color: var(--cx-muted);
+    font-size: .71rem;
+}
+
+.cx-referral-icon {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: rgba(115,68,255,.11);
+    color: var(--cx-purple);
+    font-size: 20px;
+}
+
+.cx-form-label {
+    display: block;
+    margin: 20px 0 7px;
+    color: var(--cx-text);
+    font-size: .7rem;
+    font-weight: 800;
+}
+
+.cx-referral-box {
+    display: flex;
+    gap: 8px;
+}
+
+.cx-referral-input {
+    width: 100%;
+    min-width: 0;
+    height: 43px;
+    padding: 0 13px;
+    border: 1px solid var(--cx-border);
+    border-radius: 11px;
+    outline: none;
+    background: var(--cx-surface);
+    color: var(--cx-text);
+    font-size: .72rem;
+}
+
+.cx-copy-btn {
+    height: 43px;
+    padding: 0 15px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 11px;
+    background: var(--cx-purple);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 800;
+    transition: all .2s ease;
+}
+
+.cx-copy-btn:hover {
+    background: var(--cx-purple-dark);
+    transform: translateY(-1px);
+}
+
+.cx-copy-message {
+    display: none;
+    margin-top: 8px;
+    color: var(--cx-success);
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+.cx-referral-mini {
+    margin-top: 17px;
+}
+
+.cx-mini-stat {
+    padding: 13px;
+    border: 1px solid var(--cx-border);
+    border-radius: 13px;
+    background: var(--cx-surface);
+}
+
+.cx-mini-label {
+    color: var(--cx-muted);
+    font-size: .65rem;
+}
+
+.cx-mini-value {
+    margin-top: 3px;
+    color: var(--cx-text);
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.cx-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cx-table {
+    width: 100%;
+    margin: 0;
+    color: var(--cx-text);
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.cx-table th {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--cx-border);
+    color: var(--cx-muted);
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.cx-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--cx-border);
+    color: var(--cx-text);
+    font-size: .75rem;
+    vertical-align: middle;
+}
+
+.cx-table tbody tr {
+    transition: background .2s ease;
+}
+
+.cx-table tbody tr:hover {
+    background: rgba(115,68,255,.035);
+}
+
+.cx-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.cx-investment-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cx-text);
+    font-weight: 750;
+}
+
+.cx-investment-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--cx-purple-light);
+    color: var(--cx-purple);
+}
+
+.cx-amount {
+    color: var(--cx-text);
+    font-weight: 750;
+}
+
+.cx-profit {
+    color: var(--cx-success);
+    font-weight: 750;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.cx-empty {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.cx-empty-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    background: var(--cx-purple-light);
+    color: var(--cx-purple);
+    font-size: 28px;
+}
+
+.cx-empty-title {
+    margin: 0;
+    color: var(--cx-text);
+    font-size: .88rem;
+    font-weight: 800;
+}
+
+.cx-empty-text {
+    margin: 5px 0 0;
+    color: var(--cx-muted);
+    font-size: .72rem;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.cx-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--cx-purple);
+    color: #fff !important;
+    text-decoration: none;
+    font-size: .7rem;
+    font-weight: 800;
+    transition: all .22s ease;
+}
+
+.cx-primary-btn:hover {
+    background: var(--cx-purple-dark);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(115,68,255,.2);
+}
+
+/* =========================================================
+   ACCOUNT SUMMARY
+   ========================================================= */
+
+.cx-summary {
+    padding: 20px;
+}
+
+.cx-summary-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--cx-purple-light);
+    color: var(--cx-purple);
+    font-size: 20px;
+}
+
+.cx-summary-label {
+    margin-top: 17px;
+    color: var(--cx-muted);
+    font-size: .67rem;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.cx-summary-value {
+    margin-top: 5px;
+    color: var(--cx-text);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -.025em;
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes cxFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cxFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(3deg);
+    }
+}
+
+@keyframes cxPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .55;
+        transform: scale(.78);
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .cx-overview {
+        padding-bottom: 25px;
+    }
+
+    .cx-page-intro {
+        display: block;
+    }
+
+    .cx-hero {
+        min-height: 250px;
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    .cx-hero-top {
+        gap: 10px;
+    }
+
+    .cx-level {
+        min-width: 82px;
+        padding: 9px 10px;
+    }
+
+    .cx-level-value {
+        font-size: .82rem;
+    }
+
+    .cx-balance-area {
+        margin-top: 28px;
+    }
+
+    .cx-main-balance {
+        font-size: 2.15rem;
+    }
+
+    .cx-hero-coin {
+        width: 62px;
+        height: 62px;
+        right: 7%;
+        bottom: 18px;
+        font-size: 27px;
+    }
+
+    .cx-section-header {
+        padding: 17px;
+    }
+
+    .cx-status-row {
+        padding: 14px 16px;
+    }
+
+    .cx-table {
+        min-width: 680px;
+    }
+
+    .cx-referral-box {
+        flex-direction: column;
+    }
+
+    .cx-copy-btn {
+        width: 100%;
+    }
+}
+
+/* Small phones */
+
+@media (max-width: 420px) {
+
+    .cx-hero-title {
+        font-size: 1.2rem;
+    }
+
+    .cx-hero-subtitle {
+        font-size: .74rem;
+    }
+
+    .cx-level {
+        display: none;
+    }
+
+    .cx-main-balance {
+        font-size: 1.9rem;
+    }
+
+    .cx-hero-coin {
+        opacity: .5;
+    }
+
+    .cx-stat {
+        padding: 17px;
+    }
+
+    .cx-stat-value {
+        font-size: 1.05rem;
+    }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+    .cx-overview *,
+    .cx-overview *::before,
+    .cx-overview *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
 
 
- {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
+<div class="container-fluid cx-overview">
 
- ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
+    <!-- =====================================================
+         PAGE INTRO
+    ====================================================== -->
+
+    <div class="cx-page-intro">
+
+        <div>
+            <div class="cx-page-kicker">
+                Portfolio Overview
+            </div>
+
+            <h1 class="cx-page-title">
+                Your financial dashboard
+            </h1>
+
+            <p class="cx-page-subtitle">
+                Monitor your balance, investments and account activity from one place.
+            </p>
+        </div>
+
+    </div>
 
 
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
+    <div class="cx-hero mb-4">
 
+        <div class="cx-hero-content">
 
+            <div class="cx-hero-top">
 
+                <div>
 
- {% block content %}
-
-
- <div class="row">
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Account Balance</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">${{account_balance}} </h2>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-wallet text-primary ml-auto"></i>
-                      </div>
+                    <div class="cx-welcome">
+                        Welcome back{% if request.user.full_name %}, {{ request.user.full_name }}{% endif %}
                     </div>
-                  </div>
+
+                    <h2 class="cx-hero-title">
+                        Your portfolio at a glance
+                    </h2>
+
+                    <p class="cx-hero-subtitle">
+                        Keep track of your available funds, investments and account status.
+                    </p>
+
                 </div>
-              </div>
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Total Invested</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">${{total_investments_amount}} </h2>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+8.3%</p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-finance text-danger ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
+
+                <div class="cx-level">
+
+                    <span class="cx-level-label">
+                        Account
+                    </span>
+
+                    <span class="cx-level-value">
+                        Level {{ account_level }}
+                    </span>
+
                 </div>
-              </div>
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Total Profit</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">${{account_total_profit}}</h2>
-                          <p class="text-danger ms-2 mb-0 font-weight-medium">-2.1% </p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-trending-up text-success ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
             </div>
 
 
+            <div class="cx-balance-area">
+
+                <div class="cx-balance-label">
+                    Available Balance
+                </div>
+
+                <div class="cx-main-balance">
+
+                    <span class="cx-main-balance-symbol">
+                        $
+                    </span>
+
+                    {{ account_balance|floatformat:2|intcomma }}
+
+                </div>
 
 
+                <div class="cx-status">
 
-             <div class="row ">
-              <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Investments</h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              #
-                            </th>
-                            
-                            <th> Reference </th>
-                            <th> Amount </th>
-                            <th> Plan </th>
-                            <th> Start Date </th>
-                            <th> Due Date </th>
-                            <th> Status </th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <span class="cx-status-dot"></span>
+
+                    {% if is_verified %}
+                        Account verified
+                    {% else %}
+                        Verification pending
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
 
 
-                        {% for investment in investments_list %}
+        <div class="cx-hero-coin">
+            <i class="ph ph-currency-circle-dollar"></i>
+        </div>
 
-                             <tr>
-                            <!-- <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td> -->
-                            <!-- <td>
-                              <img src="assets/images/faces/face1.jpg" alt="image" />
-                              <span class="ps-2">Henry Klein</span>
-                            </td> -->
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ investment.investment_id }}</td>
-                            <td>${{ investment.amount }}</td>
-                            <td>{{ investment.plan }}</td>
-                           
-                            <td>{{ investment.start_date|date:"M d, Y" }}</td>
-                            <td>{{ investment.due_date|date:"M d, Y" }}</td>
-                            <td>
-
-                              {% if investment.is_matured %}
-                                <div class="badge badge-outline-success">complete</div>
-                              {% else %}
-                               <div class="badge badge-outline-warning">Active</div>
-                              {% endif %}
+    </div>
 
 
-                              
-                            </td>
-                          </tr>
-                          <tr>
-                          {% empty %}
-                          <tr>
-                              <td colspan="7" class="text-center text-muted">No investments Yet.</td>
-                          </tr>
+    <!-- =====================================================
+         QUICK ACTIONS
+    ====================================================== -->
+
+    <div class="cx-actions d-md-none mb-4">
+
+        <a href="{% url 'deposit' %}" class="cx-action cx-action-primary">
+            <i class="ph ph-plus-circle"></i>
+            Deposit
+        </a>
+
+        <a href="{% url 'invest' %}" class="cx-action">
+            <i class="ph ph-chart-line-up"></i>
+            Invest
+        </a>
+
+        <a href="{% url 'withdraw' %}" class="cx-action">
+            <i class="ph ph-arrow-up-right"></i>
+            Withdraw
+        </a>
+
+        <a href="{% url 'profile' %}" class="cx-action">
+            <i class="ph ph-user-circle"></i>
+            Profile
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="cx-card cx-stat">
+
+                <div class="cx-stat-top">
+
+                    <div>
+
+                        <div class="cx-stat-label">
+                            Available Balance
+                        </div>
+
+                        <div class="cx-stat-value">
+                            ${{ account_balance|floatformat:2|intcomma }}
+                        </div>
+
+                    </div>
+
+                    <div class="cx-stat-icon">
+                        <i class="ph ph-wallet"></i>
+                    </div>
+
+                </div>
+
+                <p class="cx-stat-description">
+                    Funds currently available in your account balance.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="cx-card cx-stat">
+
+                <div class="cx-stat-top">
+
+                    <div>
+
+                        <div class="cx-stat-label">
+                            Promotional Credit
+                        </div>
+
+                        <div class="cx-stat-value">
+                            ${{ promotional_balance|floatformat:2|intcomma }}
+                        </div>
+
+                    </div>
+
+                    <div class="cx-stat-icon">
+                        <i class="ph ph-gift"></i>
+                    </div>
+
+                </div>
+
+                <p class="cx-stat-description">
+                    Non-withdrawable promotional credit.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="cx-card cx-stat">
+
+                <div class="cx-stat-top">
+
+                    <div>
+
+                        <div class="cx-stat-label">
+                            Total Invested
+                        </div>
+
+                        <div class="cx-stat-value">
+                            ${{ total_investments_amount|floatformat:2|intcomma }}
+                        </div>
+
+                    </div>
+
+                    <div class="cx-stat-icon">
+                        <i class="ph ph-chart-line-up"></i>
+                    </div>
+
+                </div>
+
+                <p class="cx-stat-description">
+                    Total amount currently invested.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="cx-card cx-stat">
+
+                <div class="cx-stat-top">
+
+                    <div>
+
+                        <div class="cx-stat-label">
+                            Total Profit
+                        </div>
+
+                        <div class="cx-stat-value">
+                            ${{ account_total_profit|floatformat:2|intcomma }}
+                        </div>
+
+                    </div>
+
+                    <div class="cx-stat-icon">
+                        <i class="ph ph-trend-up"></i>
+                    </div>
+
+                </div>
+
+                <p class="cx-stat-description">
+                    Total recorded investment profit.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PROMOTIONAL CREDIT
+    ====================================================== -->
+
+    <div class="cx-promo mb-4">
+
+        <div class="d-flex align-items-start gap-3">
+
+            <div class="cx-promo-icon">
+                <i class="ph ph-gift"></i>
+            </div>
+
+            <div>
+
+                <div class="cx-promo-title">
+                    Promotional Credit
+                </div>
+
+                <p class="cx-promo-text">
+                    Your account includes
+                    <span class="cx-promo-amount">
+                        ${{ promotional_balance|floatformat:2|intcomma }}
+                    </span>
+                    in promotional credit.
+                    This credit is separate from your available account balance
+                    and cannot be withdrawn directly. It remains subject to the
+                    promotional terms and eligibility requirements associated
+                    with your account.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATUS + REFERRAL
+    ====================================================== -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- Account Status -->
+
+        <div class="col-12 col-lg-5">
+
+            <div class="cx-card cx-status-card">
+
+                <div class="cx-section-header">
+
+                    <div>
+                        <h3 class="cx-section-title">
+                            Account Status
+                        </h3>
+
+                        <p class="cx-section-subtitle">
+                            Current account eligibility
+                        </p>
+                    </div>
+
+                    <i class="ph ph-shield-check cx-section-icon"></i>
+
+                </div>
+
+
+                <div class="cx-status-row">
+
+                    <div class="cx-status-label">
+                        <i class="ph ph-ranking"></i>
+                        Account Level
+                    </div>
+
+                    <div class="cx-status-value">
+                        Level {{ account_level }}
+                    </div>
+
+                </div>
+
+
+                <div class="cx-status-row">
+
+                    <div class="cx-status-label">
+                        <i class="ph ph-identification-card"></i>
+                        Verification
+                    </div>
+
+                    {% if is_verified %}
+
+                        <span class="cx-badge cx-badge-success">
+                            <i class="ph ph-check-circle"></i>
+                            Verified
+                        </span>
+
+                    {% else %}
+
+                        <span class="cx-badge cx-badge-warning">
+                            <i class="ph ph-clock"></i>
+                            Pending
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="cx-status-row">
+
+                    <div class="cx-status-label">
+                        <i class="ph ph-bank"></i>
+                        Withdrawals
+                    </div>
+
+                    {% if withdrawal_enabled %}
+
+                        <span class="cx-badge cx-badge-success">
+                            <i class="ph ph-check-circle"></i>
+                            Enabled
+                        </span>
+
+                    {% else %}
+
+                        <span class="cx-badge cx-badge-warning">
+                            <i class="ph ph-lock"></i>
+                            Not Enabled
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="cx-status-row">
+
+                    <div class="cx-status-label">
+                        <i class="ph ph-lock-key"></i>
+                        Locked Investments
+                    </div>
+
+                    <div class="cx-status-value">
+                        ${{ locked_investments|floatformat:2|intcomma }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Referral -->
+
+        <div class="col-12 col-lg-7">
+
+            <div class="cx-referral">
+
+                <div class="cx-referral-top">
+
+                    <div>
+
+                        <h3 class="cx-referral-title">
+                            Referral Program
+                        </h3>
+
+                        <p class="cx-referral-description">
+                            Invite others and monitor your referral activity.
+                        </p>
+
+                    </div>
+
+                    <div class="cx-referral-icon">
+                        <i class="ph ph-users-three"></i>
+                    </div>
+
+                </div>
+
+
+                <label class="cx-form-label">
+                    Your referral link
+                </label>
+
+                <div class="cx-referral-box">
+
+                    <input
+                        type="text"
+                        id="referralLink"
+                        class="cx-referral-input"
+                        value="{{ referral_link }}"
+                        readonly
+                    >
+
+                    <button
+                        type="button"
+                        id="copyBtn"
+                        class="cx-copy-btn"
+                    >
+                        <i class="ph ph-copy"></i>
+                        Copy
+                    </button>
+
+                </div>
+
+
+                <div id="copyMessage" class="cx-copy-message">
+
+                    <i class="ph ph-check-circle"></i>
+                    Referral link copied.
+
+                </div>
+
+
+                <div class="row g-3 cx-referral-mini">
+
+                    <div class="col-6">
+
+                        <div class="cx-mini-stat">
+
+                            <div class="cx-mini-label">
+                                Referrals
+                            </div>
+
+                            <div class="cx-mini-value">
+                                {{ referral_count|default:"0" }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-6">
+
+                        <div class="cx-mini-stat">
+
+                            <div class="cx-mini-label">
+                                Referral Balance
+                            </div>
+
+                            <div class="cx-mini-value">
+                                ${{ referral_balance|floatformat:2|intcomma }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INVESTMENTS
+    ====================================================== -->
+
+    <div class="cx-card cx-section mb-4">
+
+        <div class="cx-section-header">
+
+            <div>
+
+                <h3 class="cx-section-title">
+                    Your Investments
+                </h3>
+
+                <p class="cx-section-subtitle">
+                    Overview of your current investment positions.
+                </p>
+
+            </div>
+
+            <a href="{% url 'invest' %}" class="cx-primary-btn">
+                <i class="ph ph-plus"></i>
+                New Investment
+            </a>
+
+        </div>
+
+
+        {% if investments %}
+
+            <div class="cx-table-wrap">
+
+                <table class="cx-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Investment</th>
+                            <th>Amount</th>
+                            <th>Return</th>
+                            <th>Start Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for investment in investments %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="cx-investment-name">
+
+                                        <div class="cx-investment-icon">
+                                            <i class="ph ph-chart-line-up"></i>
+                                        </div>
+
+                                        Investment #{{ investment.id }}
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+                                    <span class="cx-amount">
+                                        ${{ investment.amount|floatformat:2|intcomma }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="cx-profit">
+                                        ${{ investment.returns|floatformat:2|intcomma }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {{ investment.start_date|date:"M d, Y" }}
+                                </td>
+
+                                <td>
+                                    {{ investment.due_date|date:"M d, Y" }}
+                                </td>
+
+                                <td>
+
+                                    {% if investment.is_matured %}
+
+                                        <span class="cx-badge cx-badge-success">
+                                            <i class="ph ph-check-circle"></i>
+                                            Matured
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="cx-badge cx-badge-warning">
+                                            <i class="ph ph-clock"></i>
+                                            Active
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
                         {% endfor %}
-                         
-                         <!--    <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face2.jpg" alt="image" />
-                              <span class="ps-2">Estella Bryan</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Website </td>
-                            <td> Cash on delivered </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-warning">Pending</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face5.jpg" alt="image" />
-                              <span class="ps-2">Lucy Abbott</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> App design </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-danger">Rejected</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face3.jpg" alt="image" />
-                              <span class="ps-2">Peter Gill</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Development </td>
-                            <td> Online Payment </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td>
-                            <td>
-                              <img src="assets/images/faces/face4.jpg" alt="image" />
-                              <span class="ps-2">Sallie Reyes</span>
-                            </td>
-                            <td> 02312 </td>
-                            <td> $14,500 </td>
-                            <td> Website </td>
-                            <td> Credit card </td>
-                            <td> 04 Dec 2019 </td>
-                            <td>
-                              <div class="badge badge-outline-success">Approved</div>
-                            </td>
-                          </tr> -->
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
+                    </tbody>
 
-
-
-
-            <div class="row">
-              <div class="col-sm-6 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h2>Refer Us & Earn</h2>
-                    <h6 class="text-muted font-weight-normal">Use the link below to invite your friends</h6>
-                    <div class="row">
-                      <div class="col-12 col-sm-12 col-xl-12 my-auto">
-
-                          <div class="input-group">
-                            <input type="text" class="form-control" id="referralLink" value="{{referral_link}}" readonly>
-                            <button class="btn btn-outline-secondary" id="copyBtn" type="button">
-                              Copy
-                            </button>
-                          </div>
-                          <div id="copyMessage" class="mt-2 text-success" style="display: none;">
-                            Link copied to clipboard!
-                          </div>
-                           
-                      </div>
-                      
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Referral Bonus</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$ {{referral_balance}}</h2>
-                          <!-- <p class="text-success ms-2 mb-0 font-weight-medium">+8.3%</p> -->
-                        </div>
-                        <!-- <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6> -->
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-gift-outline text-danger ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-
+                </table>
 
             </div>
 
+        {% else %}
+
+            <div class="cx-empty">
+
+                <div class="cx-empty-icon">
+                    <i class="ph ph-chart-line"></i>
+                </div>
+
+                <h4 class="cx-empty-title">
+                    No investments yet
+                </h4>
+
+                <p class="cx-empty-text">
+                    Your investment positions will appear here once created.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
 
 
+    <!-- =====================================================
+         REFERRAL ACTIVITY
+    ====================================================== -->
+
+    <div class="cx-card cx-section mb-4">
+
+        <div class="cx-section-header">
+
+            <div>
+
+                <h3 class="cx-section-title">
+                    Referral Activity
+                </h3>
+
+                <p class="cx-section-subtitle">
+                    Your referral bonuses and related activity.
+                </p>
+
+            </div>
+
+            <i class="ph ph-users-three cx-section-icon"></i>
+
+        </div>
 
 
+        {% if referrals %}
 
+            <div class="cx-table-wrap">
 
-             <div class="row ">
-              <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Referrals</h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              #
-                            </th>
-                            
-                            <th> User </th>
-                            <th> Referral Deposit </th>
-                            <th> Referral Bonus </th>
-                            <th> Date </th>
-                            <!-- <th> Start Date </th>
-                            <th> Due Date </th>
-                            <th> Status </th> -->
-                          </tr>
-                        </thead>
-                        <tbody>
+                <table class="cx-table">
 
+                    <thead>
+
+                        <tr>
+                            <th>User</th>
+                            <th>Bonus</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
 
                         {% for referral in referrals %}
 
-                             <tr>
-                            <!-- <td>
-                              <div class="form-check form-check-muted m-0">
-                                <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                </label>
-                              </div>
-                            </td> -->
-                            <!-- <td>
-                              <img src="assets/images/faces/face1.jpg" alt="image" />
-                              <span class="ps-2">Henry Klein</span>
-                            </td> -->
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ referral.referred.email }}</td>
-                            <td>${{ referral.deposit.amount }}</td>
-                            <td>${{ referral.amount }}</td>
-                            
-                            <td>{{ referral.created_at }}</td>
-                  
-                          </tr>
-                          <tr>
-                          {% empty %}
-                          <tr>
-                              <td colspan="7" class="text-center text-muted">No Referrals Yet.</td>
-                          </tr>
+                            <tr>
+
+                                <td>
+
+                                    <div class="cx-investment-name">
+
+                                        <div class="cx-investment-icon">
+                                            <i class="ph ph-user"></i>
+                                        </div>
+
+                                        {{ referral.referred.full_name|default:referral.referred.email }}
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="cx-amount">
+                                        ${{ referral.amount|default:"0.00"|floatformat:2|intcomma }}
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {% if referral.amount and referral.amount > 0 %}
+
+                                        <span class="cx-badge cx-badge-success">
+                                            <i class="ph ph-check-circle"></i>
+                                            Earned
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="cx-badge cx-badge-warning">
+                                            <i class="ph ph-clock"></i>
+                                            Pending
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ referral.created_at|date:"M d, Y"|default:"-" }}
+                                </td>
+
+                            </tr>
+
                         {% endfor %}
-                         
-                      
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+                    </tbody>
+
+                </table>
+
             </div>
 
+        {% else %}
 
+            <div class="cx-empty">
 
-
-
-            <div class="row">
-                <div class="col-12">
-                  <div class="card">
-                    <div class="card-body">
-                      <h4 class="card-title">Visitors by Countries</h4>
-                    <div class="row">
-                      <div class="col-md-5">
-                        <div class="table-responsive">
-                          <table class="table">
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <i class="flag-icon flag-icon-us"></i>
-                                </td>
-                                <td>USA</td>
-                                <td class="text-end"> 1500 </td>
-                                <td class="text-end font-weight-medium"> 56.35% </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <i class="flag-icon flag-icon-de"></i>
-                                </td>
-                                <td>Germany</td>
-                                <td class="text-end"> 800 </td>
-                                <td class="text-end font-weight-medium"> 33.25% </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <i class="flag-icon flag-icon-au"></i>
-                                </td>
-                                <td>Australia</td>
-                                <td class="text-end"> 760 </td>
-                                <td class="text-end font-weight-medium"> 15.45% </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <i class="flag-icon flag-icon-gb"></i>
-                                </td>
-                                <td>United Kingdom</td>
-                                <td class="text-end"> 450 </td>
-                                <td class="text-end font-weight-medium"> 25.00% </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <i class="flag-icon flag-icon-ro"></i>
-                                </td>
-                                <td>Romania</td>
-                                <td class="text-end"> 620 </td>
-                                <td class="text-end font-weight-medium"> 10.25% </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <i class="flag-icon flag-icon-br"></i>
-                                </td>
-                                <td>Brasil</td>
-                                <td class="text-end"> 230 </td>
-                                <td class="text-end font-weight-medium"> 75.00% </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <div class="col-md-7">
-                        <div id="audience-map" class="vector-map"></div>
-                      </div>
-                    </div>
-                  </div>
+                <div class="cx-empty-icon">
+                    <i class="ph ph-users-three"></i>
                 </div>
-              </div>
+
+                <h4 class="cx-empty-title">
+                    No referral activity yet
+                </h4>
+
+                <p class="cx-empty-text">
+                    Your referral activity will appear here.
+                </p>
+
             </div>
-          </div>
+
+        {% endif %}
+
+    </div>
 
 
+    <!-- =====================================================
+         ACCOUNT SUMMARY
+    ====================================================== -->
+
+    <div class="row g-3">
+
+        <div class="col-12 col-md-4">
+
+            <div class="cx-card cx-summary h-100">
+
+                <div class="cx-summary-icon">
+                    <i class="ph ph-arrow-down-left"></i>
+                </div>
+
+                <div class="cx-summary-label">
+                    Total Deposits
+                </div>
+
+                <div class="cx-summary-value">
+                    ${{ total_deposits_amount|default:"0.00"|floatformat:2|intcomma }}
+                </div>
+
+            </div>
+
+        </div>
 
 
-   <script>
-    document.getElementById('copyBtn').addEventListener('click', function() {
-      // Get the input field
-      var referralLink = document.getElementById('referralLink');
+        <div class="col-12 col-md-4">
 
-      // Select the text field
-      referralLink.select();
-      referralLink.setSelectionRange(0, 99999); // For mobile devices
+            <div class="cx-card cx-summary h-100">
 
-      // Copy the text to the clipboard
-      document.execCommand('copy');
+                <div class="cx-summary-icon">
+                    <i class="ph ph-arrow-up-right"></i>
+                </div>
 
-      // Show a message indicating the link was copied
-      var message = document.getElementById('copyMessage');
-      message.style.display = 'block';
+                <div class="cx-summary-label">
+                    Total Withdrawals
+                </div>
 
-      // Hide the message after 2 seconds
-      setTimeout(function() {
-        message.style.display = 'none';
-      }, 2000);
+                <div class="cx-summary-value">
+                    ${{ total_withdrawals_amount|default:"0.00"|floatformat:2|intcomma }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-12 col-md-4">
+
+            <div class="cx-card cx-summary h-100">
+
+                <div class="cx-summary-icon">
+                    <i class="ph ph-users-three"></i>
+                </div>
+
+                <div class="cx-summary-label">
+                    Referral Earnings
+                </div>
+
+                <div class="cx-summary-value">
+                    ${{ total_referral_bonus|default:"0.00"|floatformat:2|intcomma }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const copyBtn = document.getElementById("copyBtn");
+    const referralLink = document.getElementById("referralLink");
+    const copyMessage = document.getElementById("copyMessage");
+
+    if (!copyBtn || !referralLink) {
+        return;
+    }
+
+    copyBtn.addEventListener("click", async function () {
+
+        try {
+
+            if (navigator.clipboard) {
+
+                await navigator.clipboard.writeText(
+                    referralLink.value
+                );
+
+            } else {
+
+                referralLink.select();
+                referralLink.setSelectionRange(0, 99999);
+                document.execCommand("copy");
+
+            }
+
+            showCopyMessage();
+
+        } catch (error) {
+
+            referralLink.select();
+            referralLink.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+
+            showCopyMessage();
+
+        }
+
     });
-  </script>
- {% endblock content %}
+
+
+    function showCopyMessage() {
+
+        if (!copyMessage) {
+            return;
+        }
+
+        copyMessage.style.display = "block";
+
+        setTimeout(function () {
+            copyMessage.style.display = "none";
+        }, 2200);
+
+    }
+
+});
+</script>
+
+{% endblock content %}

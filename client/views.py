@@ -106,6 +106,11 @@ def overview(request):
     account = Account.objects.filter(user=request.user).first()
     # locked = Investment.objects.filter(user=request.user, invest_status='active').aggregate(Sum('amount'))["amount__sum"] or 0.00
     # locked_total = Investment.objects.filter(user=request.user, invest_status='active').count()
+
+    promotional_balance = account.promotional_balance
+    account_level = account.level
+    withdrawal_enabled = account.withdrawal_enabled
+    is_verified = account.is_verified
     
     protocall = 'https' if request.is_secure() else 'http'
     domain = str(get_current_site(request).domain)
@@ -141,6 +146,12 @@ def overview(request):
     context = {
         'account_balance': round(account.account_balance,2),
         'account_total_profit': round(account.total_profit,2),
+        'promotional_balance': round(account.promotional_balance,2),
+
+        'account_level': account.level,
+        'withdrawal_enabled': account.withdrawal_enabled,
+        'is_verified': account.is_verified,
+
         'referral_balance': round(account.referral_bonus,2),
         "referral_link": f'{protocall}://{domain}/account/referral_signup/{referral_code}',
         'total_balance_amount': round(account.account_balance + Decimal(total_investments_amount),2) or 0.00,
@@ -528,19 +539,23 @@ def withdraw(request):
         
         # print(amount > account.account_balance)
         
-        if amount > account.account_balance:
-            message_s = "Insufficient funds."
+        # if amount > account.account_balance:
+        #     message_s = "Insufficient funds."
             
         
-        elif amount < 10:
+        # elif amount < 10:
             
-            message_s = "minmum amount for withdrawal 10 ."
+        #     message_s = "minmum amount for withdrawal 10 ."
+
+        if not account.withdrawal_enabled:
+            message_s = "Withdrawal is currently unavailable for your account."
+        elif amount > account.account_balance:
+            message_s = "Insufficient funds."
+        elif amount < 10:
+            message_s = "Minimum withdrawal amount is $10."
 
         else:
             
-        
-            
-        
             Withdrawal.objects.create(user=request.user, amount=amount, Withdrawal_method=Withdrawal_method, address=address)
             
             message_s = "Your withdrawal is in progress"

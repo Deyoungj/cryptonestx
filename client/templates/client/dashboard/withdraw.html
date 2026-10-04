@@ -1,222 +1,1222 @@
 {% extends 'client/dashboard/base.html' %}
 {% load static %}
 
-{% block title %}Cryptonestx | Withdraw {% endblock title %}
+{% block title %}Cryptonestx | Withdraw{% endblock title %}
 
+{% block withdraw_active %}active{% endblock withdraw_active %}
 
-{% block withdraw_active %} active {% endblock withdraw_active %}
+{% block base_acc_balance %}{{ account_balance }}{% endblock base_acc_balance %}
 
-
- {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
-
- ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
-
-
-
-
-
+{% block base_acc_locked %}{{ locked_investments }}{% endblock base_acc_locked %}
 
 {% block content %}
 
+<style>
+    .cx-withdraw {
+        --wd-primary: #7344ff;
+        --wd-primary-dark: #5d31df;
+        --wd-success: #22c55e;
+        --wd-warning: #f59e0b;
+        --wd-danger: #ef4444;
+
+        --wd-bg: #f6f7fb;
+        --wd-surface: #ffffff;
+        --wd-surface-soft: #f8f8fc;
+        --wd-text: #171321;
+        --wd-muted: #777386;
+        --wd-border: rgba(20, 16, 35, .08);
+        --wd-shadow: 0 18px 50px rgba(25, 17, 55, .07);
+
+        color: var(--wd-text);
+    }
+
+    [data-theme="dark"] .cx-withdraw {
+        --wd-bg: #080711;
+        --wd-surface: #111019;
+        --wd-surface-soft: #171521;
+        --wd-text: #f7f5ff;
+        --wd-muted: #aaa5b8;
+        --wd-border: rgba(255, 255, 255, .08);
+        --wd-shadow: 0 18px 55px rgba(0, 0, 0, .28);
+    }
+
+    .cx-withdraw * {
+        box-sizing: border-box;
+    }
+
+    /* =========================
+       PAGE HEADER
+    ========================= */
+
+    .wd-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 30px;
+        border-radius: 24px;
+        margin-bottom: 24px;
+        background:
+            radial-gradient(circle at 90% 15%, rgba(115, 68, 255, .30), transparent 32%),
+            radial-gradient(circle at 15% 110%, rgba(115, 68, 255, .16), transparent 35%),
+            linear-gradient(135deg, #171125 0%, #0d0b16 100%);
+        color: #fff;
+        box-shadow: 0 20px 55px rgba(35, 18, 75, .20);
+    }
+
+    .wd-hero::before {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        right: -70px;
+        top: -90px;
+        border: 1px solid rgba(255,255,255,.10);
+        border-radius: 50%;
+    }
+
+    .wd-hero::after {
+        content: "";
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        right: 30px;
+        bottom: -190px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 50%;
+    }
+
+    .wd-hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .wd-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 11px;
+        margin-bottom: 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.10);
+        color: rgba(255,255,255,.75);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .wd-hero h1 {
+        margin: 0 0 8px;
+        font-size: clamp(27px, 4vw, 38px);
+        line-height: 1.1;
+        font-weight: 800;
+        letter-spacing: -.03em;
+    }
+
+    .wd-hero p {
+        margin: 0;
+        max-width: 600px;
+        color: rgba(255,255,255,.65);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .wd-hero-icon {
+        width: 72px;
+        height: 72px;
+        flex: 0 0 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(115,68,255,.45), rgba(115,68,255,.12));
+        border: 1px solid rgba(255,255,255,.12);
+        box-shadow: inset 0 1px rgba(255,255,255,.08);
+    }
+
+    .wd-hero-icon i {
+        font-size: 34px;
+    }
+
+    /* =========================
+       GRID
+    ========================= */
+
+    .wd-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(280px, .75fr);
+        gap: 22px;
+        align-items: start;
+    }
+
+    .wd-card {
+        background: var(--wd-surface);
+        border: 1px solid var(--wd-border);
+        border-radius: 22px;
+        box-shadow: var(--wd-shadow);
+        overflow: hidden;
+    }
+
+    .wd-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--wd-border);
+    }
+
+    .wd-card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .wd-card-title-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(115,68,255,.10);
+        color: var(--wd-primary);
+    }
+
+    .wd-card-title-icon i {
+        font-size: 21px;
+    }
+
+    .wd-card-title h2,
+    .wd-card-title h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 750;
+        color: var(--wd-text);
+    }
+
+    .wd-card-title span {
+        display: block;
+        margin-top: 3px;
+        color: var(--wd-muted);
+        font-size: 12px;
+    }
+
+    .wd-card-body {
+        padding: 24px;
+    }
+
+    /* =========================
+       BALANCE
+    ========================= */
+
+    .wd-balance {
+        position: relative;
+        overflow: hidden;
+        padding: 21px;
+        margin-bottom: 25px;
+        border-radius: 17px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(115,68,255,.13),
+                rgba(115,68,255,.035)
+            );
+        border: 1px solid rgba(115,68,255,.13);
+    }
+
+    .wd-balance::after {
+        content: "";
+        position: absolute;
+        right: -35px;
+        top: -45px;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        border: 1px solid rgba(115,68,255,.10);
+    }
+
+    .wd-balance-label {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--wd-muted);
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .wd-balance-value {
+        position: relative;
+        z-index: 2;
+        color: var(--wd-text);
+        font-size: clamp(27px, 4vw, 35px);
+        font-weight: 800;
+        letter-spacing: -.035em;
+    }
+
+    .wd-balance-note {
+        position: relative;
+        z-index: 2;
+        margin-top: 6px;
+        color: var(--wd-muted);
+        font-size: 11px;
+    }
+
+    /* =========================
+       FORM
+    ========================= */
+
+    .wd-field {
+        margin-bottom: 21px;
+    }
+
+    .wd-label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 9px;
+        color: var(--wd-text);
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .wd-label i {
+        color: var(--wd-primary);
+        font-size: 16px;
+    }
+
+    .wd-input-wrap {
+        position: relative;
+    }
+
+    .wd-input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--wd-muted);
+        font-size: 19px;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .wd-input,
+    .wd-select {
+        width: 100%;
+        min-height: 52px;
+        padding: 13px 15px 13px 46px;
+        border-radius: 13px;
+        border: 1px solid var(--wd-border);
+        outline: none;
+        background: var(--wd-surface-soft);
+        color: var(--wd-text);
+        font-size: 14px;
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease,
+            background .2s ease;
+    }
+
+    .wd-input:focus,
+    .wd-select:focus {
+        background: var(--wd-surface);
+        border-color: rgba(115,68,255,.65);
+        box-shadow: 0 0 0 4px rgba(115,68,255,.10);
+    }
+
+    .wd-input::placeholder {
+        color: var(--wd-muted);
+        opacity: .75;
+    }
+
+    .wd-select {
+        appearance: auto;
+        cursor: pointer;
+    }
+
+    .wd-help {
+        margin-top: 7px;
+        color: var(--wd-muted);
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* =========================
+       AMOUNT QUICK INFO
+    ========================= */
+
+    .wd-amount-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 11px 13px;
+        margin-top: 8px;
+        border-radius: 10px;
+        background: var(--wd-surface-soft);
+        border: 1px solid var(--wd-border);
+        font-size: 11px;
+    }
+
+    .wd-amount-info span:first-child {
+        color: var(--wd-muted);
+    }
+
+    .wd-amount-info strong {
+        color: var(--wd-text);
+    }
+
+    /* =========================
+       BUTTON
+    ========================= */
+
+    .wd-submit {
+        width: 100%;
+        min-height: 54px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        margin-top: 7px;
+        border: 0;
+        border-radius: 13px;
+        background: linear-gradient(135deg, var(--wd-primary), #8c63ff);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 750;
+        cursor: pointer;
+        box-shadow: 0 12px 25px rgba(115,68,255,.22);
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            filter .2s ease;
+    }
+
+    .wd-submit:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.04);
+        box-shadow: 0 16px 30px rgba(115,68,255,.30);
+    }
+
+    .wd-submit:active {
+        transform: translateY(0);
+    }
+
+    /* =========================
+       ALERT
+    ========================= */
+
+    .wd-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 14px 16px;
+        margin-bottom: 22px;
+        border-radius: 13px;
+        background: rgba(34,197,94,.09);
+        border: 1px solid rgba(34,197,94,.18);
+        color: var(--wd-text);
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .wd-alert i {
+        color: var(--wd-success);
+        font-size: 20px;
+        flex: 0 0 auto;
+    }
+
+    /* =========================
+       SIDE INFO
+    ========================= */
+
+    .wd-side-card {
+        padding: 22px;
+    }
+
+    .wd-side-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .wd-side-heading i {
+        color: var(--wd-primary);
+        font-size: 21px;
+    }
+
+    .wd-side-heading h3 {
+        margin: 0;
+        color: var(--wd-text);
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .wd-info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .wd-info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        padding: 13px;
+        border-radius: 12px;
+        background: var(--wd-surface-soft);
+        border: 1px solid var(--wd-border);
+    }
+
+    .wd-info-item i {
+        margin-top: 1px;
+        color: var(--wd-primary);
+        font-size: 18px;
+    }
+
+    .wd-info-item strong {
+        display: block;
+        color: var(--wd-text);
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .wd-info-item span {
+        display: block;
+        color: var(--wd-muted);
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* =========================
+       SECURITY NOTE
+    ========================= */
+
+    .wd-security {
+        margin-top: 18px;
+        padding: 15px;
+        border-radius: 13px;
+        background: rgba(115,68,255,.07);
+        border: 1px solid rgba(115,68,255,.11);
+    }
+
+    .wd-security-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+    }
+
+    .wd-security-top i {
+        color: var(--wd-primary);
+        font-size: 18px;
+    }
+
+    .wd-security-top strong {
+        color: var(--wd-text);
+        font-size: 12px;
+    }
+
+    .wd-security p {
+        margin: 0;
+        color: var(--wd-muted);
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    /* =========================
+       HISTORY
+    ========================= */
+
+    .wd-history {
+        margin-top: 22px;
+    }
+
+    .wd-table-wrap {
+        overflow-x: auto;
+    }
+
+    .wd-table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+    }
+
+    .wd-table th {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--wd-border);
+        color: var(--wd-muted);
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .wd-table td {
+        padding: 17px 20px;
+        border-bottom: 1px solid var(--wd-border);
+        color: var(--wd-text);
+        font-size: 12px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .wd-table tbody tr {
+        transition: background .2s ease;
+    }
+
+    .wd-table tbody tr:hover {
+        background: var(--wd-surface-soft);
+    }
+
+    .wd-ref {
+        font-weight: 700;
+        color: var(--wd-text);
+    }
+
+    .wd-amount {
+        font-weight: 750;
+    }
+
+    .wd-method {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .wd-method i {
+        color: var(--wd-primary);
+        font-size: 17px;
+    }
+
+    .wd-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 750;
+        text-transform: capitalize;
+    }
+
+    .wd-status::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .wd-status-successful {
+        color: var(--wd-success);
+        background: rgba(34,197,94,.10);
+    }
+
+    .wd-status-pending {
+        color: var(--wd-warning);
+        background: rgba(245,158,11,.11);
+    }
+
+    .wd-status-failed {
+        color: var(--wd-danger);
+        background: rgba(239,68,68,.10);
+    }
+
+    .wd-empty {
+        padding: 55px 20px !important;
+        text-align: center;
+        color: var(--wd-muted) !important;
+    }
+
+    .wd-empty-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        border-radius: 15px;
+        background: var(--wd-surface-soft);
+        color: var(--wd-muted);
+    }
+
+    .wd-empty-icon i {
+        font-size: 24px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 991px) {
+        .wd-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .wd-hero {
+            padding: 25px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .cx-withdraw {
+            padding-bottom: 20px;
+        }
+
+        .wd-hero {
+            padding: 22px;
+            border-radius: 20px;
+        }
+
+        .wd-hero-content {
+            align-items: flex-start;
+        }
+
+        .wd-hero-icon {
+            width: 55px;
+            height: 55px;
+            flex-basis: 55px;
+            border-radius: 16px;
+        }
+
+        .wd-hero-icon i {
+            font-size: 27px;
+        }
+
+        .wd-card {
+            border-radius: 18px;
+        }
+
+        .wd-card-header {
+            padding: 18px;
+        }
+
+        .wd-card-body {
+            padding: 18px;
+        }
+
+        .wd-side-card {
+            padding: 18px;
+        }
+
+        .wd-table th,
+        .wd-table td {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .wd-hero-content {
+            display: block;
+        }
+
+        .wd-hero-icon {
+            display: none;
+        }
+
+        .wd-hero h1 {
+            font-size: 27px;
+        }
+
+        .wd-balance {
+            padding: 18px;
+        }
+
+        .wd-balance-value {
+            font-size: 28px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wd-submit,
+        .wd-table tbody tr,
+        .wd-input,
+        .wd-select {
+            transition: none;
+        }
+    }
+
+    /* Remove number input spinner buttons */
+    .wd-input::-webkit-outer-spin-button,
+    .wd-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .wd-input {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+</style>
 
 
+<div class="cx-withdraw">
 
-<div class="row">
-              <div class="col-sm-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
+    <!-- =========================
+         HERO
+    ========================== -->
+    <section class="wd-hero">
 
-                    <h2>Withdraw</h2>
+        <div class="wd-hero-content">
 
-                    {% if message != "" %}
-                        <div class="alert alert-success d-flex align-items-center" role="alert">
-                            <div>
-                            {{message}}
-                            </div>
-                        </div> 
-                    {% endif %}
-
-                    <form class="mt-5" action="" method="post">
-                         {% csrf_token %}
-
-                        <div class="form-group">
-                            <label>Enter Amount</label>
-                            <input type="number" class="form-control form-control-lg" required name="amount" placeholder="Amount" aria-label="amount">
-                            <h6 class="text-muted font-weight-normal mt-2">Note: Balance $ {{account_balance}} </h6>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label>Choose Payment Method</label>
-                            <select class="form-select form-select-lg"  id="payment_g" name="payment_method"> 
-                                {% for payment_gate in c_paymentgates %}
-                                        <option selected>{{payment_gate.name}} </option>
-                                        
-                                       
-                                        
-                                    {% endfor %} 
-                            </select>
-                            
-                        </div>  
-
-
-                        <div class="form-group">
-                            <label>Enter Payment Address</label>
-                            <input type="text" class="form-control form-control-lg" required  name="address" placeholder="Enter crypto address" aria-label="address">
-                            
-                        </div>
-
-
-
-                        <button type="submit" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
-                            Withdraw</button>
-                    </form>
-
-
-                  </div>
+            <div>
+                <div class="wd-kicker">
+                    <i class="ph ph-arrow-up-right"></i>
+                    Withdraw Funds
                 </div>
-              </div>
+
+                <h1>Move your funds securely.</h1>
+
+                <p>
+                    Request a withdrawal from your available balance.
+                    Review the destination details carefully before submitting.
+                </p>
+            </div>
+
+            <div class="wd-hero-icon">
+                <i class="ph ph-paper-plane-tilt"></i>
+            </div>
+
+        </div>
+
+    </section>
 
 
+    <!-- =========================
+         WITHDRAWAL AREA
+    ========================== -->
+    <div class="wd-grid">
+
+        <!-- FORM -->
+        <section class="wd-card">
+
+            <div class="wd-card-header">
+
+                <div class="wd-card-title">
+
+                    <div class="wd-card-title-icon">
+                        <i class="ph ph-wallet"></i>
+                    </div>
+
+                    <div>
+                        <h2>Withdrawal Request</h2>
+                        <span>Enter the details for your withdrawal</span>
+                    </div>
+
+                </div>
 
             </div>
 
 
+            <div class="wd-card-body">
+
+                {% if message != "" %}
+                    <div class="wd-alert" role="alert">
+                        <i class="ph ph-check-circle"></i>
+
+                        <div>
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endif %}
 
 
+                <!-- AVAILABLE BALANCE -->
+                <div class="wd-balance">
 
-             <div class="row ">
-              <div class="col-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Withdrawal History</h4>
-                    <div class="table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              #
-                            </th>
-                            
-                            <th> Reference </th>
-                            <th> Amount </th>
-                            <th> Withdrawal Method </th>
-                            <th> withdrawal_type" </th>
-                            <th> Date </th>
-                            <th> Status </th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <div class="wd-balance-label">
+                        <i class="ph ph-wallet"></i>
+                        Available Balance
+                    </div>
+
+                    <div class="wd-balance-value">
+                        ${{ account_balance }}
+                    </div>
+
+                    <div class="wd-balance-note">
+                        Only available account funds can be requested for withdrawal.
+                    </div>
+
+                </div>
 
 
-                        {% for withdrawal in withdrawals %}
+                <form action="" method="post">
+                    {% csrf_token %}
 
-                             <tr>
+                    <!-- AMOUNT -->
+                    <div class="wd-field">
 
-                            </td> 
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ withdrawal.reference }}</td>
-                            <td>${{ withdrawal.amount }}</td>
-                            <td>{{ withdrawal.Withdrawal_method }}</td>
-                            <td>{{ withdrawal.withdrawal_type }}</td>
+                        <label class="wd-label" for="withdrawAmount">
+                            <i class="ph ph-currency-dollar"></i>
+                            Withdrawal Amount
+                        </label>
 
-                            <td>{{ withdrawal.timestamp|date:"M d, Y H:i A" }}</td>
-                            
+                        <div class="wd-input-wrap">
 
-                                <td>
-                                <span class="badge {% if withdrawal.status == 'successful' %}badge-outline-success{% elif withdrawal.status == 'pending' %}badge-outline-warning{% else %}badge-outline-danger{% endif %}">
-                                    {{ withdrawal.status|title }}
+                            <i class="ph ph-currency-dollar wd-input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="withdrawAmount"
+                                class="wd-input"
+                                name="amount"
+                                min="10"
+                                required
+                                placeholder="0.00"
+                                inputmode="decimal"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                        <div class="wd-amount-info">
+                            <span>Available to withdraw</span>
+                            <strong>${{ account_balance }}</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- PAYMENT METHOD -->
+                    <div class="wd-field">
+
+                        <label class="wd-label" for="paymentMethod">
+                            <i class="ph ph-coins"></i>
+                            Payment Method
+                        </label>
+
+                        <div class="wd-input-wrap">
+
+                            <i class="ph ph-wallet wd-input-icon"></i>
+
+                            <select
+                                class="wd-select"
+                                id="paymentMethod"
+                                name="payment_method"
+                                required
+                            >
+
+                                <option value="" disabled selected>
+                                    Select payment method
+                                </option>
+
+                                {% for payment_gate in c_paymentgates %}
+                                    <option value="{{ payment_gate.name }}">
+                                        {{ payment_gate.name }}
+                                    </option>
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="wd-help">
+                            Select the asset or payment network you want to receive your funds through.
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+                    <div class="wd-field">
+
+                        <label class="wd-label" for="withdrawAddress">
+                            <i class="ph ph-qr-code"></i>
+                            Payment Address
+                        </label>
+
+                        <div class="wd-input-wrap">
+
+                            <i class="ph ph-link-simple wd-input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="withdrawAddress"
+                                class="wd-input"
+                                required
+                                name="address"
+                                placeholder="Enter wallet or payment address"
+                                autocomplete="off"
+                                spellcheck="false"
+                                aria-label="Payment address"
+                            >
+
+                        </div>
+
+                        <div class="wd-help">
+                            Double-check the destination address before submitting your withdrawal.
+                        </div>
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+                    <button type="submit" class="wd-submit">
+
+                        <i class="ph ph-paper-plane-tilt"></i>
+
+                        Submit Withdrawal Request
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- SIDE INFORMATION -->
+        <aside>
+
+            <section class="wd-card wd-side-card">
+
+                <div class="wd-side-heading">
+                    <i class="ph ph-shield-check"></i>
+                    <h3>Withdrawal Information</h3>
+                </div>
+
+
+                <div class="wd-info-list">
+
+                    <div class="wd-info-item">
+
+                        <i class="ph ph-currency-circle-dollar"></i>
+
+                        <div>
+                            <strong>Minimum Withdrawal</strong>
+                            <span>
+                                The minimum withdrawal amount is $10.00.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="wd-info-item">
+
+                        <i class="ph ph-clock"></i>
+
+                        <div>
+                            <strong>Processing</strong>
+                            <span>
+                                Withdrawal requests may require review before completion.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="wd-info-item">
+
+                        <i class="ph ph-shield-check"></i>
+
+                        <div>
+                            <strong>Security</strong>
+                            <span>
+                                Always verify the destination address before confirming.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="wd-info-item">
+
+                        <i class="ph ph-lock-key"></i>
+
+                        <div>
+                            <strong>Available Funds</strong>
+                            <span>
+                                Promotional or restricted balances are not treated as withdrawable funds.
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="wd-security">
+
+                    <div class="wd-security-top">
+                        <i class="ph ph-lock-simple"></i>
+                        <strong>Secure withdrawal</strong>
+                    </div>
+
+                    <p>
+                        Your withdrawal request is submitted through your
+                        authenticated Cryptonestx account.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </aside>
+
+    </div>
+
+
+    <!-- =========================
+         WITHDRAWAL HISTORY
+    ========================== -->
+    <section class="wd-card wd-history">
+
+        <div class="wd-card-header">
+
+            <div class="wd-card-title">
+
+                <div class="wd-card-title-icon">
+                    <i class="ph ph-clock-counter-clockwise"></i>
+                </div>
+
+                <div>
+                    <h3>Withdrawal History</h3>
+                    <span>Your recent withdrawal requests</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="wd-table-wrap">
+
+            <table class="wd-table">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Reference</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for withdrawal in withdrawals %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+                                <span class="wd-ref">
+                                    {{ withdrawal.reference }}
                                 </span>
                             </td>
 
-                              
-                          </tr>
-                          <tr>
-                          {% empty %}
-                          <tr>
-                              <td colspan="7" class="text-center text-muted">No Withdrawal Yet.</td>
-                          </tr>
-                        {% endfor %}
-                         
-                       
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                            <td>
+                                <span class="wd-amount">
+                                    ${{ withdrawal.amount }}
+                                </span>
+                            </td>
 
+                            <td>
+                                <span class="wd-method">
+                                    <i class="ph ph-coins"></i>
+                                    {{ withdrawal.Withdrawal_method }}
+                                </span>
+                            </td>
 
+                            <td>
+                                {{ withdrawal.withdrawal_type|title }}
+                            </td>
 
- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    // Get the input field and the output text element
-    // var inputField = document.getElementById("inputField");
-    // var outputText = document.getElementById("outputText");
+                            <td>
+                                {{ withdrawal.timestamp|date:"M d, Y H:i A" }}
+                            </td>
 
+                            <td>
 
-    var custom_amount = document.getElementById("custom-amount");
-    var invest_amount = document.getElementById("invest_amount");
+                                <span class="wd-status
+                                    {% if withdrawal.status == 'successful' %}
+                                        wd-status-successful
+                                    {% elif withdrawal.status == 'pending' %}
+                                        wd-status-pending
+                                    {% else %}
+                                        wd-status-failed
+                                    {% endif %}
+                                ">
+                                    {{ withdrawal.status|title }}
+                                </span>
 
+                            </td>
 
-    var payment_g = document.getElementById("payment_g");
-    var payment_m = document.getElementById("payment_m");
+                        </tr>
 
+                    {% empty %}
 
-    var m = document.getElementById("m");
-    var w = document.getElementById("w");
-    
+                        <tr>
 
-    var tr = document.getElementById("tr");
+                            <td colspan="7" class="wd-empty">
 
-    var refUrl = document.getElementById("refUrl");
+                                <div class="wd-empty-icon">
+                                    <i class="ph ph-receipt"></i>
+                                </div>
 
+                                No withdrawal requests yet.
 
-    payment_g.addEventListener("change", function() {
-        // Update the text content of the output text element
-        payment_m.textContent = payment_g.options[payment_g.selectedIndex].text.split('|')[0];
+                            </td>
 
-        w.textContent = payment_g.options[payment_g.selectedIndex].text;
+                        </tr>
 
-        g = payment_g.options[payment_g.selectedIndex].text
-        refUrl.value = g.split('|')[1]
-       
-        
-        
-    });
+                    {% endfor %}
 
-    // Add an event listener to the input field for "input" event
-    // inputField.addEventListener("input", function() {
-        // Update the text content of the output text element
-        // outputText.textContent = "You typed: " + inputField.value;
-    // });
+                </tbody>
 
+            </table>
 
-    custom_amount.addEventListener("input", function() {
-        // Update the text content of the output text element
-        invest_amount.textContent = "$" + custom_amount.value;
-        m.textContent = "$" + custom_amount.value;
-        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
-    });
+        </div>
 
+    </section>
 
+</div>
 
-    custom_amount.addEventListener("input", function() {
-        // Update the text content of the output text element
-        invest_amount.textContent = "$" + custom_amount.value;
-        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
-    });
+<script>
+const withdrawAmount = document.getElementById("withdrawAmount");
 
-    
+withdrawAmount.addEventListener("input", function () {
+    let value = this.value.replace(/,/g, "");
+
+    value = value.replace(/[^\d.]/g, "");
+
+    const parts = value.split(".");
+    if (parts.length > 2) {
+        value = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    if (value) {
+        const [integerPart, decimalPart] = value.split(".");
+
+        const formattedInteger = Number(integerPart || 0).toLocaleString("en-US");
+
+        this.value = decimalPart !== undefined
+            ? `${formattedInteger}.${decimalPart}`
+            : formattedInteger;
+    } else {
+        this.value = "";
+    }
 });
-
-
-</script> 
-
+</script>
 
 {% endblock content %}
-
-
-
-

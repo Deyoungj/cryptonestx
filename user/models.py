@@ -13,7 +13,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=100, blank=True)
     username = models.CharField(max_length=100,  blank=True)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100, blank=True, null=True)
+    # password = models.CharField(max_length=100, blank=True, null=True)
 
     user_password = models.CharField(max_length=100, blank=True, null=True)
     # profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True, default='profile_pics/default.jpg')
@@ -88,8 +88,8 @@ class Profile(models.Model):
 
 class KYC(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="kyc")
-    id_front = models.ImageField(upload_to="kyc/", null=True, blank=True)
-    id_back = models.ImageField(upload_to="kyc/", null=True, blank=True)
+    # id_front = models.ImageField(upload_to="kyc/", null=True, blank=True)
+    # id_back = models.ImageField(upload_to="kyc/", null=True, blank=True)
     ssn = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self) -> str:

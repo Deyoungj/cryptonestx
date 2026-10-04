@@ -4,15 +4,28 @@ from .models import CustomUser, Profile
 from client.models import Account
 from django.dispatch import receiver
 from django.conf import settings
+from decimal import Decimal 
 
 
 @receiver(post_save, sender=CustomUser)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-        profile = Profile.objects.create(user=instance)
-        account = Account.objects.create(user=instance)
-        profile.save()
-        account.save()
+        Profile.objects.create(user=instance)
+
+        Account.objects.create(
+            user=instance,
+            promotional_balance=Decimal("12000.00"),
+            level=1,
+            is_verified=False,
+            withdrawal_enabled=False,
+        )
+# @receiver(post_save, sender=CustomUser)
+# def create_profile(sender, instance, created, **kwargs):
+#     if created:
+#         profile = Profile.objects.create(user=instance)
+#         account = Account.objects.create(user=instance)
+#         profile.save()
+#         account.save()
 
         
 

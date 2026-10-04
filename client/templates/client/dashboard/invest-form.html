@@ -1,162 +1,968 @@
 {% extends 'client/dashboard/base.html' %}
 {% load static %}
 
-{% block title %}Cryptonestx | Withdraw {% endblock title %}
+{% block title %}CryptoNestx | Complete Investment{% endblock title %}
 
+{% block invest_active %}active{% endblock invest_active %}
 
-{% block invest_active %} active {% endblock invest_active %}
-
-
- {% block base_acc_balance %}{{account_balance}}{% endblock base_acc_balance %}
-
- ${% block base_acc_locked %}{{locked_investments}}{% endblock base_acc_locked %}
-
-
-
-
+{% block base_acc_balance %}{{ account_balance }}{% endblock base_acc_balance %}
+{% block base_acc_locked %}{{ locked_investments }}{% endblock base_acc_locked %}
 
 
 {% block content %}
 
+<style>
+    :root {
+        --inv-primary: #7344FF;
+        --inv-primary-dark: #5c32d6;
+        --inv-success: #22c55e;
+        --inv-warning: #f59e0b;
+        --inv-text: #171329;
+        --inv-muted: #77728d;
+        --inv-border: rgba(115, 68, 255, .12);
+        --inv-surface: #ffffff;
+        --inv-surface-soft: #f8f7fc;
+        --inv-shadow: 0 18px 50px rgba(30, 20, 70, .08);
+        --inv-radius: 22px;
+}
+
+[data-theme="dark"] {
+    --inv-text: #f5f3ff;
+    --inv-muted: #a7a1bb;
+    --inv-border: rgba(255,255,255,.10);
+    --inv-surface: #171522;
+    --inv-surface-soft: #211e2d;
+    --inv-shadow: 0 18px 50px rgba(0,0,0,.25);
+}
 
 
+/* =========================================
+   Investment Page
+========================================= */
 
-<div class="row">
-              <div class="col-sm-12 grid-margin">
-                <div class="card">
-                  <div class="card-body">
+.inv-page {
+    padding-bottom: 40px;
+}
 
-                    <h2>Complete Imvestment</h2>
+.inv-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 30px;
+    border-radius: var(--inv-radius);
+    margin-bottom: 24px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 85% 15%, rgba(255,255,255,.18), transparent 28%),
+        radial-gradient(circle at 10% 100%, rgba(255,255,255,.10), transparent 30%),
+        linear-gradient(135deg, #7344FF, #5126bd);
+    box-shadow: 0 20px 45px rgba(115,68,255,.22);
+}
 
-                    {% if message != "" %}
-                        <div class="alert alert-success d-flex align-items-center" role="alert">
-                            <div>
-                            {{message}}
+.inv-hero::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.12);
+    right: -55px;
+    bottom: -70px;
+}
+
+.inv-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.inv-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.16);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.inv-hero h1 {
+    margin: 15px 0 8px;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -.04em;
+}
+
+.inv-hero p {
+    max-width: 650px;
+    margin: 0;
+    color: rgba(255,255,255,.78);
+    font-size: 14px;
+}
+
+
+/* =========================================
+   Main Grid
+========================================= */
+
+.inv-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, .8fr);
+    gap: 24px;
+}
+
+.inv-card {
+    background: var(--inv-surface);
+    border: 1px solid var(--inv-border);
+    border-radius: var(--inv-radius);
+    box-shadow: var(--inv-shadow);
+}
+
+.inv-card-header {
+    padding: 24px 26px 18px;
+    border-bottom: 1px solid var(--inv-border);
+}
+
+.inv-card-header h2 {
+    margin: 0;
+    color: var(--inv-text);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.inv-card-header p {
+    margin: 7px 0 0;
+    color: var(--inv-muted);
+    font-size: 13px;
+}
+
+.inv-card-body {
+    padding: 26px;
+}
+
+
+/* =========================================
+   Plan Card
+========================================= */
+
+.inv-plan {
+    position: relative;
+    overflow: hidden;
+    padding: 24px;
+    border-radius: 18px;
+    margin-bottom: 26px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(115,68,255,.10),
+            rgba(115,68,255,.025)
+        );
+    border: 1px solid rgba(115,68,255,.14);
+}
+
+.inv-plan-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.inv-plan-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background: var(--inv-primary);
+    color: #fff;
+    font-size: 24px;
+    box-shadow: 0 10px 25px rgba(115,68,255,.22);
+}
+
+.inv-plan-label {
+    margin-bottom: 5px;
+    color: var(--inv-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.inv-plan-name {
+    color: var(--inv-text);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.inv-plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: rgba(34,197,94,.10);
+    color: var(--inv-success);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.inv-plan-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.inv-plan-stat {
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.55);
+    border: 1px solid rgba(115,68,255,.08);
+}
+
+[data-theme="dark"] .inv-plan-stat {
+    background: rgba(255,255,255,.035);
+}
+
+.inv-plan-stat span {
+    display: block;
+    color: var(--inv-muted);
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.inv-plan-stat strong {
+    color: var(--inv-text);
+    font-size: 15px;
+}
+
+
+/* =========================================
+   Amount Input
+========================================= */
+
+.inv-field {
+    margin-bottom: 22px;
+}
+
+.inv-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+    color: var(--inv-text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.inv-limit {
+    color: var(--inv-muted);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.inv-input-wrap {
+    position: relative;
+}
+
+.inv-currency {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--inv-primary);
+    font-size: 20px;
+    font-weight: 800;
+    pointer-events: none;
+}
+
+.inv-input {
+    width: 100%;
+    height: 62px;
+    padding: 0 18px 0 42px;
+    border: 1px solid var(--inv-border);
+    border-radius: 16px;
+    outline: none;
+    background: var(--inv-surface-soft);
+    color: var(--inv-text);
+    font-size: 22px;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.inv-input:focus {
+    border-color: var(--inv-primary);
+    box-shadow: 0 0 0 4px rgba(115,68,255,.10);
+    background: var(--inv-surface);
+}
+
+/* Remove number spinners */
+.inv-input::-webkit-outer-spin-button,
+.inv-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.inv-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.inv-help {
+    margin-top: 8px;
+    color: var(--inv-muted);
+    font-size: 11px;
+}
+
+
+/* =========================================
+   Investment Preview
+========================================= */
+
+.inv-preview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.inv-preview-item {
+    padding: 16px;
+    border: 1px solid var(--inv-border);
+    border-radius: 15px;
+    background: var(--inv-surface-soft);
+}
+
+.inv-preview-item span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--inv-muted);
+    font-size: 11px;
+}
+
+.inv-preview-item strong {
+    color: var(--inv-text);
+    font-size: 17px;
+}
+
+.inv-preview-item.highlight {
+    border-color: rgba(34,197,94,.18);
+    background: rgba(34,197,94,.06);
+}
+
+.inv-preview-item.highlight strong {
+    color: var(--inv-success);
+}
+
+
+/* =========================================
+   Submit
+========================================= */
+
+.inv-submit {
+    width: 100%;
+    min-height: 54px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 15px;
+    background: linear-gradient(135deg, var(--inv-primary), var(--inv-primary-dark));
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(115,68,255,.20);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.inv-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(115,68,255,.28);
+}
+
+
+/* =========================================
+   Right Side
+========================================= */
+
+.inv-side-card {
+    padding: 24px;
+}
+
+.inv-balance {
+    padding: 22px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    background: linear-gradient(
+        135deg,
+        rgba(115,68,255,.11),
+        rgba(115,68,255,.025)
+    );
+    border: 1px solid rgba(115,68,255,.12);
+}
+
+.inv-balance-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--inv-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.inv-balance-value {
+    margin-top: 8px;
+    color: var(--inv-text);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -.04em;
+    word-break: break-word;
+}
+
+.inv-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.inv-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+}
+
+.inv-info-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(115,68,255,.09);
+    color: var(--inv-primary);
+    font-size: 17px;
+}
+
+.inv-info-item strong {
+    display: block;
+    color: var(--inv-text);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.inv-info-item span {
+    color: var(--inv-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   Alert
+========================================= */
+
+.inv-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    border-radius: 14px;
+    background: rgba(34,197,94,.08);
+    border: 1px solid rgba(34,197,94,.14);
+    color: var(--inv-success);
+    font-size: 13px;
+}
+
+.inv-alert i {
+    font-size: 20px;
+    flex: 0 0 auto;
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 991px) {
+    .inv-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .inv-side-card {
+        order: -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .inv-page {
+        padding-bottom: 25px;
+    }
+
+    .inv-hero {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .inv-hero h1 {
+        font-size: 27px;
+    }
+
+    .inv-card-header,
+    .inv-card-body {
+        padding: 20px;
+    }
+
+    .inv-plan {
+        padding: 18px;
+    }
+
+    .inv-plan-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .inv-preview {
+        grid-template-columns: 1fr;
+    }
+
+    .inv-input {
+        height: 58px;
+        font-size: 20px;
+    }
+
+    .inv-balance-value {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .inv-submit {
+        transition: none;
+    }
+}
+</style>
+
+
+<div class="inv-page">
+
+    <!-- Hero -->
+    <section class="inv-hero">
+        <div class="inv-hero-content">
+
+            <span class="inv-eyebrow">
+                <i class="ph ph-chart-line-up"></i>
+                Investment
+            </span>
+
+            <h1>Build your investment.</h1>
+
+            <p>
+                Review your selected plan, choose your investment amount,
+                and continue when everything looks right.
+            </p>
+
+        </div>
+    </section>
+
+
+    <!-- Main Content -->
+    <div class="inv-grid">
+
+        <!-- Investment Form -->
+        <div class="inv-card">
+
+            <div class="inv-card-header">
+                <h2>Complete your investment</h2>
+                <p>
+                    Enter the amount you would like to invest in this plan.
+                </p>
+            </div>
+
+            <div class="inv-card-body">
+
+                {% if message %}
+                    <div class="inv-alert">
+                        <i class="ph ph-check-circle"></i>
+
+                        <div>
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <!-- Selected Plan -->
+                <div class="inv-plan">
+
+                    <div class="inv-plan-top">
+
+                        <div style="display:flex; gap:14px; align-items:center;">
+
+                            <div class="inv-plan-icon">
+                                <i class="ph ph-trend-up"></i>
                             </div>
-                        </div> 
-                    {% endif %}
 
-                    <form class="mt-5" action="" method="post">
-                         {% csrf_token %}
+                            <div>
+                                <div class="inv-plan-label">
+                                    Selected plan
+                                </div>
 
-
-                         <div class="form-group">
-                            <label>Chosen Plan</label>
-                            <input type="text" class="form-control form-control-lg" value="{{ plan.plan_name}}  | Invest for {{plan.period_length}}days and get daily profit {{plan.percent}}% " readonly aria-label="amount">
+                                <div class="inv-plan-name">
+                                    {{ plan.plan_name }}
+                                </div>
+                            </div>
 
                         </div>
 
+                        <span class="inv-plan-badge">
+                            <i class="ph ph-check"></i>
+                            Active
+                        </span>
+
+                    </div>
 
 
-                        <div class="form-group">
-                            <label>Enter Amount</label>
-                            <input type="number" id="custom-amount" class="form-control form-control-lg" min="{{plan.minimum_amount}}" max="{{plan.maximum_amount}}" required name="amount" placeholder="Amount" aria-label="amount">
-                            <h6 class="text-muted font-weight-normal mt-2">Note: Minimum invest $ {{plan.minimum_amount}} and upto ${{plan.maximum_amount}}</h6>
+                    <div class="inv-plan-stats">
+
+                        <div class="inv-plan-stat">
+                            <span>Investment period</span>
+                            <strong>
+                                {{ plan.period_length }} days
+                            </strong>
                         </div>
 
+                        <div class="inv-plan-stat">
+                            <span>Daily profit</span>
+                            <strong>
+                                {{ plan.percent }}%
+                            </strong>
+                        </div>
 
-                        
-                        <!-- <h4> Investment Details</h4>
+                        <div class="inv-plan-stat">
+                            <span>Minimum</span>
+                            <strong>
+                                ${{ plan.minimum_amount }}
+                            </strong>
+                        </div>
 
-                        <ul class="nk-iv-wg4-overview g-2">
-                        <li>
-                            <div class="sub-text">Investment Type"</div>
-                            <div class="lead-text">{{plan.plan_name|title}}</div>
-                        </li>
-                        <li>
-                            <div class="sub-text">Term of the scheme</div>
-                            <div class="lead-text">{{plan.period_length}} days</div>
-                        </li>
-                        
-                        <li>
-                            <div class="sub-text">Daily profit </div>
-                            <div class="lead-text">{{plan.percent}}%</div>
-                        </li>
-                        
-                        <li>
-                            <div class="sub-text">Total Return</div>
-                            <div class="lead-text" id="tr">$0</div>
-                        </li>
-                        
-                    </ul>
+                    </div>
 
-                    <div class="nk-iv-wg4-sub">
-                                            <ul class="nk-iv-wg4-list">
-                                                <li>
-                                                    <div class="sub-text">"Payment Method</div>
-                                                    <div class="lead-text" id="payment_m">none</div>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-
-                    <div class="nk-iv-wg4-sub">
-                                            <ul class="nk-iv-wg4-list">
-                                                <li>
-                                                    <div class="sub-text">Amount to invest</div>
-                                                    <div class="lead-text" id="invest_amount">$0</div>
-                                                </li>
-                                                
-                                            </ul>
-                                        </div> -->
-
-
-
-                        <button type="submit" class="btn btn-outline-success btn-fw"  data-bs-toggle="modal" data-bs-target="#modernModal">
-                            Complete Invest</button>
-                    </form>
-
-
-                  </div>
                 </div>
-              </div>
 
 
+                <form method="post" action="" id="investmentForm">
+
+                    {% csrf_token %}
+
+
+                    <!-- Amount -->
+                    <div class="inv-field">
+
+                        <div class="inv-label">
+
+                            <span>
+                                Investment amount
+                            </span>
+
+                            <span class="inv-limit">
+                                Max ${{ plan.maximum_amount }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="inv-input-wrap">
+
+                            <span class="inv-currency">$</span>
+
+                            <input
+                                type="text"
+                                id="custom-amount"
+                                class="inv-input"
+                                min="{{ plan.minimum_amount }}"
+                                max="{{ plan.maximum_amount }}"
+                                required
+                                name="amount"
+                                placeholder="0.00"
+                                inputmode="decimal"
+                                autocomplete="off"
+                                aria-label="Investment amount"
+                            >
+
+                        </div>
+
+                        <div class="inv-help">
+                            Minimum investment:
+                            <strong>${{ plan.minimum_amount }}</strong>
+                            · Maximum:
+                            <strong>${{ plan.maximum_amount }}</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Investment Preview -->
+                    <div class="inv-preview">
+
+                        <div class="inv-preview-item">
+
+                            <span>
+                                Amount to invest
+                            </span>
+
+                            <strong id="invest_amount">
+                                $0.00
+                            </strong>
+
+                        </div>
+
+
+                        <div class="inv-preview-item highlight">
+
+                            <span>
+                                Daily profit
+                            </span>
+
+                            <strong id="daily_profit">
+                                $0.00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="inv-submit"
+                    >
+                        <i class="ph ph-check-circle"></i>
+                        Complete Investment
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+
+        <!-- Investment Summary -->
+        <aside class="inv-card inv-side-card">
+
+            <div class="inv-balance">
+
+                <div class="inv-balance-label">
+                    <i class="ph ph-wallet"></i>
+                    Available balance
+                </div>
+
+                <div class="inv-balance-value">
+                    ${{ account_balance|floatformat:2 }}
+                </div>
 
             </div>
 
 
+            <h3 style="
+                margin:0 0 18px;
+                color:var(--inv-text);
+                font-size:16px;
+                font-weight:800;
+            ">
+                Plan overview
+            </h3>
 
 
+            <div class="inv-info-list">
+
+                <div class="inv-info-item">
+
+                    <div class="inv-info-icon">
+                        <i class="ph ph-calendar-blank"></i>
+                    </div>
+
+                    <div>
+                        <strong>Investment term</strong>
+
+                        <span>
+                            {{ plan.period_length }} days
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="inv-info-item">
+
+                    <div class="inv-info-icon">
+                        <i class="ph ph-chart-line-up"></i>
+                    </div>
+
+                    <div>
+                        <strong>Daily return</strong>
+
+                        <span>
+                            {{ plan.percent }}% per day
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="inv-info-item">
+
+                    <div class="inv-info-icon">
+                        <i class="ph ph-currency-dollar"></i>
+                    </div>
+
+                    <div>
+                        <strong>Minimum investment</strong>
+
+                        <span>
+                            ${{ plan.minimum_amount }}
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="inv-info-item">
+
+                    <div class="inv-info-icon">
+                        <i class="ph ph-arrow-up-right"></i>
+                    </div>
+
+                    <div>
+                        <strong>Maximum investment</strong>
+
+                        <span>
+                            ${{ plan.maximum_amount }}
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    // Get the input field and the output text element
-    // var inputField = document.getElementById("inputField");
-    // var outputText = document.getElementById("outputText");
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Add an event listener to the input field for "input" event
-    // inputField.addEventListener("input", function() {
-        // Update the text content of the output text element
-        // outputText.textContent = "You typed: " + inputField.value;
-    // });
+    const amountInput = document.getElementById("custom-amount");
+    const amountPreview = document.getElementById("invest_amount");
+    const dailyProfitPreview = document.getElementById("daily_profit");
+
+    const dailyPercent = Number("{{ plan.percent }}");
+
+    if (!amountInput) return;
 
 
-    custom_amount.addEventListener("input", function() {
-        // Update the text content of the output text element
-        invest_amount.textContent = "$" + custom_amount.value;
-        m.textContent = "$" + custom_amount.value;
-        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
+    /*
+     * Format:
+     *
+     * 20000  -> 20,000
+     * 100000 -> 100,000
+     * 1500000 -> 1,500,000
+     */
+    amountInput.addEventListener("input", function () {
+
+        let rawValue = this.value.replace(/,/g, "");
+
+        // Allow only numbers and decimal point
+        rawValue = rawValue.replace(/[^\d.]/g, "");
+
+        // Prevent multiple decimal points
+        const parts = rawValue.split(".");
+
+        if (parts.length > 2) {
+            rawValue = parts[0] + "." + parts.slice(1).join("");
+        }
+
+        if (!rawValue) {
+
+            this.value = "";
+
+            amountPreview.textContent = "$0.00";
+            dailyProfitPreview.textContent = "$0.00";
+
+            return;
+        }
+
+
+        const numberParts = rawValue.split(".");
+
+        let integerPart = numberParts[0] || "0";
+        const decimalPart = numberParts[1];
+
+
+        // Remove unnecessary leading zeros
+        integerPart = integerPart.replace(/^0+(?=\d)/, "");
+
+
+        // Add thousand separators
+        const formattedInteger = Number(integerPart).toLocaleString("en-US");
+
+
+        if (decimalPart !== undefined) {
+            this.value = formattedInteger + "." + decimalPart;
+        } else {
+            this.value = formattedInteger;
+        }
+
+
+        // Calculate previews using raw numeric value
+        const numericAmount = Number(rawValue);
+
+        if (!Number.isNaN(numericAmount)) {
+
+            const dailyProfit = numericAmount * (dailyPercent / 100);
+
+            amountPreview.textContent =
+                "$" + numericAmount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+            dailyProfitPreview.textContent =
+                "$" + dailyProfit.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+        }
+
     });
 
 
+    /*
+     * Remove commas before submitting.
+     *
+     * User sees:
+     * 20,000
+     *
+     * Django receives:
+     * 20000
+     */
+    document.getElementById("investmentForm").addEventListener("submit", function () {
 
-    custom_amount.addEventListener("input", function() {
-        // Update the text content of the output text element
-        invest_amount.textContent = "$" + custom_amount.value;
-        tr.textContent = "$" + custom_amount.value * {{plan.percent}};
+        amountInput.value = amountInput.value.replace(/,/g, "");
+
     });
 
-    
 });
-
-
 </script>
 
-
 {% endblock content %}
-
-
-
-
