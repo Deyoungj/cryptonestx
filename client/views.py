@@ -21,7 +21,7 @@ from .utils import get_monthly_referral_profit
 from django.utils import timezone
 from django.db import transaction
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.contrib import messages
 from decimal import Decimal, InvalidOperation
 
 # from decimal import Decimal, InvalidOperation
@@ -33,6 +33,12 @@ from decimal import Decimal, InvalidOperation
 
 # from .models import Account, Investment, Withdrawal, clientPaymentgateway
 
+
+
+
+
+# Minimum deposit required for Level 2 eligibility
+LEVEL_2_DEPOSIT_REQUIREMENT = Decimal("500.00")
 
 
 def home(request):
@@ -209,12 +215,169 @@ def invest(request):
     return render(request, 'client/dashboard/invest.html', context)
 
 
+# @login_required(login_url="login")
+# def upgrade_level_2(request):
+#     account = Account.objects.get(user=request.user)
+
+#     # User is already Level 2 or higher
+#     if account.level >= 2:
+#         return render(
+#             request,
+#             "client/dashboard/upgrade_level_2.html",
+#             {
+#                 "account": account,
+#                 "already_upgraded": True,
+#                 "projected_balance": account.account_balance,
+#             },
+#         )
+
+#     # Get or create the promotion claim record
+#     claim, created = PromotionalCreditClaim.objects.get_or_create(
+#         user=request.user,
+#         defaults={
+#             "promotional_amount": account.promotional_balance,
+#         },
+#     )
+
+#     if request.method == "POST":
+
+#         with transaction.atomic():
+
+#             # Lock account to prevent duplicate claims
+#             account = Account.objects.select_for_update().get(
+#                 user=request.user
+#             )
+
+#             claim = PromotionalCreditClaim.objects.select_for_update().get(
+#                 user=request.user
+#             )
+
+#             # Already upgraded
+#             if account.level >= 2:
+#                 messages.info(
+#                     request,
+#                     "Your account is already upgraded to Level 2.",
+#                 )
+#                 return redirect("upgrade_level_2")
+
+#             # Already claimed
+#             if claim.status == "claimed":
+#                 messages.info(
+#                     request,
+#                     "Your promotional credit has already been released.",
+#                 )
+#                 return redirect("upgrade_level_2")
+
+#             # Level 2 eligibility
+#             if not account.is_verified:
+#                 messages.error(
+#                     request,
+#                     "Your account must be verified before you can upgrade to Level 2.",
+#                 )
+#                 return redirect("upgrade_level_2")
+
+#             # Promotional balance must exist
+#             if account.promotional_balance <= Decimal("0.00"):
+#                 messages.error(
+#                     request,
+#                     "There is no promotional credit available to release.",
+#                 )
+#                 return redirect("upgrade_level_2")
+
+#             # ==========================================
+#             # RELEASE PROMOTIONAL CREDIT
+#             # ==========================================
+
+#             promotional_amount = account.promotional_balance
+
+#             account.account_balance += promotional_amount
+#             account.promotional_balance = Decimal("0.00")
+
+#             # Upgrade account
+#             account.level = 2
+
+#             # Enable normal withdrawal eligibility
+#             account.withdrawal_enabled = True
+
+#             account.save(
+#                 update_fields=[
+#                     "account_balance",
+#                     "promotional_balance",
+#                     "level",
+#                     "withdrawal_enabled",
+#                 ]
+#             )
+
+#             # ==========================================
+#             # RECORD PROMOTIONAL CLAIM
+#             # ==========================================
+
+#             claim.promotional_amount = promotional_amount
+#             claim.claimed_amount = promotional_amount
+#             claim.status = "claimed"
+#             claim.claimed_at = timezone.now()
+
+#             claim.save(
+#                 update_fields=[
+#                     "promotional_amount",
+#                     "claimed_amount",
+#                     "status",
+#                     "claimed_at",
+#                 ]
+#             )
+
+#         messages.success(
+#             request,
+#             f"Congratulations! Your account is now Level 2 and "
+#             f"${promotional_amount:,.2f} has been released to your main balance.",
+#         )
+
+#         return redirect("upgrade_level_2")
+
+#     # Calculate projected balance for display
+#     projected_balance = (
+#         account.account_balance + account.promotional_balance
+#     )
+
+#     return render(
+#         request,
+#         "client/dashboard/upgrade_level_2.html",
+#         {
+#             "account": account,
+#             "claim": claim,
+#             "already_upgraded": False,
+#             "projected_balance": projected_balance,
+#         },
+#     )
+
+
+
+
 @login_required(login_url="login")
 def upgrade_level_2(request):
+
     account = Account.objects.get(user=request.user)
 
-    # User is already Level 2 or higher
+    # =====================================================
+    # LEVEL 2 DEPOSIT REQUIREMENT
+    # =====================================================
+
+    level_2_deposit_requirement = LEVEL_2_DEPOSIT_REQUIREMENT
+
+    # Check whether the user has a successful qualifying deposit.
+    qualifying_deposit_completed = Transaction.objects.filter(
+        user=request.user,
+        transaction_type="deposit",
+        status="successful",
+        amount__gte=level_2_deposit_requirement,
+    ).exists()
+
+    # =====================================================
+    # ALREADY LEVEL 2
+    # =====================================================
+
     if account.level >= 2:
+
         return render(
             request,
             "client/dashboard/upgrade_level_2.html",
@@ -222,16 +385,27 @@ def upgrade_level_2(request):
                 "account": account,
                 "already_upgraded": True,
                 "projected_balance": account.account_balance,
+
+                # Level 2 information
+                "qualifying_deposit_completed": True,
+                "level_2_deposit_requirement": level_2_deposit_requirement,
             },
         )
 
-    # Get or create the promotion claim record
+    # =====================================================
+    # PROMOTIONAL CLAIM
+    # =====================================================
+
     claim, created = PromotionalCreditClaim.objects.get_or_create(
         user=request.user,
         defaults={
             "promotional_amount": account.promotional_balance,
         },
     )
+
+    # =====================================================
+    # POST - ACTIVATE LEVEL 2
+    # =====================================================
 
     if request.method == "POST":
 
@@ -242,45 +416,88 @@ def upgrade_level_2(request):
                 user=request.user
             )
 
+            # Lock promotional claim
             claim = PromotionalCreditClaim.objects.select_for_update().get(
                 user=request.user
             )
 
+            # -------------------------------------------------
             # Already upgraded
+            # -------------------------------------------------
+
             if account.level >= 2:
+
                 messages.info(
                     request,
                     "Your account is already upgraded to Level 2.",
                 )
+
                 return redirect("upgrade_level_2")
 
+            # -------------------------------------------------
             # Already claimed
+            # -------------------------------------------------
+
             if claim.status == "claimed":
+
                 messages.info(
                     request,
                     "Your promotional credit has already been released.",
                 )
+
                 return redirect("upgrade_level_2")
 
-            # Level 2 eligibility
+            # -------------------------------------------------
+            # Verification required
+            # -------------------------------------------------
+
             if not account.is_verified:
+
                 messages.error(
                     request,
                     "Your account must be verified before you can upgrade to Level 2.",
                 )
+
                 return redirect("upgrade_level_2")
 
+            # -------------------------------------------------
+            # Qualifying deposit required
+            # -------------------------------------------------
+
+            qualifying_deposit_completed = Transaction.objects.filter(
+                user=request.user,
+                transaction_type="deposit",
+                status="successful",
+                amount__gte=level_2_deposit_requirement,
+            ).exists()
+
+            if not qualifying_deposit_completed:
+
+                messages.error(
+                    request,
+                    f"A successful qualifying deposit of at least "
+                    f"${level_2_deposit_requirement:,.2f} is required "
+                    f"before Level 2 can be activated.",
+                )
+
+                return redirect("upgrade_level_2")
+
+            # -------------------------------------------------
             # Promotional balance must exist
+            # -------------------------------------------------
+
             if account.promotional_balance <= Decimal("0.00"):
+
                 messages.error(
                     request,
                     "There is no promotional credit available to release.",
                 )
+
                 return redirect("upgrade_level_2")
 
-            # ==========================================
+            # =================================================
             # RELEASE PROMOTIONAL CREDIT
-            # ==========================================
+            # =================================================
 
             promotional_amount = account.promotional_balance
 
@@ -290,7 +507,7 @@ def upgrade_level_2(request):
             # Upgrade account
             account.level = 2
 
-            # Enable normal withdrawal eligibility
+            # Enable withdrawal eligibility
             account.withdrawal_enabled = True
 
             account.save(
@@ -302,9 +519,9 @@ def upgrade_level_2(request):
                 ]
             )
 
-            # ==========================================
+            # =================================================
             # RECORD PROMOTIONAL CLAIM
-            # ==========================================
+            # =================================================
 
             claim.promotional_amount = promotional_amount
             claim.claimed_amount = promotional_amount
@@ -320,6 +537,19 @@ def upgrade_level_2(request):
                 ]
             )
 
+            # =================================================
+            # RECORD TRANSACTION
+            # =================================================
+
+            Transaction.objects.create(
+                user=request.user,
+                transaction_type="promotion",
+                discription="Promotional Credit Released - Level 2 Upgrade",
+                amount=promotional_amount,
+                status="successful",
+                method="Promotional Credit",
+            )
+
         messages.success(
             request,
             f"Congratulations! Your account is now Level 2 and "
@@ -328,10 +558,17 @@ def upgrade_level_2(request):
 
         return redirect("upgrade_level_2")
 
-    # Calculate projected balance for display
+    # =====================================================
+    # PROJECTED BALANCE
+    # =====================================================
+
     projected_balance = (
         account.account_balance + account.promotional_balance
     )
+
+    # =====================================================
+    # PAGE CONTEXT
+    # =====================================================
 
     return render(
         request,
@@ -341,6 +578,10 @@ def upgrade_level_2(request):
             "claim": claim,
             "already_upgraded": False,
             "projected_balance": projected_balance,
+
+            # Level 2 requirements
+            "qualifying_deposit_completed": qualifying_deposit_completed,
+            "level_2_deposit_requirement": level_2_deposit_requirement,
         },
     )
 
@@ -556,6 +797,120 @@ def deposit(request):
 
 
 
+# @login_required(redirect_field_name='withdraw', login_url='login')
+# def withdraw(request):
+
+#     account = Account.objects.filter(user=request.user).first()
+
+#     locked_investments = (
+#         Investment.objects
+#         .filter(user=request.user, is_matured=False)
+#         .aggregate(Sum('amount'))['amount__sum']
+#         or Decimal("0.00")
+#     )
+
+#     message_s = ""
+
+#     if request.method == "POST":
+
+#         # Get form values
+#         raw_amount = request.POST.get('amount', '').replace(',', '').strip()
+#         withdrawal_method = request.POST.get('payment_method', '').strip()
+#         address = request.POST.get('address', '').strip()
+
+#         # Validate amount
+#         try:
+#             amount = Decimal(raw_amount)
+#         except (InvalidOperation, TypeError):
+#             amount = Decimal("0.00")
+#             message_s = "Please enter a valid withdrawal amount."
+
+#         if not message_s:
+
+#             with transaction.atomic():
+
+#                 # Lock the account during the withdrawal check
+#                 account = Account.objects.select_for_update().get(
+#                     user=request.user
+#                 )
+
+#                 # ==========================================
+#                 # WITHDRAWAL ELIGIBILITY
+#                 # ==========================================
+
+#                 if not account.withdrawal_enabled:
+
+#                     message_s = (
+#                         "Withdrawal is currently unavailable for your account. "
+#                         "Please complete the required account eligibility steps."
+#                     )
+
+#                 elif amount < Decimal("10.00"):
+
+#                     message_s = "Minimum withdrawal amount is $10."
+
+#                 elif amount > account.account_balance:
+
+#                     message_s = "Insufficient funds."
+
+#                 elif not withdrawal_method:
+
+#                     message_s = "Please select a withdrawal method."
+
+#                 elif not address:
+
+#                     message_s = "Please enter your payment address."
+
+#                 else:
+
+#                     # ==========================================
+#                     # CREATE WITHDRAWAL
+#                     # ==========================================
+
+#                     Withdrawal.objects.create(
+#                         user=request.user,
+#                         amount=amount,
+#                         Withdrawal_method=withdrawal_method,
+#                         address=address,
+#                     )
+
+#                     message_s = "Your withdrawal request is in progress."
+
+#     withdrawals = Withdrawal.objects.filter(
+#         user=request.user
+#     ).order_by('-timestamp')
+
+#     # context = {
+#     #     'account_balance': account.account_balance.quantize(
+#     #         Decimal("0.01")
+#     #     ),
+#     #     'c_paymentgates': clientPaymentgateway.objects.all(),
+#     #     'locked_investments': locked_investments,
+#     #     'message': message_s,
+#     #     'withdrawals': withdrawals,
+#     # }
+
+#     context = {
+#     'account_balance': account.account_balance.quantize(
+#         Decimal("0.01")
+#     ),
+#     'account_level': account.level,
+#     'withdrawal_enabled': account.withdrawal_enabled,
+#     'is_verified': account.is_verified,
+#     'promotional_balance': account.promotional_balance,
+#     'c_paymentgates': clientPaymentgateway.objects.all(),
+#     'locked_investments': locked_investments,
+#     'message': message_s,
+#     'withdrawals': withdrawals,
+#     }
+
+#     return render(
+#         request,
+#         'client/dashboard/withdraw.html',
+#         context
+#     )
+
+
 @login_required(redirect_field_name='withdraw', login_url='login')
 def withdraw(request):
 
@@ -563,7 +918,10 @@ def withdraw(request):
 
     locked_investments = (
         Investment.objects
-        .filter(user=request.user, is_matured=False)
+        .filter(
+            user=request.user,
+            is_matured=False
+        )
         .aggregate(Sum('amount'))['amount__sum']
         or Decimal("0.00")
     )
@@ -572,25 +930,55 @@ def withdraw(request):
 
     if request.method == "POST":
 
-        # Get form values
-        raw_amount = request.POST.get('amount', '').replace(',', '').strip()
-        withdrawal_method = request.POST.get('payment_method', '').strip()
-        address = request.POST.get('address', '').strip()
+        # ==========================================
+        # GET FORM VALUES
+        # ==========================================
 
-        # Validate amount
+        raw_amount = (
+            request.POST.get('amount', '')
+            .replace(',', '')
+            .strip()
+        )
+
+        withdrawal_method = (
+            request.POST.get('payment_method', '')
+            .strip()
+        )
+
+        address = (
+            request.POST.get('address', '')
+            .strip()
+        )
+
+        # ==========================================
+        # VALIDATE AMOUNT
+        # ==========================================
+
         try:
             amount = Decimal(raw_amount)
+
         except (InvalidOperation, TypeError):
             amount = Decimal("0.00")
             message_s = "Please enter a valid withdrawal amount."
+
+        # Prevent negative values and malformed decimals
+        if not message_s and amount <= Decimal("0.00"):
+            message_s = "Please enter a valid withdrawal amount."
+
+        # ==========================================
+        # PROCESS WITHDRAWAL
+        # ==========================================
 
         if not message_s:
 
             with transaction.atomic():
 
-                # Lock the account during the withdrawal check
-                account = Account.objects.select_for_update().get(
-                    user=request.user
+                # Lock the account so two withdrawal
+                # requests cannot race against the same balance.
+                account = (
+                    Account.objects
+                    .select_for_update()
+                    .get(user=request.user)
                 )
 
                 # ==========================================
@@ -600,13 +988,16 @@ def withdraw(request):
                 if not account.withdrawal_enabled:
 
                     message_s = (
-                        "Withdrawal is currently unavailable for your account. "
-                        "Please complete the required account eligibility steps."
+                        "Withdrawal is currently unavailable "
+                        "for your account. Please complete the "
+                        "required account eligibility steps."
                     )
 
                 elif amount < Decimal("10.00"):
 
-                    message_s = "Minimum withdrawal amount is $10."
+                    message_s = (
+                        "Minimum withdrawal amount is $10."
+                    )
 
                 elif amount > account.account_balance:
 
@@ -614,16 +1005,20 @@ def withdraw(request):
 
                 elif not withdrawal_method:
 
-                    message_s = "Please select a withdrawal method."
+                    message_s = (
+                        "Please select a withdrawal method."
+                    )
 
                 elif not address:
 
-                    message_s = "Please enter your payment address."
+                    message_s = (
+                        "Please enter your payment address."
+                    )
 
                 else:
 
                     # ==========================================
-                    # CREATE WITHDRAWAL
+                    # CREATE WITHDRAWAL REQUEST
                     # ==========================================
 
                     Withdrawal.objects.create(
@@ -633,34 +1028,36 @@ def withdraw(request):
                         address=address,
                     )
 
-                    message_s = "Your withdrawal request is in progress."
+                    message_s = (
+                        "Your withdrawal request is in progress."
+                    )
 
-    withdrawals = Withdrawal.objects.filter(
-        user=request.user
-    ).order_by('-timestamp')
+    # ==========================================
+    # WITHDRAWAL HISTORY
+    # ==========================================
 
-    # context = {
-    #     'account_balance': account.account_balance.quantize(
-    #         Decimal("0.01")
-    #     ),
-    #     'c_paymentgates': clientPaymentgateway.objects.all(),
-    #     'locked_investments': locked_investments,
-    #     'message': message_s,
-    #     'withdrawals': withdrawals,
-    # }
+    withdrawals = (
+        Withdrawal.objects
+        .filter(user=request.user)
+        .order_by('-timestamp')
+    )
+
+    # ==========================================
+    # PAGE CONTEXT
+    # ==========================================
 
     context = {
-    'account_balance': account.account_balance.quantize(
-        Decimal("0.01")
-    ),
-    'account_level': account.level,
-    'withdrawal_enabled': account.withdrawal_enabled,
-    'is_verified': account.is_verified,
-    'promotional_balance': account.promotional_balance,
-    'c_paymentgates': clientPaymentgateway.objects.all(),
-    'locked_investments': locked_investments,
-    'message': message_s,
-    'withdrawals': withdrawals,
+        'account_balance': account.account_balance.quantize(
+            Decimal("0.01")
+        ),
+        'account_level': account.level,
+        'withdrawal_enabled': account.withdrawal_enabled,
+        'is_verified': account.is_verified,
+        'promotional_balance': account.promotional_balance,
+        'c_paymentgates': clientPaymentgateway.objects.all(),
+        'locked_investments': locked_investments,
+        'message': message_s,
+        'withdrawals': withdrawals,
     }
 
     return render(
@@ -668,9 +1065,6 @@ def withdraw(request):
         'client/dashboard/withdraw.html',
         context
     )
-
-
-
 
 
 

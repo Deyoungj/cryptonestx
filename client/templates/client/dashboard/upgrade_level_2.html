@@ -1,6 +1,7 @@
 {% extends "client/dashboard/base.html" %}
 
 {% block title %}Upgrade to Level 2{% endblock %}
+{% block upgrade_level_2_active %}active current-page{% endblock upgrade_level_2_active %}
 
 {% block content %}
 
@@ -31,6 +32,7 @@
         padding: 28px 0 50px;
     }
 
+    /* HERO */
     .lv2-hero {
         position: relative;
         overflow: hidden;
@@ -93,12 +95,13 @@
 
     .lv2-hero p {
         margin: 0;
-        max-width: 650px;
+        max-width: 680px;
         color: rgba(255,255,255,.82);
         font-size: 1rem;
         line-height: 1.7;
     }
 
+    /* GRID */
     .lv2-grid {
         display: grid;
         grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr);
@@ -118,6 +121,7 @@
         padding: 26px;
     }
 
+    /* SECTION TITLE */
     .lv2-section-title {
         display: flex;
         align-items: center;
@@ -149,27 +153,59 @@
         font-size: .86rem;
     }
 
+    /* PROGRESS */
     .lv2-progress {
-        height: 8px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: var(--lv2-soft);
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin: 20px 0 26px;
     }
 
-    .lv2-progress span {
-        display: block;
-        width: 50%;
-        height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, #7344FF, #9876ff);
+    .lv2-progress-line {
+        flex: 1;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--lv2-border);
+        overflow: hidden;
     }
 
+    .lv2-progress-line span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--lv2-primary);
+        transition: width .3s ease;
+    }
+
+    .lv2-progress-step {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        font-size: .75rem;
+        font-weight: 800;
+        background: var(--lv2-border);
+        color: var(--lv2-muted);
+    }
+
+    .lv2-progress-step.complete {
+        color: #fff;
+        background: var(--lv2-success);
+    }
+
+    .lv2-progress-step.active {
+        color: #fff;
+        background: var(--lv2-primary);
+    }
+
+    /* REQUIREMENTS */
     .lv2-requirement {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 14px;
-        padding: 16px;
+        padding: 17px;
         border: 1px solid var(--lv2-border);
         border-radius: 17px;
         margin-bottom: 12px;
@@ -195,6 +231,11 @@
         background: rgba(245, 158, 11, .10);
     }
 
+    .lv2-check.locked {
+        color: var(--lv2-muted);
+        background: var(--lv2-soft);
+    }
+
     .lv2-requirement strong {
         display: block;
         color: var(--lv2-text);
@@ -203,11 +244,69 @@
 
     .lv2-requirement span {
         display: block;
-        margin-top: 3px;
+        margin-top: 4px;
         color: var(--lv2-muted);
         font-size: .82rem;
+        line-height: 1.55;
     }
 
+    .lv2-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 8px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: .7rem;
+        font-weight: 800;
+    }
+
+    .lv2-status.complete {
+        color: var(--lv2-success);
+        background: rgba(22, 163, 74, .09);
+    }
+
+    .lv2-status.pending {
+        color: #b45309;
+        background: rgba(245, 158, 11, .09);
+    }
+
+    .lv2-status.locked {
+        color: var(--lv2-muted);
+        background: var(--lv2-soft);
+    }
+
+    /* ALERTS */
+    .lv2-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px;
+        border-radius: 16px;
+        margin-top: 18px;
+        font-size: .88rem;
+        line-height: 1.6;
+    }
+
+    .lv2-alert.success {
+        color: var(--lv2-success);
+        background: rgba(22, 163, 74, .08);
+        border: 1px solid rgba(22, 163, 74, .12);
+    }
+
+    .lv2-alert.warning {
+        color: #b45309;
+        background: rgba(245, 158, 11, .08);
+        border: 1px solid rgba(245, 158, 11, .12);
+    }
+
+    .lv2-alert.info {
+        color: var(--lv2-primary);
+        background: var(--lv2-soft);
+        border: 1px solid rgba(115, 68, 255, .10);
+    }
+
+    /* SUMMARY */
     .lv2-summary {
         padding: 24px;
     }
@@ -223,6 +322,13 @@
         font-size: 2rem;
         font-weight: 850;
         letter-spacing: -.04em;
+    }
+
+    .lv2-summary-description {
+        margin-top: 8px;
+        color: var(--lv2-muted);
+        font-size: .78rem;
+        line-height: 1.55;
     }
 
     .lv2-summary-box {
@@ -247,8 +353,10 @@
 
     .lv2-summary-row strong {
         color: var(--lv2-text);
+        text-align: right;
     }
 
+    /* BUTTONS */
     .lv2-button {
         width: 100%;
         border: 0;
@@ -259,9 +367,10 @@
         align-items: center;
         justify-content: center;
         gap: 9px;
-        color: #fff;
+        color: #fff !important;
         background: var(--lv2-primary);
         font-weight: 800;
+        text-decoration: none;
         transition: .2s ease;
         cursor: pointer;
     }
@@ -269,6 +378,16 @@
     .lv2-button:hover {
         background: var(--lv2-primary-dark);
         transform: translateY(-1px);
+        color: #fff !important;
+    }
+
+    .lv2-button.secondary {
+        color: var(--lv2-primary) !important;
+        background: var(--lv2-soft);
+    }
+
+    .lv2-button.secondary:hover {
+        background: rgba(115, 68, 255, .14);
     }
 
     .lv2-button:disabled {
@@ -277,33 +396,61 @@
         transform: none;
     }
 
-    .lv2-alert {
+    /* GUIDE */
+    .lv2-guide {
+        margin-top: 22px;
+        padding: 22px;
+        border-radius: 20px;
+        border: 1px solid var(--lv2-border);
+        background: var(--lv2-soft);
+    }
+
+    .lv2-guide-heading {
         display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 15px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: .88rem;
-        line-height: 1.6;
+        align-items: center;
+        gap: 10px;
+        color: var(--lv2-text);
+        font-size: .95rem;
+        font-weight: 800;
+        margin-bottom: 15px;
     }
 
-    .lv2-alert.success {
-        color: var(--lv2-success);
-        background: rgba(22, 163, 74, .08);
-        border: 1px solid rgba(22, 163, 74, .12);
+    .lv2-guide-heading i {
+        color: var(--lv2-primary);
+        font-size: 1.2rem;
     }
 
-    .lv2-alert.warning {
-        color: #b45309;
-        background: rgba(245, 158, 11, .08);
-        border: 1px solid rgba(245, 158, 11, .12);
+    .lv2-guide p {
+        margin: 0;
+        color: var(--lv2-muted);
+        font-size: .82rem;
+        line-height: 1.7;
+    }
+
+    .lv2-deposit-amount {
+        margin-top: 13px;
+        padding: 13px 15px;
+        border-radius: 13px;
+        background: var(--lv2-card);
+        border: 1px solid var(--lv2-border);
+    }
+
+    .lv2-deposit-amount span {
+        display: block;
+        color: var(--lv2-muted);
+        font-size: .72rem;
+        margin-bottom: 3px;
+    }
+
+    .lv2-deposit-amount strong {
+        color: var(--lv2-text);
+        font-size: 1.1rem;
     }
 
     .lv2-note {
         margin-top: 18px;
         color: var(--lv2-muted);
-        font-size: .78rem;
+        font-size: .76rem;
         line-height: 1.65;
     }
 
@@ -335,18 +482,26 @@
         .lv2-amount {
             font-size: 1.75rem;
         }
+
+        .lv2-requirement {
+            padding: 14px;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .lv2-button {
+        .lv2-button,
+        .lv2-progress-line span {
             transition: none;
         }
     }
 </style>
 
+
 <div class="container-fluid lv2-page">
 
+    <!-- HERO -->
     <div class="lv2-hero">
+
         <div class="lv2-hero-content">
 
             <div class="lv2-eyebrow">
@@ -357,224 +512,664 @@
             <h1>Upgrade to Level 2</h1>
 
             <p>
-                Complete the Level 2 eligibility requirement to release
-                your promotional credit into your main account balance.
+                Complete the Level 2 requirements below to become eligible
+                for the benefits associated with your account's next level.
             </p>
 
         </div>
+
     </div>
 
 
+    <!-- DJANGO MESSAGES -->
     {% if messages %}
+
         {% for message in messages %}
+
             <div
                 class="lv2-alert {% if message.tags == 'success' %}success{% else %}warning{% endif %}"
-                style="margin-top: 22px;"
             >
-                <i class="ph {% if message.tags == 'success' %}ph-check-circle{% else %}ph-warning-circle{% endif %}"
-                   style="font-size: 1.25rem;">
-                </i>
+
+                <i
+                    class="ph {% if message.tags == 'success' %}ph-check-circle{% else %}ph-warning-circle{% endif %}"
+                    style="font-size: 1.25rem;"
+                ></i>
 
                 <div>
                     {{ message }}
                 </div>
+
             </div>
+
         {% endfor %}
+
     {% endif %}
 
 
     {% if already_upgraded %}
 
-        <div class="lv2-card lv2-main">
+        <!-- ALREADY LEVEL 2 -->
+        <div class="lv2-card lv2-main" style="margin-top:22px;">
 
-            <div class="lv2-alert success">
-                <i class="ph ph-check-circle" style="font-size: 1.3rem;"></i>
+            <div class="lv2-alert success" style="margin-top:0;">
+
+                <i
+                    class="ph ph-check-circle"
+                    style="font-size:1.3rem;"
+                ></i>
 
                 <div>
+
                     <strong>Your account is already Level 2.</strong><br>
-                    Your promotional credit has already been processed.
+
+                    Your promotional credit has already been processed
+                    according to the applicable promotion terms.
+
                 </div>
+
             </div>
 
-            <a href="{% url 'overview' %}" class="lv2-button">
+            <a
+                href="{% url 'overview' %}"
+                class="lv2-button"
+            >
                 <i class="ph ph-arrow-left"></i>
                 Return to Dashboard
             </a>
 
         </div>
 
+
     {% else %}
 
         <div class="lv2-grid">
 
-            <div class="lv2-card lv2-main">
+            <!-- LEFT -->
+            <div>
 
-                <div class="lv2-section-title">
+                <div class="lv2-card lv2-main">
 
-                    <div class="lv2-section-icon">
-                        <i class="ph ph-list-checks"></i>
-                    </div>
+                    <div class="lv2-section-title">
 
-                    <div>
-                        <h2>Level 2 requirements</h2>
-                        <p>Complete the requirement below to continue.</p>
-                    </div>
-
-                </div>
-
-
-                <div class="lv2-progress">
-                    <span
-                        {% if account.is_verified %}
-                            style="width: 100%;"
-                        {% else %}
-                            style="width: 50%;"
-                        {% endif %}
-                    ></span>
-                </div>
-
-
-                <div class="lv2-requirement">
-
-                    <div class="lv2-check {% if account.is_verified %}complete{% else %}pending{% endif %}">
-                        <i class="ph {% if account.is_verified %}ph-check-circle{% else %}ph-clock{% endif %}"></i>
-                    </div>
-
-                    <div>
-                        <strong>Account verification</strong>
-
-                        {% if account.is_verified %}
-                            <span>
-                                Your account has been verified.
-                            </span>
-                        {% else %}
-                            <span>
-                                Your account must be verified before Level 2 can be activated.
-                            </span>
-                        {% endif %}
-                    </div>
-
-                </div>
-
-
-                <div class="lv2-requirement">
-
-                    <div class="lv2-check complete">
-                        <i class="ph ph-gift"></i>
-                    </div>
-
-                    <div>
-                        <strong>Promotional credit</strong>
-
-                        <span>
-                            Promotional credit is released only after Level 2 eligibility is confirmed.
-                        </span>
-                    </div>
-
-                </div>
-
-
-                {% if not account.is_verified %}
-
-                    <div class="lv2-alert warning">
-                        <i class="ph ph-warning-circle" style="font-size: 1.3rem;"></i>
+                        <div class="lv2-section-icon">
+                            <i class="ph ph-list-checks"></i>
+                        </div>
 
                         <div>
-                            <strong>Verification required.</strong><br>
-                            Your account is currently not eligible for the Level 2 upgrade.
+
+                            <h2>Level 2 requirements</h2>
+
+                            <p>
+                                Complete each requirement before activating Level 2.
+                            </p>
+
                         </div>
+
                     </div>
 
-                {% else %}
 
-                    <div class="lv2-alert success">
-                        <i class="ph ph-check-circle" style="font-size: 1.3rem;"></i>
+                    <!-- PROGRESS -->
+                    <div class="lv2-progress">
+
+                        <div class="lv2-progress-step complete">
+                            1
+                        </div>
+
+                        <div class="lv2-progress-line">
+                            <span
+                                style="
+                                {% if account.is_verified %}
+                                    width: 100%;
+                                {% else %}
+                                    width: 0%;
+                                {% endif %}
+                                "
+                            ></span>
+                        </div>
+
+                        <div class="lv2-progress-step
+                            {% if account.is_verified %}
+                                complete
+                            {% else %}
+                                active
+                            {% endif %}
+                        ">
+                            2
+                        </div>
+
+                        <div class="lv2-progress-line">
+                            <span
+                                style="
+                                {% if qualifying_deposit_completed %}
+                                    width: 100%;
+                                {% else %}
+                                    width: 0%;
+                                {% endif %}
+                                "
+                            ></span>
+                        </div>
+
+                        <div class="lv2-progress-step
+                            {% if qualifying_deposit_completed %}
+                                complete
+                            {% else %}
+                                active
+                            {% endif %}
+                        ">
+                            3
+                        </div>
+
+                    </div>
+
+
+                    <!-- STEP 1 -->
+                    <div class="lv2-requirement">
+
+                        <div class="lv2-check
+                            {% if account.is_verified %}
+                                complete
+                            {% else %}
+                                pending
+                            {% endif %}
+                        ">
+
+                            <i class="ph
+                                {% if account.is_verified %}
+                                    ph-check-circle
+                                {% else %}
+                                    ph-identification-card
+                                {% endif %}
+                            "></i>
+
+                        </div>
 
                         <div>
-                            <strong>You are eligible.</strong><br>
-                            Your account can now be upgraded to Level 2.
+
+                            <strong>Account verification</strong>
+
+                            {% if account.is_verified %}
+
+                                <span>
+                                    Your account has been successfully verified.
+                                </span>
+
+                                <div class="lv2-status complete">
+                                    <i class="ph ph-check"></i>
+                                    Completed
+                                </div>
+
+                            {% else %}
+
+                                <span>
+                                    Verify your account before continuing with
+                                    the Level 2 process.
+                                </span>
+
+                                <div class="lv2-status pending">
+                                    <i class="ph ph-clock"></i>
+                                    Required
+                                </div>
+
+                            {% endif %}
+
                         </div>
+
                     </div>
 
-                {% endif %}
+
+                    <!-- STEP 2 -->
+                    <div class="lv2-requirement">
+
+                        <div class="lv2-check
+                            {% if qualifying_deposit_completed %}
+                                complete
+                            {% elif account.is_verified %}
+                                pending
+                            {% else %}
+                                locked
+                            {% endif %}
+                        ">
+
+                            <i class="ph
+                                {% if qualifying_deposit_completed %}
+                                    ph-check-circle
+                                {% elif account.is_verified %}
+                                    ph-bank
+                                {% else %}
+                                    ph-lock
+                                {% endif %}
+                            "></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>Qualifying deposit</strong>
+
+                            {% if qualifying_deposit_completed %}
+
+                                <span>
+                                    Your qualifying deposit has been confirmed.
+                                </span>
+
+                                <div class="lv2-status complete">
+                                    <i class="ph ph-check"></i>
+                                    Confirmed
+                                </div>
+
+                            {% elif account.is_verified %}
+
+                                <span>
+                                    Make a qualifying deposit of at least
+                                    ${{ level_2_deposit_requirement|floatformat:2 }}
+                                    to continue.
+                                </span>
+
+                                <div class="lv2-status pending">
+                                    <i class="ph ph-warning"></i>
+                                    Deposit required
+                                </div>
+
+                            {% else %}
+
+                                <span>
+                                    This step becomes available after account verification.
+                                </span>
+
+                                <div class="lv2-status locked">
+                                    <i class="ph ph-lock"></i>
+                                    Locked
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STEP 3 -->
+                    <div class="lv2-requirement">
+
+                        <div class="lv2-check
+                            {% if account.is_verified and qualifying_deposit_completed %}
+                                complete
+                            {% else %}
+                                locked
+                            {% endif %}
+                        ">
+
+                            <i class="ph
+                                {% if account.is_verified and qualifying_deposit_completed %}
+                                    ph-check-circle
+                                {% else %}
+                                    ph-lock
+                                {% endif %}
+                            "></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>Activate Level 2</strong>
+
+                            {% if account.is_verified and qualifying_deposit_completed %}
+
+                                <span>
+                                    All Level 2 requirements have been completed.
+                                    You can now activate your upgraded account.
+                                </span>
+
+                                <div class="lv2-status complete">
+                                    <i class="ph ph-check"></i>
+                                    Ready
+                                </div>
+
+                            {% else %}
+
+                                <span>
+                                    Complete verification and the qualifying deposit
+                                    before Level 2 can be activated.
+                                </span>
+
+                                <div class="lv2-status locked">
+                                    <i class="ph ph-lock"></i>
+                                    Locked
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VERIFICATION MESSAGE -->
+                    {% if not account.is_verified %}
+
+                        <div class="lv2-alert warning">
+
+                            <i
+                                class="ph ph-warning-circle"
+                                style="font-size:1.3rem;"
+                            ></i>
+
+                            <div>
+
+                                <strong>Verification required.</strong><br>
+
+                                Your account must be verified before you
+                                can make the qualifying Level 2 upgrade
+                                request.
+
+                            </div>
+
+                        </div>
+
+                    {% elif not qualifying_deposit_completed %}
+
+                        <div class="lv2-alert info">
+
+                            <i
+                                class="ph ph-info"
+                                style="font-size:1.3rem;"
+                            ></i>
+
+                            <div>
+
+                                <strong>Qualifying deposit required.</strong><br>
+
+                                Your account is verified. Make the qualifying
+                                deposit shown below and wait for the deposit
+                                to be successfully confirmed.
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="lv2-alert success">
+
+                            <i
+                                class="ph ph-check-circle"
+                                style="font-size:1.3rem;"
+                            ></i>
+
+                            <div>
+
+                                <strong>Level 2 requirements completed.</strong><br>
+
+                                Your account is now eligible to activate Level 2.
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- GUIDE -->
+                <div class="lv2-card lv2-main" style="margin-top:22px;">
+
+                    <div class="lv2-section-title">
+
+                        <div class="lv2-section-icon">
+                            <i class="ph ph-book-open"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>How Level 2 works</h2>
+
+                            <p>
+                                Follow the steps below to complete the process.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="lv2-guide">
+
+                        <div class="lv2-guide-heading">
+
+                            <i class="ph ph-1-circle"></i>
+
+                            <span>Verify your account</span>
+
+                        </div>
+
+                        <p>
+                            Your account must be verified before you can
+                            participate in the Level 2 upgrade process.
+                        </p>
+
+                    </div>
+
+
+                    <div class="lv2-guide">
+
+                        <div class="lv2-guide-heading">
+
+                            <i class="ph ph-2-circle"></i>
+
+                            <span>Make the qualifying deposit</span>
+
+                        </div>
+
+                        <p>
+                            Make a successful deposit that meets the published
+                            Level 2 qualifying requirement. The deposit must be
+                            confirmed by the system before this step is marked
+                            complete.
+                        </p>
+
+                        <div class="lv2-deposit-amount">
+
+                            <span>
+                                Minimum qualifying deposit
+                            </span>
+
+                            <strong>
+                                ${{ level_2_deposit_requirement|floatformat:2 }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="lv2-guide">
+
+                        <div class="lv2-guide-heading">
+
+                            <i class="ph ph-3-circle"></i>
+
+                            <span>Activate Level 2</span>
+
+                        </div>
+
+                        <p>
+                            Once your verification and qualifying deposit
+                            requirements are confirmed, you can activate
+                            Level 2 and receive the benefits described in
+                            the applicable promotional terms.
+                        </p>
+
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <div class="lv2-card lv2-summary">
+            <!-- RIGHT -->
+            <div>
 
-                <div class="lv2-summary-label">
-                    Promotional Credit
-                </div>
+                <div class="lv2-card lv2-summary">
 
-                <div class="lv2-amount">
-                    ${{ account.promotional_balance|floatformat:2 }}
-                </div>
-
-
-                <div class="lv2-summary-box">
-
-                    <div class="lv2-summary-row">
-                        <span>Current level</span>
-                        <strong>Level {{ account.level }}</strong>
+                    <div class="lv2-summary-label">
+                        Promotional Credit
                     </div>
 
-                    <div class="lv2-summary-row">
-                        <span>Main balance</span>
-                        <!-- <strong>
-                            ${{ account.account_balance|floatformat:2 }}
-                        </strong> -->
-                        <strong>
-                            ${{ projected_balance|floatformat:2 }}
-                        </strong>
+                    <div class="lv2-amount">
+                        ${{ account.promotional_balance|floatformat:2 }}
                     </div>
 
-                    <div class="lv2-summary-row">
-                        <span>After upgrade</span>
-                        <strong>
-                            ${{ account.account_balance|add:account.promotional_balance|floatformat:2 }}
-                        </strong>
+                    <div class="lv2-summary-description">
+                        This is promotional credit. It is currently separate
+                        from your available account balance and is not
+                        withdrawable until the applicable eligibility
+                        requirements are satisfied.
                     </div>
 
-                </div>
+
+                    <div class="lv2-summary-box">
+
+                        <div class="lv2-summary-row">
+
+                            <span>Current level</span>
+
+                            <strong>
+                                Level {{ account.level }}
+                            </strong>
+
+                        </div>
 
 
-                {% if account.is_verified and account.promotional_balance > 0 %}
+                        <div class="lv2-summary-row">
 
-                    <form method="POST">
+                            <span>Verification</span>
 
-                        {% csrf_token %}
+                            <strong>
 
-                        <button
-                            type="submit"
+                                {% if account.is_verified %}
+                                    Verified
+                                {% else %}
+                                    Required
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="lv2-summary-row">
+
+                            <span>Qualifying deposit</span>
+
+                            <strong>
+
+                                {% if qualifying_deposit_completed %}
+                                    Confirmed
+                                {% else %}
+                                    Required
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="lv2-summary-row">
+
+                            <span>Level 2 status</span>
+
+                            <strong>
+
+                                {% if account.is_verified and qualifying_deposit_completed %}
+                                    Ready
+                                {% else %}
+                                    Locked
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VERIFY FIRST -->
+                    {% if not account.is_verified %}
+
+                        <a
+                            href="{% url 'profile' %}"
                             class="lv2-button"
-                            onclick="return confirm('Upgrade this account to Level 2 and release the eligible promotional credit into the main balance?');"
                         >
-                            <i class="ph ph-arrow-up-right"></i>
-                            Upgrade to Level 2
-                        </button>
+                            <i class="ph ph-identification-card"></i>
+                            Complete Verification
+                        </a>
 
-                    </form>
 
-                {% else %}
+                    <!-- DEPOSIT -->
+                    {% elif not qualifying_deposit_completed %}
 
-                    <button
-                        type="button"
-                        class="lv2-button"
-                        disabled
+                        <a
+                            href="{% url 'deposit' %}"
+                            class="lv2-button"
+                        >
+                            <i class="ph ph-bank"></i>
+                            Make Qualifying Deposit
+                        </a>
+
+
+                    <!-- ACTIVATE LEVEL 2 -->
+                    {% elif account.promotional_balance > 0 %}
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="lv2-button"
+                                onclick="
+                                    return confirm(
+                                        'Your qualifying requirements have been completed. Activate Level 2?'
+                                    );
+                                "
+                            >
+
+                                <i class="ph ph-arrow-up-right"></i>
+
+                                Activate Level 2
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{% url 'overview' %}"
+                        class="lv2-button secondary"
                     >
-                        <i class="ph ph-lock"></i>
-                        Level 2 Not Available
-                    </button>
 
-                {% endif %}
+                        <i class="ph ph-arrow-left"></i>
+
+                        Back to Dashboard
+
+                    </a>
 
 
-                <div class="lv2-note">
-                    Promotional credit is subject to the promotion's published
-                    eligibility terms. Once legitimately released, it becomes
-                    part of the main account balance and is subject to the
-                    normal withdrawal rules.
+                    <div class="lv2-note">
+
+                        <strong>Important:</strong>
+
+                        Qualifying deposits and Level 2 eligibility should
+                        always be clearly disclosed to users before they
+                        deposit. Promotional credit remains subject to the
+                        published promotion terms and should not be presented
+                        as withdrawable cash before eligibility is satisfied.
+
+                    </div>
+
                 </div>
 
             </div>
