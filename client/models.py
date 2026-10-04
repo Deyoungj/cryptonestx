@@ -179,7 +179,7 @@ class PromotionalCreditClaim(models.Model):
 
 
 
-    
+
 
 
 class Deposit(models.Model):
@@ -496,6 +496,7 @@ class Transaction(models.Model):
         ('deposit', 'Deposit'),
         ('withdrawal', 'Withdrawal'),
         ('investment', 'Investment'),
+        ('promotion', 'Promotional Credit'),
     ]
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPES)

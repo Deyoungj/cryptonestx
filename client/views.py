@@ -351,20 +351,19 @@ def invest(request):
 #     )
 
 
-
-
 @login_required(login_url="login")
 def upgrade_level_2(request):
 
-    account = Account.objects.get(user=request.user)
-
-    # =====================================================
-    # LEVEL 2 DEPOSIT REQUIREMENT
-    # =====================================================
-
     level_2_deposit_requirement = LEVEL_2_DEPOSIT_REQUIREMENT
 
-    # Check whether the user has a successful qualifying deposit.
+    # ---------------------------------------------------------
+    # GET CURRENT ACCOUNT
+    # ---------------------------------------------------------
+    account = Account.objects.get(user=request.user)
+
+    # ---------------------------------------------------------
+    # CHECK QUALIFYING DEPOSIT
+    # ---------------------------------------------------------
     qualifying_deposit_completed = Transaction.objects.filter(
         user=request.user,
         transaction_type="deposit",
@@ -372,30 +371,9 @@ def upgrade_level_2(request):
         amount__gte=level_2_deposit_requirement,
     ).exists()
 
-    # =====================================================
-    # ALREADY LEVEL 2
-    # =====================================================
-
-    if account.level >= 2:
-
-        return render(
-            request,
-            "client/dashboard/upgrade_level_2.html",
-            {
-                "account": account,
-                "already_upgraded": True,
-                "projected_balance": account.account_balance,
-
-                # Level 2 information
-                "qualifying_deposit_completed": True,
-                "level_2_deposit_requirement": level_2_deposit_requirement,
-            },
-        )
-
-    # =====================================================
-    # PROMOTIONAL CLAIM
-    # =====================================================
-
+    # ---------------------------------------------------------
+    # GET OR CREATE PROMOTIONAL CLAIM
+    # ---------------------------------------------------------
     claim, created = PromotionalCreditClaim.objects.get_or_create(
         user=request.user,
         defaults={
@@ -403,67 +381,76 @@ def upgrade_level_2(request):
         },
     )
 
-    # =====================================================
-    # POST - ACTIVATE LEVEL 2
-    # =====================================================
+    # ---------------------------------------------------------
+    # IF ACCOUNT IS ALREADY LEVEL 2
+    # ---------------------------------------------------------
+    if account.level >= 2:
 
+        return render(
+            request,
+            "client/dashboard/upgrade_level_2.html",
+            {
+                "account": account,
+                "claim": claim,
+                "already_upgraded": True,
+                "projected_balance": account.account_balance,
+                "qualifying_deposit_completed": True,
+                "level_2_deposit_requirement": level_2_deposit_requirement,
+            },
+        )
+
+    # =========================================================
+    # POST — ACTIVATE LEVEL 2
+    # =========================================================
     if request.method == "POST":
 
         with transaction.atomic():
 
-            # Lock account to prevent duplicate claims
-            account = Account.objects.select_for_update().get(
-                user=request.user
-            )
-
-            # Lock promotional claim
-            claim = PromotionalCreditClaim.objects.select_for_update().get(
-                user=request.user
+            # -------------------------------------------------
+            # LOCK ACCOUNT
+            # -------------------------------------------------
+            account = (
+                Account.objects
+                .select_for_update()
+                .get(user=request.user)
             )
 
             # -------------------------------------------------
-            # Already upgraded
+            # LOCK CLAIM
             # -------------------------------------------------
+            claim = (
+                PromotionalCreditClaim.objects
+                .select_for_update()
+                .get(user=request.user)
+            )
 
+            # -------------------------------------------------
+            # 1. CHECK ACCOUNT LEVEL
+            # -------------------------------------------------
             if account.level >= 2:
 
                 messages.info(
                     request,
-                    "Your account is already upgraded to Level 2.",
+                    "Your account is already upgraded to Level 2."
                 )
 
                 return redirect("upgrade_level_2")
 
             # -------------------------------------------------
-            # Already claimed
+            # 2. CHECK VERIFICATION
             # -------------------------------------------------
-
-            if claim.status == "claimed":
-
-                messages.info(
-                    request,
-                    "Your promotional credit has already been released.",
-                )
-
-                return redirect("upgrade_level_2")
-
-            # -------------------------------------------------
-            # Verification required
-            # -------------------------------------------------
-
             if not account.is_verified:
 
                 messages.error(
                     request,
-                    "Your account must be verified before you can upgrade to Level 2.",
+                    "Your account must be verified before activating Level 2."
                 )
 
                 return redirect("upgrade_level_2")
 
             # -------------------------------------------------
-            # Qualifying deposit required
+            # 3. CHECK QUALIFYING DEPOSIT
             # -------------------------------------------------
-
             qualifying_deposit_completed = Transaction.objects.filter(
                 user=request.user,
                 transaction_type="deposit",
@@ -475,39 +462,91 @@ def upgrade_level_2(request):
 
                 messages.error(
                     request,
-                    f"A successful qualifying deposit of at least "
-                    f"${level_2_deposit_requirement:,.2f} is required "
-                    f"before Level 2 can be activated.",
+                    (
+                        f"You need a successful deposit of at least "
+                        f"${level_2_deposit_requirement:,.2f} "
+                        f"before activating Level 2."
+                    )
                 )
 
                 return redirect("upgrade_level_2")
 
             # -------------------------------------------------
-            # Promotional balance must exist
+            # 4. CHECK PROMOTIONAL BALANCE
             # -------------------------------------------------
-
             if account.promotional_balance <= Decimal("0.00"):
 
                 messages.error(
                     request,
-                    "There is no promotional credit available to release.",
+                    "There is no promotional balance available to release."
                 )
 
                 return redirect("upgrade_level_2")
 
-            # =================================================
-            # RELEASE PROMOTIONAL CREDIT
-            # =================================================
+            # -------------------------------------------------
+            # 5. HANDLE CLAIM STATUS
+            # -------------------------------------------------
+            #
+            # Normally a "claimed" status means the promotion
+            # has already been transferred.
+            #
+            # However, we also protect against an inconsistent
+            # database state such as:
+            #
+            # claim.status = "claimed"
+            # account.level = 1
+            # account.promotional_balance = 12000
+            #
+            # In that situation, the Account state is treated
+            # as authoritative because the promotional balance
+            # is still present.
+            #
+            if claim.status == "claimed":
 
+                if (
+                    account.level >= 2
+                    and account.promotional_balance <= Decimal("0.00")
+                ):
+                    messages.info(
+                        request,
+                        "Your promotional credit has already been released."
+                    )
+
+                    return redirect("upgrade_level_2")
+
+                # -------------------------------------------------
+                # REPAIR INCONSISTENT CLAIM STATE
+                # -------------------------------------------------
+                #
+                # The claim says "claimed", but the account is still
+                # Level 1 and still has promotional funds.
+                #
+                # Reset the claim state so the legitimate release
+                # can proceed.
+                #
+                claim.status = "pending"
+                claim.claimed_amount = Decimal("0.00")
+                claim.claimed_at = None
+
+            # -------------------------------------------------
+            # 6. CAPTURE PROMOTIONAL AMOUNT
+            # -------------------------------------------------
             promotional_amount = account.promotional_balance
 
-            account.account_balance += promotional_amount
+            old_balance = account.account_balance
+
+            new_balance = old_balance + promotional_amount
+
+            # -------------------------------------------------
+            # 7. MOVE PROMOTIONAL BALANCE INTO MAIN BALANCE
+            # -------------------------------------------------
+            account.account_balance = new_balance
             account.promotional_balance = Decimal("0.00")
 
-            # Upgrade account
+            # -------------------------------------------------
+            # 8. UPGRADE ACCOUNT
+            # -------------------------------------------------
             account.level = 2
-
-            # Enable withdrawal eligibility
             account.withdrawal_enabled = True
 
             account.save(
@@ -519,10 +558,9 @@ def upgrade_level_2(request):
                 ]
             )
 
-            # =================================================
-            # RECORD PROMOTIONAL CLAIM
-            # =================================================
-
+            # -------------------------------------------------
+            # 9. UPDATE PROMOTIONAL CLAIM
+            # -------------------------------------------------
             claim.promotional_amount = promotional_amount
             claim.claimed_amount = promotional_amount
             claim.status = "claimed"
@@ -537,10 +575,9 @@ def upgrade_level_2(request):
                 ]
             )
 
-            # =================================================
-            # RECORD TRANSACTION
-            # =================================================
-
+            # -------------------------------------------------
+            # 10. RECORD PROMOTIONAL TRANSACTION
+            # -------------------------------------------------
             Transaction.objects.create(
                 user=request.user,
                 transaction_type="promotion",
@@ -550,25 +587,29 @@ def upgrade_level_2(request):
                 method="Promotional Credit",
             )
 
+        # =====================================================
+        # SUCCESS
+        # =====================================================
+
         messages.success(
             request,
-            f"Congratulations! Your account is now Level 2 and "
-            f"${promotional_amount:,.2f} has been released to your main balance.",
+            (
+                f"Level 2 activated successfully. "
+                f"${promotional_amount:,.2f} has been added "
+                f"to your account balance."
+            )
         )
 
         return redirect("upgrade_level_2")
 
-    # =====================================================
-    # PROJECTED BALANCE
-    # =====================================================
+    # =========================================================
+    # GET PAGE
+    # =========================================================
 
     projected_balance = (
-        account.account_balance + account.promotional_balance
+        account.account_balance +
+        account.promotional_balance
     )
-
-    # =====================================================
-    # PAGE CONTEXT
-    # =====================================================
 
     return render(
         request,
@@ -578,12 +619,203 @@ def upgrade_level_2(request):
             "claim": claim,
             "already_upgraded": False,
             "projected_balance": projected_balance,
-
-            # Level 2 requirements
             "qualifying_deposit_completed": qualifying_deposit_completed,
             "level_2_deposit_requirement": level_2_deposit_requirement,
         },
     )
+
+# @login_required(login_url="login")
+# def upgrade_level_2(request):
+
+#     account = Account.objects.get(user=request.user)
+
+#     level_2_deposit_requirement = LEVEL_2_DEPOSIT_REQUIREMENT
+
+#     qualifying_deposit_completed = Transaction.objects.filter(
+#         user=request.user,
+#         transaction_type="deposit",
+#         status="successful",
+#         amount__gte=level_2_deposit_requirement,
+#     ).exists()
+
+#     claim, created = PromotionalCreditClaim.objects.get_or_create(
+#         user=request.user,
+#         defaults={
+#             "promotional_amount": account.promotional_balance,
+#         },
+#     )
+
+#     if account.level >= 2:
+
+#         return render(
+#             request,
+#             "client/dashboard/upgrade_level_2.html",
+#             {
+#                 "account": account,
+#                 "claim": claim,
+#                 "already_upgraded": True,
+#                 "projected_balance": account.account_balance,
+#                 "qualifying_deposit_completed": True,
+#                 "level_2_deposit_requirement": level_2_deposit_requirement,
+#             },
+#         )
+
+#     if request.method == "POST":
+
+#         with transaction.atomic():
+
+#             account = (
+#                 Account.objects
+#                 .select_for_update()
+#                 .get(user=request.user)
+#             )
+
+#             claim = (
+#                 PromotionalCreditClaim.objects
+#                 .select_for_update()
+#                 .get(user=request.user)
+#             )
+
+#             # -----------------------------
+#             # VERIFICATION
+#             # -----------------------------
+
+#             if not account.is_verified:
+
+#                 messages.error(
+#                     request,
+#                     "Your account must be verified before activating Level 2."
+#                 )
+
+#                 return redirect("upgrade_level_2")
+
+#             # -----------------------------
+#             # QUALIFYING DEPOSIT
+#             # -----------------------------
+
+#             qualifying_deposit_completed = Transaction.objects.filter(
+#                 user=request.user,
+#                 transaction_type="deposit",
+#                 status="successful",
+#                 amount__gte=level_2_deposit_requirement,
+#             ).exists()
+
+#             if not qualifying_deposit_completed:
+
+#                 messages.error(
+#                     request,
+#                     f"You need a successful deposit of at least "
+#                     f"${level_2_deposit_requirement:,.2f} before activating Level 2."
+#                 )
+
+#                 return redirect("upgrade_level_2")
+
+#             # -----------------------------
+#             # CLAIM CHECK
+#             # -----------------------------
+
+#             if claim.status == "claimed":
+
+#                 messages.info(
+#                     request,
+#                     "Your promotional credit has already been released."
+#                 )
+
+#                 return redirect("upgrade_level_2")
+
+#             # -----------------------------
+#             # PROMOTIONAL BALANCE CHECK
+#             # -----------------------------
+
+#             promotional_amount = account.promotional_balance
+
+#             if promotional_amount <= Decimal("0.00"):
+
+#                 messages.error(
+#                     request,
+#                     "There is no promotional balance available to release."
+#                 )
+
+#                 return redirect("upgrade_level_2")
+
+#             # -----------------------------
+#             # RELEASE PROMOTIONAL CREDIT
+#             # -----------------------------
+
+#             account.account_balance = (
+#                 account.account_balance + promotional_amount
+#             )
+
+#             account.promotional_balance = Decimal("0.00")
+#             account.level = 2
+#             account.withdrawal_enabled = True
+
+#             account.save(
+#                 update_fields=[
+#                     "account_balance",
+#                     "promotional_balance",
+#                     "level",
+#                     "withdrawal_enabled",
+#                 ]
+#             )
+
+#             # -----------------------------
+#             # UPDATE CLAIM
+#             # -----------------------------
+
+#             claim.promotional_amount = promotional_amount
+#             claim.claimed_amount = promotional_amount
+#             claim.status = "claimed"
+#             claim.claimed_at = timezone.now()
+
+#             claim.save(
+#                 update_fields=[
+#                     "promotional_amount",
+#                     "claimed_amount",
+#                     "status",
+#                     "claimed_at",
+#                 ]
+#             )
+
+#             # -----------------------------
+#             # RECORD PROMOTIONAL TRANSACTION
+#             # -----------------------------
+
+#             Transaction.objects.create(
+#                 user=request.user,
+#                 transaction_type="promotion",
+#                 discription="Promotional Credit Released - Level 2 Upgrade",
+#                 amount=promotional_amount,
+#                 status="successful",
+#                 method="Promotional Credit",
+#             )
+
+#         messages.success(
+#             request,
+#             f"Level 2 activated successfully. "
+#             f"${promotional_amount:,.2f} has been added to your account balance."
+#         )
+
+#         return redirect("upgrade_level_2")
+
+#     projected_balance = (
+#         account.account_balance +
+#         account.promotional_balance
+#     )
+
+#     return render(
+#         request,
+#         "client/dashboard/upgrade_level_2.html",
+#         {
+#             "account": account,
+#             "claim": claim,
+#             "already_upgraded": False,
+#             "projected_balance": projected_balance,
+#             "qualifying_deposit_completed": qualifying_deposit_completed,
+#             "level_2_deposit_requirement": level_2_deposit_requirement,
+#         },
+#     )
+
 
 
 @login_required(redirect_field_name='invest_form', login_url='login')
